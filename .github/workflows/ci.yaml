@@ -1,6 +1,10 @@
 name: CI
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+run-name: ${{ github.actor }}
+on: 
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ * ]
 jobs:
    # This workflow contains a single job called "build"
   build:
@@ -18,6 +22,10 @@ jobs:
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    # Install a roboRIO toolchain
+    - name: Install RoboRIO Toolchain
+      run: ./gradlew installRoboRioToolchain
 
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
