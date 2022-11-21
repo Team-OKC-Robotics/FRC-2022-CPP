@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include <frc/controller/PIDController.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
@@ -38,6 +39,8 @@ public:
     Drivetrain(DrivetrainInterface *interface) : interface_(interface) {}
     ~Drivetrain() {}
 
+    bool Init();
+
     /**
      * Will be called periodically whenever the CommandScheduler runs.
      */
@@ -55,7 +58,7 @@ public:
                         const bool turn_in_place = false);
     bool TankDrive(const double &left_speed, const double &right_speed);
     bool ArcadeDrive(const double &speed, const double &turn,
-                     bool square_inputs = false);
+                     bool square_inputs = true);
     bool ArcadeDriveAuto(const double &speed, const double &turn,
                          bool square_inputs = false);
     bool DriveDistance(const double &distance);
@@ -83,4 +86,14 @@ private:
     // Components (e.g. motor controllers and sensors) should generally be
     // declared private and exposed only through public methods.
     DrivetrainInterface *const interface_;
+
+    // Controllers
+    frc2::PIDController dist_pid_;
+    frc2::PIDController heading_pid_;
+
+    // Speed modifier (the joystick input is multiplied by this value)
+    double speed_modifier_ = 0.75;
+
+    // Open loop ramp rate
+    double open_loop_ramp_ = 0.5;
 };
