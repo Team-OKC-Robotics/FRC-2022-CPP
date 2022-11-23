@@ -2,16 +2,41 @@
 
 #pragma once
 
+#include <memory>
+
+#include <frc/drive/DifferentialDrive.h>
+#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
+#include <rev/CANSparkMax.h>
 
-#include <CANSparkMax.h>
-
+#include "AHRS.h"
 #include "Utils.h"
+
+typedef struct drivetrain_interface_t
+{
+    // Left motors
+    rev::CANSparkMax *const left_motor_1;
+    rev::CANSparkMax *const left_motor_2;
+    rev::CANSparkMax *const left_motor_3;
+
+    // Right motors
+    rev::CANSparkMax *const right_motor_1;
+    rev::CANSparkMax *const right_motor_2;
+    rev::CANSparkMax *const right_motor_3;
+
+    // Drivetrain
+    frc::DifferentialDrive *const diff_drive;
+
+    // AHRS
+    AHRS *const ahrs;
+
+} DrivetrainInterface;
 
 class Drivetrain : public frc2::SubsystemBase
 {
 public:
-    Drivetrain();
+    Drivetrain(DrivetrainInterface *interface) : interface_(interface) {}
+    ~Drivetrain() {}
 
     /**
      * Will be called periodically whenever the CommandScheduler runs.
@@ -57,4 +82,5 @@ public:
 private:
     // Components (e.g. motor controllers and sensors) should generally be
     // declared private and exposed only through public methods.
+    DrivetrainInterface *const interface_;
 };

@@ -17,3 +17,9 @@
 "editor.formatOnSave": true,
 "clang-format.language.cpp.style": "file",
 ```
+
+## Known Issues
+- navX has not officially released their beta test code. For now we will use the unofficial vendor:
+```
+https://raw.githubusercontent.com/rzblue/navx-frc/maven/navx_frc.json
+```
