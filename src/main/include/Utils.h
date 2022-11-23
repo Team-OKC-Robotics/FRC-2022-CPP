@@ -20,7 +20,7 @@
     }
 
 #define OKC_CHECK_MSG(check, msg)                                              \
-    if (!check)                                                                \
+    if (!(check))                                                              \
     {                                                                          \
         std::cerr << "OKC_CHECK FAIL [" << __FILE__ << "] line " << __LINE__   \
                   << ": " << msg << std::endl;                                 \
