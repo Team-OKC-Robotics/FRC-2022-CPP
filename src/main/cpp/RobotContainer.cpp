@@ -11,8 +11,8 @@ RobotContainer::RobotContainer()
     // Initialize the hardware.
     VOKC_CALL(this->InitHardware());
 
-    // Initialize subsystems.
-    VOKC_CALL(this->InitDrivetrain());
+    // Link subsystems to hardware.
+    VOKC_CALL(this->SetupDrivetrainInterface());
 
     // Configure the button bindings
     ConfigureButtonBindings();
@@ -66,6 +66,15 @@ bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface)
     actuators_interface->right_motor_3 =
         std::make_unique<rev::CANSparkMax>(RIGHT_MOTOR_3, BRUSHLESS);
 
+    // Set motors to coast to protect the gearbox and motors. This also makes
+    // driving easier
+    actuators_interface->left_motor_1->SetIdleMode(COAST);
+    actuators_interface->left_motor_2->SetIdleMode(COAST);
+    actuators_interface->left_motor_3->SetIdleMode(COAST);
+    actuators_interface->right_motor_1->SetIdleMode(COAST);
+    actuators_interface->right_motor_2->SetIdleMode(COAST);
+    actuators_interface->right_motor_3->SetIdleMode(COAST);
+
     return true;
 }
 
@@ -92,7 +101,7 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
     return true;
 }
 
-bool RobotContainer::InitDrivetrain()
+bool RobotContainer::SetupDrivetrainInterface()
 {
     OKC_CHECK(hardware_->actuators != nullptr);
     OKC_CHECK(hardware_->sensors != nullptr);
@@ -108,6 +117,9 @@ bool RobotContainer::InitDrivetrain()
     frc::MotorControllerGroup right_motors{*actuators->right_motor_1,
                                            *actuators->right_motor_2,
                                            *actuators->right_motor_3};
+    // motors face opposite directions so +1 for left side is opposite +1 for
+    // right side, this fixes that
+    right_motors.SetInverted(true);
 
     // Ensure the differential drivetrain is un-initialized.
     OKC_CHECK(hardware_->diff_drive == nullptr);
@@ -124,11 +136,7 @@ bool RobotContainer::InitDrivetrain()
         hardware_->diff_drive.get(),    hardware_->sensors->ahrs.get()};
 
     // Construct Drivetrain object.
-    std::shared_ptr<Drivetrain> drivetrain =
-        std::make_shared<Drivetrain>(&drivetrain_interface);
-
-    // Register the drivetrain
-    OKC_CALL(this->RegisterSubsystem(drivetrain));
+    drivetrain_ = std::make_shared<Drivetrain>(&drivetrain_interface);
 
     return true;
 }

@@ -7,6 +7,9 @@
 // Brushless Motor
 #define BRUSHLESS rev::CANSparkMax::MotorType::kBrushless
 
+// Coast
+#define COAST rev::CANSparkMax::IdleMode::kCoast
+
 // Motor IDs
 #define LEFT_MOTOR_1 1
 #define LEFT_MOTOR_2 2
@@ -17,7 +20,7 @@
 
 typedef struct actuator_interface_t
 {
-    // Left drivetraint motors
+    // Left drivetrain motors
     std::unique_ptr<rev::CANSparkMax> left_motor_1;
     std::unique_ptr<rev::CANSparkMax> left_motor_2;
     std::unique_ptr<rev::CANSparkMax> left_motor_3;

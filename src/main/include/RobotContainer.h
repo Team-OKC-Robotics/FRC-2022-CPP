@@ -30,12 +30,12 @@ public:
 
     frc2::Command *GetAutonomousCommand();
 
-    template <typename T> bool RegisterSubsystem(T subsystem)
-    {
-        subsystems_.push_back(subsystem);
+    // template <typename T> bool RegisterSubsystem(T subsystem)
+    // {
+    //     subsystems_.push_back(subsystem);
 
-        return true;
-    }
+    //     return true;
+    // }
 
 private:
     // Hardware Initialization
@@ -44,11 +44,11 @@ private:
     bool InitSensors(const ActuatorInterface &actuators,
                      SensorInterface *sensor_interface);
 
-    // Initialization Functions
-    bool InitDrivetrain();
+    // Link subsystems to hardware here.
+    bool SetupDrivetrainInterface();
 
     // Subsystems
-    std::vector<std::shared_ptr<frc2::SubsystemBase>> subsystems_;
+    std::shared_ptr<Drivetrain> drivetrain_;
 
     // Commands
     ExampleCommand m_autonomousCommand;

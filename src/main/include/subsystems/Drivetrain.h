@@ -36,7 +36,12 @@ typedef struct drivetrain_interface_t
 class Drivetrain : public frc2::SubsystemBase
 {
 public:
-    Drivetrain(DrivetrainInterface *interface) : interface_(interface) {}
+    // TODO: put the actual constants in for the PID gains.
+    Drivetrain(DrivetrainInterface *interface)
+        : interface_(interface), dist_pid_(1.0, 0.0, 0.0),
+          heading_pid_(1.0, 0.0, 0.0), turn_pid_(1.0, 0.0, 0.0)
+    {
+    }
     ~Drivetrain() {}
 
     bool Init();
@@ -90,6 +95,7 @@ private:
     // Controllers
     frc2::PIDController dist_pid_;
     frc2::PIDController heading_pid_;
+    frc2::PIDController turn_pid_;
 
     // Speed modifier (the joystick input is multiplied by this value)
     double speed_modifier_ = 0.75;
