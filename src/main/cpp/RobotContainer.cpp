@@ -7,14 +7,16 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 RobotContainer::RobotContainer() {
-    // Initialize the hardware.
-    VOKC_CALL(this->InitHardware());
+    // Initialize the hardware interface.
+    hardware_ = std::make_unique<HardwareInterface>();
+    VOKC_CALL(this->InitHardware(hardware_));
 
-    // Link subsystems to hardware.
+    // Link Drivetrain to hardware.
     std::shared_ptr<DrivetrainInterface> drivetrain_interface;
-    VOKC_CALL(this->SetupDrivetrainInterface(&drivetrain_interface));
-    // Construct Drivetrain object.
+    VOKC_CALL(SetupDrivetrainInterface(hardware_, &drivetrain_interface));
     drivetrain_ = std::make_shared<Drivetrain>(*drivetrain_interface);
+
+    // TODO: put other subsystems here.
 
     // Configure the button bindings
     ConfigureButtonBindings();
@@ -29,20 +31,19 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     return &m_autonomousCommand;
 }
 
-bool RobotContainer::InitHardware() {
-    // Initialize the hardware interface.
-    hardware_ = std::make_unique<HardwareInterface>();
+bool RobotContainer::InitHardware(
+    std::unique_ptr<HardwareInterface> &hardware) {
+    OKC_CHECK(hardware != nullptr);
 
     // Initialize sub-hardware interfaces.
-    hardware_->actuators = std::make_unique<ActuatorInterface>();
-    hardware_->sensors = std::make_unique<SensorInterface>();
+    hardware->actuators = std::make_unique<ActuatorInterface>();
+    hardware->sensors = std::make_unique<SensorInterface>();
 
     // Initialize the actuators.
-    OKC_CALL(this->InitActuators(hardware_->actuators.get()));
+    OKC_CALL(this->InitActuators(hardware->actuators.get()));
 
     // Set up sensors.
-    OKC_CALL(
-        this->InitSensors(*hardware_->actuators, hardware_->sensors.get()));
+    OKC_CALL(this->InitSensors(*hardware->actuators, hardware->sensors.get()));
 
     return true;
 }
@@ -91,47 +92,6 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
         // Print the error message.
         OKC_CHECK_MSG(false, p_err_msg);
     }
-
-    return true;
-}
-
-bool RobotContainer::SetupDrivetrainInterface(
-    std::shared_ptr<DrivetrainInterface> *interface) {
-    OKC_CHECK(interface != nullptr);
-    OKC_CHECK(hardware_->actuators != nullptr);
-    OKC_CHECK(hardware_->sensors != nullptr);
-
-    // Get actuators interface for drivetrain.
-    std::unique_ptr<ActuatorInterface> &actuators = hardware_->actuators;
-
-    // Build motor control groups and differential drive.
-    frc::MotorControllerGroup left_motors{*actuators->left_motor_1,
-                                          *actuators->left_motor_2,
-                                          *actuators->left_motor_3};
-
-    frc::MotorControllerGroup right_motors{*actuators->right_motor_1,
-                                           *actuators->right_motor_2,
-                                           *actuators->right_motor_3};
-    // motors face opposite directions so +1 for left side is opposite +1 for
-    // right side, this fixes that
-    right_motors.SetInverted(true);
-
-    // Ensure the differential drivetrain is un-initialized.
-    OKC_CHECK(hardware_->diff_drive == nullptr);
-
-    // Create the differential drive.
-    hardware_->diff_drive =
-        std::make_unique<frc::DifferentialDrive>(left_motors, right_motors);
-
-    // Set up drivetrain interface.
-    DrivetrainInterface drivetrain_interface = {
-        actuators->left_motor_1.get(),  actuators->left_motor_2.get(),
-        actuators->left_motor_3.get(),  actuators->right_motor_1.get(),
-        actuators->right_motor_2.get(), actuators->right_motor_3.get(),
-        hardware_->diff_drive.get(),    hardware_->sensors->ahrs.get()};
-
-    // Set the output interface
-    *interface = std::make_shared<DrivetrainInterface>(drivetrain_interface);
 
     return true;
 }

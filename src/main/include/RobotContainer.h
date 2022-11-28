@@ -38,14 +38,10 @@ public:
 
 private:
     // Hardware Initialization
-    bool InitHardware();
+    bool InitHardware(std::unique_ptr<HardwareInterface> &hardware);
     bool InitActuators(ActuatorInterface *actuators_interface);
     bool InitSensors(const ActuatorInterface &actuators,
                      SensorInterface *sensor_interface);
-
-    // Link subsystems to hardware here.
-    bool
-    SetupDrivetrainInterface(std::shared_ptr<DrivetrainInterface> *interface);
 
     // Subsystems
     std::shared_ptr<Drivetrain> drivetrain_;
