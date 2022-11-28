@@ -13,8 +13,7 @@
 #include "AHRS.h"
 #include "Utils.h"
 
-typedef struct drivetrain_interface_t
-{
+typedef struct drivetrain_interface_t {
     // Left motors
     rev::CANSparkMax *const left_motor_1;
     rev::CANSparkMax *const left_motor_2;
@@ -33,15 +32,12 @@ typedef struct drivetrain_interface_t
 
 } DrivetrainInterface;
 
-class Drivetrain : public frc2::SubsystemBase
-{
+class Drivetrain : public frc2::SubsystemBase {
 public:
     // TODO: put the actual constants in for the PID gains.
     Drivetrain(DrivetrainInterface *interface)
         : interface_(interface), dist_pid_(1.0, 0.0, 0.0),
-          heading_pid_(1.0, 0.0, 0.0), turn_pid_(1.0, 0.0, 0.0)
-    {
-    }
+          heading_pid_(1.0, 0.0, 0.0), turn_pid_(1.0, 0.0, 0.0) {}
     ~Drivetrain() {}
 
     bool Init();

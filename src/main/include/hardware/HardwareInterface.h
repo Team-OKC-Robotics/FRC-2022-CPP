@@ -6,8 +6,7 @@
 #include "hardware/ActuatorInterface.h"
 #include "hardware/SensorInterface.h"
 
-typedef struct hardware_t
-{
+typedef struct hardware_t {
     // Actuators
     std::unique_ptr<ActuatorInterface> actuators;
 

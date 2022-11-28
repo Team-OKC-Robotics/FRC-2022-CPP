@@ -18,8 +18,7 @@
 #define RIGHT_MOTOR_2 5
 #define RIGHT_MOTOR_3 6
 
-typedef struct actuator_interface_t
-{
+typedef struct actuator_interface_t {
     // Left drivetrain motors
     std::unique_ptr<rev::CANSparkMax> left_motor_1;
     std::unique_ptr<rev::CANSparkMax> left_motor_2;

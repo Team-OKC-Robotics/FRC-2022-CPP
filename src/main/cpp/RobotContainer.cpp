@@ -6,8 +6,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-RobotContainer::RobotContainer()
-{
+RobotContainer::RobotContainer() {
     // Initialize the hardware.
     VOKC_CALL(this->InitHardware());
 
@@ -18,19 +17,16 @@ RobotContainer::RobotContainer()
     ConfigureButtonBindings();
 }
 
-void RobotContainer::ConfigureButtonBindings()
-{
+void RobotContainer::ConfigureButtonBindings() {
     // Configure your button bindings here
 }
 
-frc2::Command *RobotContainer::GetAutonomousCommand()
-{
+frc2::Command *RobotContainer::GetAutonomousCommand() {
     // An example command will be run in autonomous
     return &m_autonomousCommand;
 }
 
-bool RobotContainer::InitHardware()
-{
+bool RobotContainer::InitHardware() {
     // Initialize the hardware interface.
     hardware_ = std::make_unique<HardwareInterface>();
 
@@ -48,8 +44,7 @@ bool RobotContainer::InitHardware()
     return true;
 }
 
-bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface)
-{
+bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface) {
     OKC_CHECK(actuators_interface != nullptr);
 
     // Initialize drivetrain motors.
@@ -79,17 +74,13 @@ bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface)
 }
 
 bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
-                                 SensorInterface *sensor_interface)
-{
+                                 SensorInterface *sensor_interface) {
     OKC_CHECK(sensor_interface != nullptr);
 
     // Initialize navX.
-    try
-    {
+    try {
         sensor_interface->ahrs = std::make_unique<AHRS>(frc::SPI::Port::kMXP);
-    }
-    catch (std::exception &ex)
-    {
+    } catch (std::exception &ex) {
         std::string what_string = ex.what();
         std::string err_msg("Error instantiating navX MXP:  " + what_string);
         const char *p_err_msg = err_msg.c_str();
@@ -101,8 +92,7 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
     return true;
 }
 
-bool RobotContainer::SetupDrivetrainInterface()
-{
+bool RobotContainer::SetupDrivetrainInterface() {
     OKC_CHECK(hardware_->actuators != nullptr);
     OKC_CHECK(hardware_->sensors != nullptr);
 
