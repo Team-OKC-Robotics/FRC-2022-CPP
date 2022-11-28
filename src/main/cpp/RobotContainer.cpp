@@ -11,7 +11,10 @@ RobotContainer::RobotContainer() {
     VOKC_CALL(this->InitHardware());
 
     // Link subsystems to hardware.
-    VOKC_CALL(this->SetupDrivetrainInterface());
+    std::shared_ptr<DrivetrainInterface> drivetrain_interface;
+    VOKC_CALL(this->SetupDrivetrainInterface(&drivetrain_interface));
+    // Construct Drivetrain object.
+    drivetrain_ = std::make_shared<Drivetrain>(*drivetrain_interface);
 
     // Configure the button bindings
     ConfigureButtonBindings();
@@ -92,7 +95,9 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
     return true;
 }
 
-bool RobotContainer::SetupDrivetrainInterface() {
+bool RobotContainer::SetupDrivetrainInterface(
+    std::shared_ptr<DrivetrainInterface> *interface) {
+    OKC_CHECK(interface != nullptr);
     OKC_CHECK(hardware_->actuators != nullptr);
     OKC_CHECK(hardware_->sensors != nullptr);
 
@@ -119,14 +124,14 @@ bool RobotContainer::SetupDrivetrainInterface() {
         std::make_unique<frc::DifferentialDrive>(left_motors, right_motors);
 
     // Set up drivetrain interface.
-    DrivetrainInterface drivetrain_interface{
+    DrivetrainInterface drivetrain_interface = {
         actuators->left_motor_1.get(),  actuators->left_motor_2.get(),
         actuators->left_motor_3.get(),  actuators->right_motor_1.get(),
         actuators->right_motor_2.get(), actuators->right_motor_3.get(),
         hardware_->diff_drive.get(),    hardware_->sensors->ahrs.get()};
 
-    // Construct Drivetrain object.
-    drivetrain_ = std::make_shared<Drivetrain>(&drivetrain_interface);
+    // Set the output interface
+    *interface = std::make_shared<DrivetrainInterface>(drivetrain_interface);
 
     return true;
 }

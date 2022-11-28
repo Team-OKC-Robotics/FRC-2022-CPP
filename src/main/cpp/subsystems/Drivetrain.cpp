@@ -45,52 +45,52 @@ bool Drivetrain::SetSpeedModifier(const double &speed_mod) {
 }
 
 bool Drivetrain::SetOpenLoopRamp(const double &open_loop_ramp) {
-    OKC_CHECK(interface_->left_motor_1 != nullptr);
-    OKC_CHECK(interface_->left_motor_2 != nullptr);
-    OKC_CHECK(interface_->left_motor_3 != nullptr);
-    OKC_CHECK(interface_->right_motor_1 != nullptr);
-    OKC_CHECK(interface_->right_motor_2 != nullptr);
-    OKC_CHECK(interface_->right_motor_3 != nullptr);
+    OKC_CHECK(interface_.left_motor_1 != nullptr);
+    OKC_CHECK(interface_.left_motor_2 != nullptr);
+    OKC_CHECK(interface_.left_motor_3 != nullptr);
+    OKC_CHECK(interface_.right_motor_1 != nullptr);
+    OKC_CHECK(interface_.right_motor_2 != nullptr);
+    OKC_CHECK(interface_.right_motor_3 != nullptr);
 
     // Set the value
     open_loop_ramp_ = open_loop_ramp;
 
     // Apply the open loop ramp rate to the motors
-    interface_->left_motor_1->SetOpenLoopRampRate(open_loop_ramp_);
-    interface_->left_motor_2->SetOpenLoopRampRate(open_loop_ramp_);
-    interface_->left_motor_3->SetOpenLoopRampRate(open_loop_ramp_);
-    interface_->right_motor_1->SetOpenLoopRampRate(open_loop_ramp_);
-    interface_->right_motor_2->SetOpenLoopRampRate(open_loop_ramp_);
-    interface_->right_motor_3->SetOpenLoopRampRate(open_loop_ramp_);
+    interface_.left_motor_1->SetOpenLoopRampRate(open_loop_ramp_);
+    interface_.left_motor_2->SetOpenLoopRampRate(open_loop_ramp_);
+    interface_.left_motor_3->SetOpenLoopRampRate(open_loop_ramp_);
+    interface_.right_motor_1->SetOpenLoopRampRate(open_loop_ramp_);
+    interface_.right_motor_2->SetOpenLoopRampRate(open_loop_ramp_);
+    interface_.right_motor_3->SetOpenLoopRampRate(open_loop_ramp_);
 
     return true;
 }
 
 bool Drivetrain::CurvatureDrive(const double &speed, const double &turn,
                                 const bool turn_in_place) {
-    OKC_CHECK(interface_->diff_drive != nullptr);
+    OKC_CHECK(interface_.diff_drive != nullptr);
 
-    interface_->diff_drive->CurvatureDrive(speed, turn, turn_in_place);
+    interface_.diff_drive->CurvatureDrive(speed, turn, turn_in_place);
 
     return true;
 }
 
 bool Drivetrain::TankDrive(const double &left_speed,
                            const double &right_speed) {
-    OKC_CHECK(interface_->diff_drive != nullptr);
+    OKC_CHECK(interface_.diff_drive != nullptr);
 
-    interface_->diff_drive->TankDrive(left_speed * speed_modifier_,
-                                      right_speed * speed_modifier_, true);
+    interface_.diff_drive->TankDrive(left_speed * speed_modifier_,
+                                     right_speed * speed_modifier_, true);
 
     return true;
 }
 
 bool Drivetrain::ArcadeDrive(const double &speed, const double &turn,
                              bool square_inputs) {
-    OKC_CHECK(interface_->diff_drive != nullptr);
+    OKC_CHECK(interface_.diff_drive != nullptr);
 
-    interface_->diff_drive->ArcadeDrive(speed * speed_modifier_,
-                                        turn * speed_modifier_, square_inputs);
+    interface_.diff_drive->ArcadeDrive(speed * speed_modifier_,
+                                       turn * speed_modifier_, square_inputs);
 
     return true;
 }
@@ -187,39 +187,39 @@ bool Drivetrain::GetEncoderAverage(double *avg) {
 
 bool Drivetrain::GetLeftEncoderAverage(double *left_avg) {
     OKC_CHECK(left_avg != nullptr);
-    OKC_CHECK(interface_->left_motor_1 != nullptr);
+    OKC_CHECK(interface_.left_motor_1 != nullptr);
 
     // Left encoder 1 is used to represent the whole drivetrain.
-    *left_avg = interface_->left_motor_1->GetEncoder().GetPosition();
+    *left_avg = interface_.left_motor_1->GetEncoder().GetPosition();
 
     return true;
 }
 
 bool Drivetrain::GetRightEncoderAverage(double *right_avg) {
     OKC_CHECK(right_avg != nullptr);
-    OKC_CHECK(interface_->right_motor_1 != nullptr);
+    OKC_CHECK(interface_.right_motor_1 != nullptr);
 
     // Left encoder 1 is used to represent the whole drivetrain.
-    *right_avg = interface_->right_motor_1->GetEncoder().GetPosition();
+    *right_avg = interface_.right_motor_1->GetEncoder().GetPosition();
 
     return true;
 }
 
 bool Drivetrain::ResetEncoders() {
-    OKC_CHECK(interface_->left_motor_1 != nullptr);
-    OKC_CHECK(interface_->left_motor_2 != nullptr);
-    OKC_CHECK(interface_->left_motor_3 != nullptr);
-    OKC_CHECK(interface_->right_motor_1 != nullptr);
-    OKC_CHECK(interface_->right_motor_2 != nullptr);
-    OKC_CHECK(interface_->right_motor_3 != nullptr);
+    OKC_CHECK(interface_.left_motor_1 != nullptr);
+    OKC_CHECK(interface_.left_motor_2 != nullptr);
+    OKC_CHECK(interface_.left_motor_3 != nullptr);
+    OKC_CHECK(interface_.right_motor_1 != nullptr);
+    OKC_CHECK(interface_.right_motor_2 != nullptr);
+    OKC_CHECK(interface_.right_motor_3 != nullptr);
 
     // Reset the encoders.
-    interface_->left_motor_1->GetEncoder().SetPosition(0.0);
-    interface_->left_motor_2->GetEncoder().SetPosition(0.0);
-    interface_->left_motor_3->GetEncoder().SetPosition(0.0);
-    interface_->right_motor_1->GetEncoder().SetPosition(0.0);
-    interface_->right_motor_2->GetEncoder().SetPosition(0.0);
-    interface_->right_motor_3->GetEncoder().SetPosition(0.0);
+    interface_.left_motor_1->GetEncoder().SetPosition(0.0);
+    interface_.left_motor_2->GetEncoder().SetPosition(0.0);
+    interface_.left_motor_3->GetEncoder().SetPosition(0.0);
+    interface_.right_motor_1->GetEncoder().SetPosition(0.0);
+    interface_.right_motor_2->GetEncoder().SetPosition(0.0);
+    interface_.right_motor_3->GetEncoder().SetPosition(0.0);
 
     // TODO: network tables.
 
@@ -275,25 +275,25 @@ bool Drivetrain::ResetTurnPID() {
 
 bool Drivetrain::GetHeading(double *heading) {
     OKC_CHECK(heading != nullptr);
-    OKC_CHECK(interface_->ahrs != nullptr);
+    OKC_CHECK(interface_.ahrs != nullptr);
 
-    *heading = interface_->ahrs->GetAngle();
+    *heading = interface_.ahrs->GetAngle();
 
     return true;
 }
 
 bool Drivetrain::ResetGyro() {
-    OKC_CHECK(interface_->ahrs != nullptr);
+    OKC_CHECK(interface_.ahrs != nullptr);
 
-    interface_->ahrs->Reset();
+    interface_.ahrs->Reset();
 
     return true;
 }
 
 bool Drivetrain::SetMaxOutput(const double &max_output) {
-    OKC_CHECK(interface_->diff_drive != nullptr);
+    OKC_CHECK(interface_.diff_drive != nullptr);
 
-    interface_->diff_drive->SetMaxOutput(max_output);
+    interface_.diff_drive->SetMaxOutput(max_output);
 
     return true;
 }

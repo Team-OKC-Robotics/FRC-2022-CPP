@@ -35,7 +35,7 @@ typedef struct drivetrain_interface_t {
 class Drivetrain : public frc2::SubsystemBase {
 public:
     // TODO: put the actual constants in for the PID gains.
-    Drivetrain(DrivetrainInterface *interface)
+    Drivetrain(const DrivetrainInterface &interface)
         : interface_(interface), dist_pid_(1.0, 0.0, 0.0),
           heading_pid_(1.0, 0.0, 0.0), turn_pid_(1.0, 0.0, 0.0) {}
     ~Drivetrain() {}
@@ -86,7 +86,7 @@ public:
 private:
     // Components (e.g. motor controllers and sensors) should generally be
     // declared private and exposed only through public methods.
-    DrivetrainInterface *const interface_;
+    const DrivetrainInterface interface_;
 
     // Controllers
     frc2::PIDController dist_pid_;

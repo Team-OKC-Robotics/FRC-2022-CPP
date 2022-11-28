@@ -44,7 +44,8 @@ private:
                      SensorInterface *sensor_interface);
 
     // Link subsystems to hardware here.
-    bool SetupDrivetrainInterface();
+    bool
+    SetupDrivetrainInterface(std::shared_ptr<DrivetrainInterface> *interface);
 
     // Subsystems
     std::shared_ptr<Drivetrain> drivetrain_;
