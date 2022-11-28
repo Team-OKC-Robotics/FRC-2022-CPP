@@ -5,37 +5,15 @@
 #include <memory>
 
 #include <frc/controller/PIDController.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
-#include <rev/CANSparkMax.h>
 
-#include "AHRS.h"
 #include "Utils.h"
-
-typedef struct drivetrain_interface_t {
-    // Left motors
-    rev::CANSparkMax *const left_motor_1;
-    rev::CANSparkMax *const left_motor_2;
-    rev::CANSparkMax *const left_motor_3;
-
-    // Right motors
-    rev::CANSparkMax *const right_motor_1;
-    rev::CANSparkMax *const right_motor_2;
-    rev::CANSparkMax *const right_motor_3;
-
-    // Drivetrain
-    frc::DifferentialDrive *const diff_drive;
-
-    // AHRS
-    AHRS *const ahrs;
-
-} DrivetrainInterface;
+#include "io/DrivetrainIO.h"
 
 class Drivetrain : public frc2::SubsystemBase {
 public:
     // TODO: put the actual constants in for the PID gains.
-    Drivetrain(const DrivetrainInterface &interface)
+    Drivetrain(DrivetrainSoftwareInterface *interface)
         : interface_(interface), dist_pid_(1.0, 0.0, 0.0),
           heading_pid_(1.0, 0.0, 0.0), turn_pid_(1.0, 0.0, 0.0) {}
     ~Drivetrain() {}
@@ -84,9 +62,7 @@ public:
     bool SetMaxOutput(const double &max_output);
 
 private:
-    // Components (e.g. motor controllers and sensors) should generally be
-    // declared private and exposed only through public methods.
-    const DrivetrainInterface interface_;
+    DrivetrainSoftwareInterface *const interface_;
 
     // Controllers
     frc2::PIDController dist_pid_;

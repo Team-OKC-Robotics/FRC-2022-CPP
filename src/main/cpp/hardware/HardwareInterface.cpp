@@ -1,8 +1,9 @@
 
 #include "hardware/HardwareInterface.h"
 
-bool SetupDrivetrainInterface(std::unique_ptr<HardwareInterface> &hardware,
-                              std::shared_ptr<DrivetrainInterface> *interface) {
+bool SetupDrivetrainInterface(
+    std::unique_ptr<HardwareInterface> &hardware,
+    std::shared_ptr<DrivetrainHardwareInterface> *interface) {
     OKC_CHECK(interface != nullptr);
     OKC_CHECK(hardware->actuators != nullptr);
     OKC_CHECK(hardware->sensors != nullptr);
@@ -30,14 +31,15 @@ bool SetupDrivetrainInterface(std::unique_ptr<HardwareInterface> &hardware,
         std::make_unique<frc::DifferentialDrive>(left_motors, right_motors);
 
     // Set up drivetrain interface.
-    DrivetrainInterface drivetrain_interface = {
+    DrivetrainHardwareInterface drivetrain_interface = {
         actuators->left_motor_1.get(),  actuators->left_motor_2.get(),
         actuators->left_motor_3.get(),  actuators->right_motor_1.get(),
         actuators->right_motor_2.get(), actuators->right_motor_3.get(),
         hardware->diff_drive.get(),     hardware->sensors->ahrs.get()};
 
     // Set the output interface
-    *interface = std::make_shared<DrivetrainInterface>(drivetrain_interface);
+    *interface =
+        std::make_shared<DrivetrainHardwareInterface>(drivetrain_interface);
 
     return true;
 }

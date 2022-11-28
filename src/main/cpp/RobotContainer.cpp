@@ -11,10 +11,19 @@ RobotContainer::RobotContainer() {
     hardware_ = std::make_unique<HardwareInterface>();
     VOKC_CALL(this->InitHardware(hardware_));
 
-    // Link Drivetrain to hardware.
-    std::shared_ptr<DrivetrainInterface> drivetrain_interface;
-    VOKC_CALL(SetupDrivetrainInterface(hardware_, &drivetrain_interface));
-    drivetrain_ = std::make_shared<Drivetrain>(*drivetrain_interface);
+    // Initialize the hardware interface
+    std::shared_ptr<DrivetrainHardwareInterface> drivetrain_hw;
+    VOKC_CALL(SetupDrivetrainInterface(hardware_, &drivetrain_hw));
+
+    // Initialize the software interface
+    drivetrain_sw_ = std::make_shared<DrivetrainSoftwareInterface>();
+
+    // Link DrivetrainIO to hardware / software
+    drivetrain_io_ = std::make_shared<DrivetrainIO>(drivetrain_hw.get(),
+                                                    drivetrain_sw_.get());
+
+    // Link Drivetrain software to the I/O
+    drivetrain_ = std::make_shared<Drivetrain>(drivetrain_sw_.get());
 
     // TODO: put other subsystems here.
 

@@ -14,6 +14,7 @@
 #include "Utils.h"
 #include "commands/ExampleCommand.h"
 #include "hardware/HardwareInterface.h"
+#include "io/DrivetrainIO.h"
 #include "subsystems/Drivetrain.h"
 
 /**
@@ -29,13 +30,6 @@ public:
 
     frc2::Command *GetAutonomousCommand();
 
-    // template <typename T> bool RegisterSubsystem(T subsystem)
-    // {
-    //     subsystems_.push_back(subsystem);
-
-    //     return true;
-    // }
-
 private:
     // Hardware Initialization
     bool InitHardware(std::unique_ptr<HardwareInterface> &hardware);
@@ -43,14 +37,20 @@ private:
     bool InitSensors(const ActuatorInterface &actuators,
                      SensorInterface *sensor_interface);
 
+    // Robot Hardware
+    std::unique_ptr<HardwareInterface> hardware_;
+
+    // Hardware I/O interfaces
+    std::shared_ptr<DrivetrainIO> drivetrain_io_;
+
+    // Robot software interfaces.
+    std::shared_ptr<DrivetrainSoftwareInterface> drivetrain_sw_;
+
     // Subsystems
     std::shared_ptr<Drivetrain> drivetrain_;
 
     // Commands
     ExampleCommand m_autonomousCommand;
-
-    // Robot Hardware
-    std::unique_ptr<HardwareInterface> hardware_;
 
     void ConfigureButtonBindings();
 };

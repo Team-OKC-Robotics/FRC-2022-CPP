@@ -7,8 +7,8 @@
 #include "hardware/ActuatorInterface.h"
 #include "hardware/SensorInterface.h"
 
-// Subsystems
-#include "subsystems/Drivetrain.h"
+// Subsystem I/O
+#include "io/DrivetrainIO.h"
 
 typedef struct hardware_t {
     // Actuators
@@ -31,5 +31,6 @@ typedef struct hardware_t {
  * @return true
  * @return false
  */
-bool SetupDrivetrainInterface(std::unique_ptr<HardwareInterface> &hardware,
-                              std::shared_ptr<DrivetrainInterface> *interface);
+bool SetupDrivetrainInterface(
+    std::unique_ptr<HardwareInterface> &hardware,
+    std::shared_ptr<DrivetrainHardwareInterface> *interface);
