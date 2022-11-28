@@ -14,16 +14,6 @@ bool DrivetrainIO::ProcessIO() {
     OKC_CHECK(sw_interface_ != nullptr);
     OKC_CHECK(hw_interface_ != nullptr);
 
-    // Get the hardware sensor values.
-    // navX IMU:
-    sw_interface_->imu_yaw = hw_interface_->ahrs->GetAngle();
-
-    // Encoders
-    sw_interface_->left_encoder_avg =
-        hw_interface_->left_motor_1->GetEncoder().GetPosition();
-    sw_interface_->right_encoder_avg =
-        hw_interface_->right_motor_1->GetEncoder().GetPosition();
-
     // Set the software outputs
     // If the drivetrain configuration needs to be updated, update it.
     if (sw_interface_->update_config) {
@@ -44,6 +34,9 @@ bool DrivetrainIO::ProcessIO() {
     // If the navX should be reset, reset it.
     if (sw_interface_->reset_gyro) {
         hw_interface_->ahrs->Reset();
+
+        // Lower the navX reset flag
+        sw_interface_->reset_gyro = false;
     }
 
     // Set the drive outputs based on the drive mode.
@@ -68,6 +61,16 @@ bool DrivetrainIO::ProcessIO() {
         // occured.
         return false;
     }
+
+    // Get the hardware sensor values.
+    // navX IMU:
+    sw_interface_->imu_yaw = hw_interface_->ahrs->GetAngle();
+
+    // Encoders
+    sw_interface_->left_encoder_avg =
+        hw_interface_->left_motor_1->GetEncoder().GetPosition();
+    sw_interface_->right_encoder_avg =
+        hw_interface_->right_motor_1->GetEncoder().GetPosition();
 
     return true;
 }
