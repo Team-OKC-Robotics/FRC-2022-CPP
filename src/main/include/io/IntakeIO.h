@@ -48,6 +48,9 @@ typedef struct intake_software_interface_t {
     // Encoders
     double intake_position_encoder_val;
 
+
+
+
     // SW OUTPUTS
 
     // Configure intake variables
@@ -56,6 +59,11 @@ typedef struct intake_software_interface_t {
 
     // Reset flags
     bool reset_encoders;
+
+    // actuator outputs
+    double intake_position_power;
+    double intake_power;
+    double indexer_power;
 } IntakeSoftwareInterface;
 
 class IntakeIO : public frc2::SubsystemBase {
