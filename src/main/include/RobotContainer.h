@@ -14,6 +14,7 @@
 #include "Utils.h"
 #include "commands/ExampleCommand.h"
 #include "hardware/HardwareInterface.h"
+#include "io/DrivetrainIO.h"
 #include "subsystems/Drivetrain.h"
 
 /**
@@ -23,38 +24,33 @@
  * scheduler calls).  Instead, the structure of the robot (including subsystems,
  * commands, and button mappings) should be declared here.
  */
-class RobotContainer
-{
+class RobotContainer {
 public:
     RobotContainer();
 
     frc2::Command *GetAutonomousCommand();
 
-    template <typename T> bool RegisterSubsystem(T subsystem)
-    {
-        subsystems_.push_back(subsystem);
-
-        return true;
-    }
-
 private:
     // Hardware Initialization
-    bool InitHardware();
+    bool InitHardware(std::unique_ptr<HardwareInterface> &hardware);
     bool InitActuators(ActuatorInterface *actuators_interface);
     bool InitSensors(const ActuatorInterface &actuators,
                      SensorInterface *sensor_interface);
 
-    // Initialization Functions
-    bool InitDrivetrain();
+    // Robot Hardware
+    std::unique_ptr<HardwareInterface> hardware_;
+
+    // Hardware I/O interfaces
+    std::shared_ptr<DrivetrainIO> drivetrain_io_;
+
+    // Robot software interfaces.
+    std::shared_ptr<DrivetrainSoftwareInterface> drivetrain_sw_;
 
     // Subsystems
-    std::vector<std::shared_ptr<frc2::SubsystemBase>> subsystems_;
+    std::shared_ptr<Drivetrain> drivetrain_;
 
     // Commands
     ExampleCommand m_autonomousCommand;
-
-    // Robot Hardware
-    std::unique_ptr<HardwareInterface> hardware_;
 
     void ConfigureButtonBindings();
 };
