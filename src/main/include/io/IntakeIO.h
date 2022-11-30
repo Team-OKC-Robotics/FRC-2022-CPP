@@ -16,6 +16,8 @@ typedef struct intake_config_t {
     double max_output_deploy;
     double open_loop_ramp_rate;
     double max_indexer_current;
+    double EXTENDED;
+    double RETRACTED;
 } IntakeConfig;
 
 typedef struct intake_hardware_interface_t {
@@ -35,7 +37,7 @@ typedef struct intake_hardware_interface_t {
     frc::DigitalInput *const retract_limit_switch;
     frc::DigitalInput *const deploy_limit_switch;
 
-
+    rev::RelativeEncoder *const intake_position_encoder;
 } IntakeHardwareInterface;
 
 typedef struct intake_software_interface_t {
@@ -59,6 +61,9 @@ typedef struct intake_software_interface_t {
 
     // Reset flags
     bool reset_encoders;
+
+    bool set_encoder_to_val;
+    double encoder_val_to_set;
 
     // actuator outputs
     double intake_position_power;
@@ -88,6 +93,7 @@ public:
 private:
     bool UpdateIntakeConfig(IntakeConfig &config);
     bool ResetEncoders();
+    bool SetEncoder(double &val);
 
     IntakeHardwareInterface *const hw_interface_;
     IntakeSoftwareInterface *const sw_interface_;

@@ -47,4 +47,6 @@ private:
 
     // Open loop ramp rate
     double open_loop_ramp_ = 0.5;
+
+    int direction = 0;
 };

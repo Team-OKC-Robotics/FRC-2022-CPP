@@ -31,6 +31,13 @@ bool IntakeIO::ProcessIO() {
         sw_interface_->reset_encoders = false;
     }
 
+    // if the encoder should be set to a specific value
+    if (sw_interface_->set_encoder_to_val) {
+        OKC_CALL(SetEncoder(sw_interface_->encoder_val_to_set))
+
+        sw_interface_->set_encoder_to_val = false;
+    }
+
 
     // Get the hardware sensor values.
     // limit switches
@@ -79,5 +86,13 @@ bool IntakeIO::ResetEncoders() {
     // hw_interface_->intake_motor->GetEncoder().SetPosition(0.0);
     // hw_interface_->indexer_motor->GetEncoder().SetPosition(0.0);
     
+    return true;
+}
+
+bool IntakeIO::SetEncoder(double &val) {
+    OKC_CHECK(hw_interface_ != nullptr);
+
+    hw_interface_->intake_position_encoder->SetPosition(val);
+
     return true;
 }
