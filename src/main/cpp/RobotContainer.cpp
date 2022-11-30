@@ -25,6 +25,22 @@ RobotContainer::RobotContainer() {
     // Link Drivetrain software to the I/O
     drivetrain_ = std::make_shared<Drivetrain>(drivetrain_sw_.get());
 
+
+    // == intake ==
+    std::shared_ptr<IntakeHardwareInterface> intake_hw;
+    VOKC_CALL(SetupIntakeInterface(hardware_, &intake_hw));
+
+    // Initialize the software interface
+    intake_sw_ = std::make_shared<IntakeSoftwareInterface>();
+
+    // Link DrivetrainIO to hardware / software
+    intake_io_ = std::make_shared<IntakeIO>(intake_hw.get(),
+                                                    intake_sw_.get());
+
+    // Link Drivetrain software to the I/O
+    intake_ = std::make_shared<Intake>(intake_sw_.get());
+
+
     // TODO: put other subsystems here.
 
     // Configure the button bindings
@@ -83,6 +99,14 @@ bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface) {
     actuators_interface->right_motor_2->SetIdleMode(COAST);
     actuators_interface->right_motor_3->SetIdleMode(COAST);
 
+    actuators_interface->intake_position_motor = std::make_unique<rev::CANSparkMax>(INTAKE_POSITION_MOTOR, BRUSHLESS);
+    actuators_interface->intake_motor = std::make_unique<rev::CANSparkMax>(INTAKE_MOTOR, BRUSHLESS);
+    actuators_interface->indexer_motor = std::make_unique<rev::CANSparkMax>(INDEXER_MOTOR, BRUSHLESS);
+
+    actuators_interface->intake_position_motor->SetIdleMode(COAST);
+    actuators_interface->intake_motor->SetIdleMode(COAST);
+    actuators_interface->indexer_motor->SetIdleMode(COAST);
+    
     return true;
 }
 
@@ -101,6 +125,9 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
         // Print the error message.
         OKC_CHECK_MSG(false, p_err_msg);
     }
+
+    sensor_interface->deploy_limit_switch = std::make_unique<frc::DigitalInput>(DEPLOY_LIMIT_SWITCH);
+    sensor_interface->retracted_limit_switch = std::make_unique<frc::DigitalInput>(RETRACTED_LIMIT_SWITCH);
 
     return true;
 }
