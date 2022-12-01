@@ -5,7 +5,8 @@
 bool Intake::Init() {
     // TODO: Set PID gains.
 
-    OKC_CALL(SetOpenLoopRamp(0.5));
+    this->interface_->intake_config->open_loop_ramp_rate = open_loop_ramp_;
+    this->interface_->update_config = true;
 
     // Set PID tolerances
     intake_pid.SetTolerance(0, 0); //TODO change to actual number
@@ -39,7 +40,7 @@ void Intake::Periodic() {
             this->interface_->intake_position_power =  intake_pid.Calculate(this->interface_->intake_position_encoder_val);
             
             //FIXME I think there's supposed to be an OKC_CALL() around this, but it was giving me errors, so I don't have it
-            TeamOKC::Clamp(this->interface_->max_output_retract, this->interface_->max_output_deploy, &this->interface_->intake_position_power);
+            TeamOKC::Clamp(this->interface_->intake_config->max_output_retract, this->interface_->intake_config->max_output_deploy, &this->interface_->intake_position_power);
         }
     }
 }
