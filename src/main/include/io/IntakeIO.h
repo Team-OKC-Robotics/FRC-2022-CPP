@@ -36,8 +36,6 @@ typedef struct intake_hardware_interface_t {
     // == sensors ==
     frc::DigitalInput *const retracted_limit_switch;
     frc::DigitalInput *const deploy_limit_switch;
-
-    rev::RelativeEncoder *const intake_position_encoder;
 } IntakeHardwareInterface;
 
 typedef struct intake_software_interface_t {

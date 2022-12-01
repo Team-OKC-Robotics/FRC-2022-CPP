@@ -92,7 +92,7 @@ bool IntakeIO::ResetEncoders() {
 bool IntakeIO::SetEncoder(double &val) {
     OKC_CHECK(hw_interface_ != nullptr);
 
-    hw_interface_->intake_position_encoder->SetPosition(val);
+    hw_interface_->intake_position_motor->GetEncoder().SetPosition(val);
 
     return true;
 }

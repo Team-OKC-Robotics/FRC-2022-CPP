@@ -62,15 +62,13 @@ bool SetupIntakeInterface(
         actuators->intake_motor.get(),
         actuators->indexer_motor.get(),
         
-        sensors->retracted_limit_switch,
-        sensors->deploy_limit_switch,
-
-        actuators->intake_position_motor.GetEncoder()
+        sensors->retracted_limit_switch.get(),
+        sensors->deploy_limit_switch.get(),
     };
 
     // Set the output interface
     *interface =
-        std::make_shared<IntakeHardwareInterface>(intae_interface);
+        std::make_shared<IntakeHardwareInterface>(intake_interface);
 
     return true;
 }
