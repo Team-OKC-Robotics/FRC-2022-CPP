@@ -5,10 +5,10 @@
 bool Intake::Init() {
     // TODO: Set PID gains.
 
-    //OKC_CALL(SetOpenLoopRamp(0.01));
+    OKC_CALL(SetOpenLoopRamp(0.5));
 
     // Set PID tolerances
-    intake_pid.SetTolerance(0); //TODO change to actual number
+    intake_pid.SetTolerance(0, 0); //TODO change to actual number
     
     // TODO: shuffleboard.
 
@@ -39,7 +39,7 @@ void Intake::Periodic() {
             this->interface_->intake_position_power =  intake_pid.Calculate(this->interface_->intake_position_encoder_val);
             
             //FIXME I think there's supposed to be an OKC_CALL() around this, but it was giving me errors, so I don't have it
-            TeamOKC::Clamp(-0.8, 0.8, &this->interface_->intake_position_power);
+            TeamOKC::Clamp(this->interface_->max_output_retract, this->interface_->max_output_deploy, &this->interface_->intake_position_power);
         }
     }
 }
