@@ -25,6 +25,6 @@ TEST_F(IntakeTest, InitIntake) {
 
     // Check to see that the interface updated
     EXPECT_EQ(sw_interface_.reset_encoders, true);
-    EXPECT_DOUBLE_EQ(sw_interface_.intake_config.open_loop_ramp_rate, 0.01);
+    EXPECT_DOUBLE_EQ(sw_interface_.intake_config.open_loop_ramp_rate, 0.5);
     EXPECT_EQ(sw_interface_.update_config, true);
 }
