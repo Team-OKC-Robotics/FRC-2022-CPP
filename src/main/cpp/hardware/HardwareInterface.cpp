@@ -62,7 +62,7 @@ bool SetupIntakeInterface(
         actuators->intake_motor.get(),
         actuators->indexer_motor.get(),
         
-        sensors->retract_limit_switch,
+        sensors->retracted_limit_switch,
         sensors->deploy_limit_switch,
 
         actuators->intake_position_motor.GetEncoder()

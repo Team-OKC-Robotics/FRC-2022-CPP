@@ -42,7 +42,7 @@ bool IntakeIO::ProcessIO() {
     // Get the hardware sensor values.
     // limit switches
     sw_interface_->deployed_limit_switch_val = hw_interface_->deploy_limit_switch->Get(); //???
-    sw_interface_->retracted_limit_switch_val = hw_interface_->retract_limit_switch->Get(); //???
+    sw_interface_->retracted_limit_switch_val = hw_interface_->retracted_limit_switch->Get(); //???
 
     // intake position encoder
     sw_interface_->intake_position_encoder_val =
