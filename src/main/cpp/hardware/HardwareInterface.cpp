@@ -43,3 +43,34 @@ bool SetupDrivetrainInterface(
 
     return true;
 }
+
+bool SetupIntakeInterface(
+    std::unique_ptr<HardwareInterface> &hardware,
+    std::shared_ptr<IntakeHardwareInterface> *interface) {
+    OKC_CHECK(interface != nullptr);
+    OKC_CHECK(hardware->actuators != nullptr);
+    OKC_CHECK(hardware->sensors != nullptr);
+
+    // Get actuators interface for intake.
+    std::unique_ptr<ActuatorInterface> &actuators = hardware->actuators;
+    std::unique_ptr<SensorInterface> &sensors = hardware->sensors;
+
+
+    // Set up drivetrain interface.
+    IntakeHardwareInterface intake_interface = {
+        actuators->intake_position_motor.get(),
+        actuators->intake_motor.get(),
+        actuators->indexer_motor.get(),
+        
+        sensors->retract_limit_switch,
+        sensors->deploy_limit_switch,
+
+        actuators->intake_position_motor.GetEncoder()
+    };
+
+    // Set the output interface
+    *interface =
+        std::make_shared<IntakeHardwareInterface>(intae_interface);
+
+    return true;
+}
