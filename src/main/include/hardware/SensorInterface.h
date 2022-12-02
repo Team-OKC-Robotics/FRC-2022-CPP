@@ -18,8 +18,4 @@ typedef struct sensors_t {
     // intake limit switches
     std::unique_ptr<frc::DigitalInput> deploy_limit_switch;
     std::unique_ptr<frc::DigitalInput> retracted_limit_switch;
-
-    // intake encoder? unless we don't need to/want to explicitely make a variable for that,
-    // and just acces it through the motor
-
 } SensorInterface;

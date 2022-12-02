@@ -20,7 +20,7 @@ protected:
 };
 
 TEST_F(IntakeTest, InitIntake) {
-    // Test drivetrain initialization.
+    // Test intake initialization.
     ASSERT_TRUE(intake_->Init());
 
     // Check to see that the interface updated

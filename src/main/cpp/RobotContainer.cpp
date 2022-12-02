@@ -33,11 +33,11 @@ RobotContainer::RobotContainer() {
     // Initialize the software interface
     intake_sw_ = std::make_shared<IntakeSoftwareInterface>();
 
-    // Link DrivetrainIO to hardware / software
+    // Link IntakeIO to hardware / software
     intake_io_ = std::make_shared<IntakeIO>(intake_hw.get(),
                                                     intake_sw_.get());
 
-    // Link Drivetrain software to the I/O
+    // Link intake software to the I/O
     intake_ = std::make_shared<Intake>(intake_sw_.get());
 
 

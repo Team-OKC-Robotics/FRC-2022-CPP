@@ -56,7 +56,7 @@ bool SetupIntakeInterface(
     std::unique_ptr<SensorInterface> &sensors = hardware->sensors;
 
 
-    // Set up drivetrain interface.
+    // Set up intake interface.
     IntakeHardwareInterface intake_interface = {
         actuators->intake_position_motor.get(),
         actuators->intake_motor.get(),
