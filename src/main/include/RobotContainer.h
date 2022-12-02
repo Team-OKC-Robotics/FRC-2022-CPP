@@ -16,6 +16,8 @@
 #include "hardware/HardwareInterface.h"
 #include "io/DrivetrainIO.h"
 #include "subsystems/Drivetrain.h"
+#include "io/IntakeIO.h"
+#include "subsystems/Intake.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -42,12 +44,15 @@ private:
 
     // Hardware I/O interfaces
     std::shared_ptr<DrivetrainIO> drivetrain_io_;
+    std::shared_ptr<IntakeIO> intake_io_;
 
     // Robot software interfaces.
     std::shared_ptr<DrivetrainSoftwareInterface> drivetrain_sw_;
+    std::shared_ptr<IntakeSoftwareInterface> intake_sw_;
 
     // Subsystems
     std::shared_ptr<Drivetrain> drivetrain_;
+    std::shared_ptr<Intake> intake_;
 
     // Commands
     ExampleCommand m_autonomousCommand;

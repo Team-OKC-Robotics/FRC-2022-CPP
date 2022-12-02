@@ -86,6 +86,9 @@
     "cinttypes": "cpp",
     "typeindex": "cpp",
     "typeinfo": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "hash_map": "cpp",
+    "hash_set": "cpp",
+    "filesystem": "cpp"
   }
 }

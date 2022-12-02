@@ -9,6 +9,7 @@
 
 // Subsystem I/O
 #include "io/DrivetrainIO.h"
+#include "io/IntakeIO.h"
 
 typedef struct hardware_t {
     // Actuators
@@ -34,3 +35,14 @@ typedef struct hardware_t {
 bool SetupDrivetrainInterface(
     std::unique_ptr<HardwareInterface> &hardware,
     std::shared_ptr<DrivetrainHardwareInterface> *interface);
+
+/**
+ * @brief Link the Intake to the hardware interfaces.
+ *
+ * @param interface
+ * @return true
+ * @return false
+ */
+bool SetupIntakeInterface(
+    std::unique_ptr<HardwareInterface> &hardware,
+    std::shared_ptr<IntakeHardwareInterface> *interface);
