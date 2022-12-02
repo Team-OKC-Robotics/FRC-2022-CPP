@@ -94,7 +94,12 @@ bool Drivetrain::ArcadeDrive(const double &speed, const double &turn,
 
 bool Drivetrain::ArcadeDriveAuto(const double &speed, const double &turn,
                                  bool square_inputs) {
-    OKC_CALL(ArcadeDrive(speed * -1, turn, square_inputs));
+    OKC_CHECK(interface_ != nullptr);
+
+    interface_->arcade_power = -1.0 * speed;
+    interface_->arcade_turn = turn;
+    interface_->square_inputs = square_inputs;
+    interface_->drive_mode = DriveMode::ARCADE;
 
     return true;
 }
