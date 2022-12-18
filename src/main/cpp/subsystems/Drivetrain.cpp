@@ -222,7 +222,8 @@ bool Drivetrain::ResetEncoders() {
 bool Drivetrain::GetInches(const double &rotations, double *inches) {
     OKC_CHECK(inches != nullptr);
 
-    // TODO: implement once constants and network tables are set up.
+    *inches = rotations * DrivetrainConstants::gearRatio *
+              DrivetrainConstants::wheelDiameter * M_PI;
 
     return true;
 }
