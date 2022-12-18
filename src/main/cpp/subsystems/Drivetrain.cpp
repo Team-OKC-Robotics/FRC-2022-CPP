@@ -17,9 +17,6 @@ bool Drivetrain::Init() {
     heading_pid_.SetTolerance(7, 1);
     turn_pid_.SetTolerance(7, 2);
 
-    // TODO: shuffleboard.
-    OKC_CALL(InitShuffleboard());
-
     // Reset everything
     OKC_CALL(ResetEncoders());
     OKC_CALL(ResetGyro());
@@ -214,7 +211,10 @@ bool Drivetrain::ResetEncoders() {
     // Reset the encoders.
     interface_->reset_encoders = true;
 
-    // TODO: network tables.
+    // Update encoder UI
+    DrivetrainUI::nt_left_ticks.SetDouble(0);
+    DrivetrainUI::nt_right_ticks.SetDouble(0);
+    DrivetrainUI::nt_total_ticks.SetDouble(0);
 
     return true;
 }
@@ -291,47 +291,61 @@ bool Drivetrain::SetMaxOutput(const double &max_output) {
     return true;
 }
 
-bool Drivetrain::InitShuffleboard() {
-    // Get the tab
-    frc::ShuffleboardTab &tab = frc::Shuffleboard::GetTab("Drivetrain");
-
-    // Add all the defaults
-    // Write mode
-    tab.Add("Write Mode", false);
-
-    // Encoder
-    tab.Add("left ticks", 0);
-    tab.Add("right ticks", 0);
-    tab.Add("total ticks", 0);
-    tab.Add("distance error", 0);
-
-    // Distance PID
-    tab.Add("Distance kP", DrivetrainParams::distanceP);
-    tab.Add("Distance kI", DrivetrainParams::distanceI);
-    tab.Add("Distance kD", DrivetrainParams::distanceD);
-
-    // Heading PID
-    tab.Add("Heading", 0);
-    tab.Add("Heading kP", DrivetrainParams::headingP);
-    tab.Add("Heading kI", DrivetrainParams::headingI);
-    tab.Add("Heading kD", DrivetrainParams::headingD);
-
-    // Turn PID
-    tab.Add("Turn kP", DrivetrainParams::turnP);
-    tab.Add("Turn kI", DrivetrainParams::turnI);
-    tab.Add("Turn kD", DrivetrainParams::turnD);
-
-    // Gyro
-    tab.Add("Reset Gyro", false);
-
-    return true;
-}
-
 bool Drivetrain::UpdateShuffleboard() {
-    // Get the tab
-    frc::ShuffleboardTab &tab = frc::Shuffleboard::GetTab("Drivetrain");
+    // If competition mode isn't set to true, then allow the PID gains to be
+    // tuned.
+    if (!RobotConstants::competition) {
+        // Update encoder UI
+        double encoder_tmp = 0.0;
+        OKC_CALL(GetLeftEncoderAverage(&encoder_tmp));
+        DrivetrainUI::nt_left_ticks.SetDouble(encoder_tmp);
+        OKC_CALL(GetRightEncoderAverage(&encoder_tmp));
+        DrivetrainUI::nt_right_ticks.SetDouble(encoder_tmp);
+        OKC_CALL(GetEncoderAverage(&encoder_tmp));
+        DrivetrainUI::nt_total_ticks.SetDouble(encoder_tmp);
 
-    // TODO: send and receive data here.
+        // Heading UI
+        double heading_tmp = 0.0;
+        OKC_CALL(GetHeading(&heading_tmp));
+        DrivetrainUI::nt_heading.SetDouble(heading_tmp);
+
+        // Distance UI
+        double dist_err = dist_pid_.GetPositionError();
+        DrivetrainUI::nt_dist_error.SetDouble(dist_err);
+
+        // Update the PID Gains if write mode is true.
+        if (DrivetrainUI::nt_write_mode.GetBoolean(false)) {
+            // Distance PID
+            dist_pid_.SetP(DrivetrainUI::nt_dist_kp.GetDouble(
+                DrivetrainParams::distanceP));
+            dist_pid_.SetI(DrivetrainUI::nt_dist_ki.GetDouble(
+                DrivetrainParams::distanceI));
+            dist_pid_.SetD(DrivetrainUI::nt_dist_kd.GetDouble(
+                DrivetrainParams::distanceD));
+
+            // Heading PID
+            heading_pid_.SetP(DrivetrainUI::nt_heading_kp.GetDouble(
+                DrivetrainParams::headingP));
+            heading_pid_.SetI(DrivetrainUI::nt_heading_ki.GetDouble(
+                DrivetrainParams::headingI));
+            heading_pid_.SetD(DrivetrainUI::nt_heading_kd.GetDouble(
+                DrivetrainParams::headingD));
+
+            // Turn PID
+            turn_pid_.SetP(
+                DrivetrainUI::nt_turn_kp.GetDouble(DrivetrainParams::turnP));
+            turn_pid_.SetI(
+                DrivetrainUI::nt_turn_ki.GetDouble(DrivetrainParams::turnI));
+            turn_pid_.SetD(
+                DrivetrainUI::nt_turn_kd.GetDouble(DrivetrainParams::turnD));
+        }
+    }
+
+    // Resetting the Gyro needs to always be available.
+    if (DrivetrainUI::nt_reset_gyro.GetBoolean(false)) {
+        interface_->reset_gyro = true;
+        DrivetrainUI::nt_reset_gyro.SetBoolean(false);
+    }
 
     return true;
 }

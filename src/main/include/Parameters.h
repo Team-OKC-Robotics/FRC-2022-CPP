@@ -5,55 +5,55 @@
 // to recompile when they need to be updated.
 
 namespace DrivetrainParams {
-    double distanceP = 0.065;
-    double distanceI = 0.002;
-    double distanceD = 0.001;
+    extern double distanceP;
+    extern double distanceI;
+    extern double distanceD;
 
-    double headingP = 0.07;
-    double headingI = 0;
-    double headingD = 0.00001;
+    extern double headingP;
+    extern double headingI;
+    extern double headingD;
 
-    double turnP = 0.05;
-    double turnI = 0.000;
-    double turnD = 0.009;
+    extern double turnP;
+    extern double turnI;
+    extern double turnD;
 } // namespace DrivetrainParams
 
 namespace ShooterParams {
-    double shootP = 0.00001;
-    double shootI = 0;
-    double shootD = 0.000005;
-    double shootF = 0.4;
+    extern double shootP;
+    extern double shootI;
+    extern double shootD;
+    extern double shootF;
 
-    double normalShot = 9000;
-    double againstHub = 8000;
-    double lowGoal = 1500;
-    double farShot = 12000;
+    extern double normalShot;
+    extern double againstHub;
+    extern double lowGoal;
+    extern double farShot;
 } // namespace ShooterParams
 
 namespace IntakeParams {
-    double deployP = 0.07;
-    double deployI = 0;
-    double deployD = 0.001;
+    extern double deployP;
+    extern double deployI;
+    extern double deployD;
 } // namespace IntakeParams
 
 namespace ClimberParams {
     // TODO test and tune the entire climber subsystem
-    double tiltP = 0;
-    double tiltD = 0;
-    double tiltI = 0;
+    extern double tiltP;
+    extern double tiltD;
+    extern double tiltI;
 
-    double extendP = 0.00001;
-    double extendI = 0;
-    double extendD = 0.00000001;
-    double extendF = 0;
+    extern double extendP;
+    extern double extendI;
+    extern double extendD;
+    extern double extendF;
 } // namespace ClimberParams
 
 namespace VisionParams {
     // TODO test and tune
-    double kP = 0.03;
-    double kI = 0;
-    double kD = 0.001;
-    double heightOfGoal = 0;   // TODO change this to be the actual value
-    double heightOfCamera = 0; // TODO change this to be the actual value
-    double cameraAngle = 0;    // TODO change this to be the actual value
+    extern double kP;
+    extern double kI;
+    extern double kD;
+    extern double heightOfGoal;   // TODO change this to be the actual value
+    extern double heightOfCamera; // TODO change this to be the actual value
+    extern double cameraAngle;    // TODO change this to be the actual value
 } // namespace VisionParams
