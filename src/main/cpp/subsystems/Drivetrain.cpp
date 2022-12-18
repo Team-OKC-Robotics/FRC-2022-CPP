@@ -2,8 +2,6 @@
 #include "subsystems/Drivetrain.h"
 
 bool Drivetrain::Init() {
-    // TODO: Set PID gains.
-
     // Set the open loop ramp rates for the motors.
     // for autonomous start with a fast ramp rate (not too fast otherwise we
     // kind of break the gearboxes) we had problems with stripping gears and
@@ -16,6 +14,14 @@ bool Drivetrain::Init() {
     dist_pid_.SetTolerance(2);
     heading_pid_.SetTolerance(7, 1);
     turn_pid_.SetTolerance(7, 2);
+
+    // Set PID gains.
+    dist_pid_.SetPID(DrivetrainParams::distanceP, DrivetrainParams::distanceI,
+                     DrivetrainParams::distanceD);
+    heading_pid_.SetPID(DrivetrainParams::headingP, DrivetrainParams::headingI,
+                        DrivetrainParams::headingD);
+    turn_pid_.SetPID(DrivetrainParams::turnP, DrivetrainParams::turnI,
+                     DrivetrainParams::turnD);
 
     // Reset everything
     OKC_CALL(ResetEncoders());
