@@ -28,3 +28,10 @@ TEST_F(IntakeTest, InitIntake) {
     EXPECT_DOUBLE_EQ(sw_interface_.intake_config.open_loop_ramp_rate, 0.5);
     EXPECT_EQ(sw_interface_.update_config, true);
 }
+
+TEST_F(IntakeTest, IntakePowerTest) {
+    const double kIntakePower = 1;
+    ASSERT_TRUE(intake_->SetIntakePower(kIntakePower));
+
+    EXPECT_EQ(sw_interface_.intake_power, kIntakePower);
+}
