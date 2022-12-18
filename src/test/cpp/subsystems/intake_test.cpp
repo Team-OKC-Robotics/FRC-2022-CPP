@@ -35,3 +35,10 @@ TEST_F(IntakeTest, IntakePowerTest) {
 
     EXPECT_EQ(sw_interface_.intake_power, kIntakePower);
 }
+
+TEST_F(IntakeTest, IndexerPowerTest) {
+    const double kIndexerPower = -1;
+    ASSERT_TRUE(intake_->SetIndexerPower(kIndexerPower));
+
+    EXPECT_EQ(sw_interface_.indexer_power, kIndexerPower);
+}
