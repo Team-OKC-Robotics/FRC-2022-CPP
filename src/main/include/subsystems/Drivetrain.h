@@ -7,8 +7,13 @@
 #include <frc/controller/PIDController.h>
 #include <frc2/command/SubsystemBase.h>
 
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
+
+#include "Parameters.h"
 #include "Utils.h"
 #include "io/DrivetrainIO.h"
+
 
 class Drivetrain : public frc2::SubsystemBase {
 public:
@@ -62,6 +67,10 @@ public:
     bool SetMaxOutput(const double &max_output);
 
 private:
+    // Shuffleboard functions
+    bool InitShuffleboard();
+    bool UpdateShuffleboard();
+
     DrivetrainSoftwareInterface *const interface_;
 
     // Controllers

@@ -18,6 +18,7 @@ bool Drivetrain::Init() {
     turn_pid_.SetTolerance(7, 2);
 
     // TODO: shuffleboard.
+    OKC_CALL(InitShuffleboard());
 
     // Reset everything
     OKC_CALL(ResetEncoders());
@@ -30,8 +31,8 @@ bool Drivetrain::Init() {
 }
 
 void Drivetrain::Periodic() {
-    // TODO: implement once network tables and constants are set up
-    // It looks like this is just setting PID gains over and over.
+    // Update shuffleboard
+    VOKC_CALL(UpdateShuffleboard());
 }
 
 void Drivetrain::SimulationPeriodic() {
@@ -286,6 +287,51 @@ bool Drivetrain::SetMaxOutput(const double &max_output) {
     OKC_CHECK(interface_ != nullptr);
 
     interface_->drive_config.max_output = max_output;
+
+    return true;
+}
+
+bool Drivetrain::InitShuffleboard() {
+    // Get the tab
+    frc::ShuffleboardTab &tab = frc::Shuffleboard::GetTab("Drivetrain");
+
+    // Add all the defaults
+    // Write mode
+    tab.Add("Write Mode", false);
+
+    // Encoder
+    tab.Add("left ticks", 0);
+    tab.Add("right ticks", 0);
+    tab.Add("total ticks", 0);
+    tab.Add("distance error", 0);
+
+    // Distance PID
+    tab.Add("Distance kP", DrivetrainParams::distanceP);
+    tab.Add("Distance kI", DrivetrainParams::distanceI);
+    tab.Add("Distance kD", DrivetrainParams::distanceD);
+
+    // Heading PID
+    tab.Add("Heading", 0);
+    tab.Add("Heading kP", DrivetrainParams::headingP);
+    tab.Add("Heading kI", DrivetrainParams::headingI);
+    tab.Add("Heading kD", DrivetrainParams::headingD);
+
+    // Turn PID
+    tab.Add("Turn kP", DrivetrainParams::turnP);
+    tab.Add("Turn kI", DrivetrainParams::turnI);
+    tab.Add("Turn kD", DrivetrainParams::turnD);
+
+    // Gyro
+    tab.Add("Reset Gyro", false);
+
+    return true;
+}
+
+bool Drivetrain::UpdateShuffleboard() {
+    // Get the tab
+    frc::ShuffleboardTab &tab = frc::Shuffleboard::GetTab("Drivetrain");
+
+    // TODO: send and receive data here.
 
     return true;
 }
