@@ -16,7 +16,7 @@ bool Intake::Init() {
     this->interface_->update_config = true;
 
     // Set PID tolerances
-    intake_pid.SetTolerance(0, 0); //TODO change to actual number
+    //intake_pid.SetTolerance(0.5, 0.5); //TODO change to actual number
     
     // TODO: shuffleboard.
 
@@ -115,7 +115,8 @@ double Intake::GetSetpoint() {
  * an important edge case, however, because nothing relies on this method other than unit tests.
  */
 bool Intake::IsExtended() {
-    return this->interface_->deployed_limit_switch_val == true;
+    // inverse logic, so false is pressed, and true is released
+    return this->interface_->deployed_limit_switch_val == false;
 }
 
 /**
