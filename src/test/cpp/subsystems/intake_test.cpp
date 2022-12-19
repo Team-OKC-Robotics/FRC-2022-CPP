@@ -62,9 +62,11 @@ TEST_F(IntakeTest, IndexerPowerTest) {
 
 /**
  * The big test.
- * Tests the intake position (deploy/extend) logic works
+ * Tests that the intake position (deploy/extend) logic works
  */
 TEST_F(IntakeTest, IntakePositionTest) {
+    ASSERT_TRUE(intake_ ->Init());
+
     double last_intake_output = 0;
 
     sw_interface_.intake_position_encoder_val = 0; // set the encoder to 0 because it was written to by the last test
