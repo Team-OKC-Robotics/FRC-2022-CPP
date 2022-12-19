@@ -38,6 +38,8 @@ public:
     bool SetExtended(const bool &extended);
 
     bool IsExtended(bool *extended);
+    int GetDirection();
+    double GetSetpoint();
 
 private:
     IntakeSoftwareInterface *const interface_;

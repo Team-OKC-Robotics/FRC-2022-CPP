@@ -85,6 +85,22 @@ bool Intake::SetExtended(const bool &extended) {
     return true;
 }
 
+/**
+ * A method to get the 'direction' variable of the intake subsystem
+ * This should only be used to verify proper functioning of the intake subsystem
+ */
+int Intake::GetDirection() {
+    return direction;
+}
+
+/**
+ * A method to get the setpoint of the intake position PID controller
+ * Mainly for unit tests right now
+ */
+double Intake::GetSetpoint() {
+    return intake_pid.GetSetpoint();
+}
+
 // this method seems useful but we don't end up using it in the Java version so it might get cut
 // leaving here (untouched except for commented out) for now
 /**
