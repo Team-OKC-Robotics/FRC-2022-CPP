@@ -5,7 +5,14 @@
 bool Intake::Init() {
     // TODO: Set PID gains.
 
+    // update the intake config
     this->interface_->intake_config.open_loop_ramp_rate = open_loop_ramp_;
+    this->interface_->intake_config.EXTENDED = 43.75; // TODO: replace with a reference to Constants. as-is the number is copypastad from there anyways, but still
+    this->interface_->intake_config.RETRACTED = 0;
+    this->interface_->intake_config.max_output_deploy = 1;
+    this->interface_->intake_config.max_output_retract = 1;
+    this->interface_->intake_config.max_indexer_current = 20; // limit to 20 amps
+
     this->interface_->update_config = true;
 
     // Set PID tolerances

@@ -19,6 +19,9 @@ protected:
     IntakeSoftwareInterface sw_interface_;
 };
 
+/**
+ * Test to make sure the intake can be initialized, and test the intake config
+ */
 TEST_F(IntakeTest, InitIntake) {
     // Test intake initialization.
     ASSERT_TRUE(intake_->Init());
@@ -29,6 +32,9 @@ TEST_F(IntakeTest, InitIntake) {
     EXPECT_EQ(sw_interface_.update_config, true);
 }
 
+/**
+ * Test to make sure the intake power (ie intake in cargo and/or spit it out) works
+ */
 TEST_F(IntakeTest, IntakePowerTest) {
     const double kIntakePower = 1;
     ASSERT_TRUE(intake_->SetIntakePower(kIntakePower));
@@ -36,6 +42,9 @@ TEST_F(IntakeTest, IntakePowerTest) {
     EXPECT_EQ(sw_interface_.intake_power, kIntakePower);
 }
 
+/**
+ * Test to make sure the indexer power (ie intake in cargo and/or spit it out) works
+ */
 TEST_F(IntakeTest, IndexerPowerTest) {
     const double kIndexerPower = -1;
     ASSERT_TRUE(intake_->SetIndexerPower(kIndexerPower));
@@ -43,6 +52,9 @@ TEST_F(IntakeTest, IndexerPowerTest) {
     EXPECT_EQ(sw_interface_.indexer_power, kIndexerPower);
 }
 
+/**
+ * Test to make sure the position logic works
+ */
 TEST_F(IntakeTest, IntakeGetPositionTest) {
     sw_interface_.intake_position_encoder_val = 0; // set encoder to 0
     sw_interface_.deployed_limit_switch_val = true; // inverse logic, so false is pressed
@@ -68,33 +80,7 @@ TEST_F(IntakeTest, IntakeGetPositionTest) {
 
 /**
  * The big test.
- * This needs to perform/test the following:
- *  - initial encoder position should be 0
- *  - tell intake to deploy
- *  - direction should be 1
- *  - intakePID setpoint should be some constant
- *  - call periodic()
- *  - intake position motor power should be some positive(?) value
- *  - set intake position encoder to some number between 0 and DEPLOYED
- *  - call periodic()
- *  - intake position motor power should be a smaller (abs() at least) value
- *  - set intake deployed limit switch to true
- *  - call periodic()
- *  - intake position motor power should be 0
- *  - intake position encoder should be DEPLOYED
- *  - IsExtended should be true()
- * 
- * 
- *  - tell intake to retract
- *  - call periodic()
- *  - direction should be -1
- *  - intake position motor power should be some value of the opposite sign of the value for deploying
- *  - set position encoder to some value between 0 and DEPLOYED
- *  - call periodic()
- *  - intake position motor power should be a smaller value
- *  - set position encoder to 0
- *  - intake position motor power should be 0
- *  - IsExtended() should be false
+ * Tests the intake position (deploy/extend) logic works
  */
 TEST_F(IntakeTest, IntakePositionTest) {
     double last_intake_output = 0;
@@ -132,6 +118,7 @@ TEST_F(IntakeTest, IntakePositionTest) {
     EXPECT_EQ(sw_interface_.intake_position_encoder_val, sw_interface_.intake_config.EXTENDED); // and because encoders can get inacurrate, and starting position is never constant
                                                                                   // the code automatically sets the encoder to the known-good EXTENDED value
     
+
     // === RETRACT ===
     ASSERT_TRUE(intake_->SetExtended(false)); // method should not error out
     EXPECT_EQ(intake_->GetDirection(), -1); // internal var 'direction' should be -1
