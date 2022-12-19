@@ -2,6 +2,8 @@
 #include "subsystems/Intake.h"
 #include "Utils.h"
 
+#include <iostream>
+
 bool Intake::Init() {
     // TODO: Set PID gains.
 
@@ -9,8 +11,8 @@ bool Intake::Init() {
     this->interface_->intake_config.open_loop_ramp_rate = open_loop_ramp_;
     this->interface_->intake_config.EXTENDED = 43.75; // TODO: replace with a reference to Constants. as-is the number is copypastad from there anyways, but still
     this->interface_->intake_config.RETRACTED = 0;
-    this->interface_->intake_config.max_output_deploy = 1;
-    this->interface_->intake_config.max_output_retract = -1;
+    this->interface_->intake_config.max_output_deploy = 0.8;
+    this->interface_->intake_config.max_output_retract = -0.8;
     this->interface_->intake_config.max_indexer_current = 20; // limit to 20 amps
 
     this->interface_->update_config = true;
@@ -45,6 +47,11 @@ void Intake::Periodic() {
             this->interface_->intake_position_power = 0;
         } else { // otherwise keep going
             this->interface_->intake_position_power =  intake_pid.Calculate(this->interface_->intake_position_encoder_val);
+            std::cout << "setpoint: " << this->GetSetpoint();
+            std::cout << " | intake power: ";
+            std::cout << this->interface_->intake_position_power;
+            std::cout << " | intake encdoer val: ";
+            std::cout << this->interface_->intake_position_encoder_val << std::endl;
             
             // clamp the intake output between our configured max outputs
             VOKC_CALL(TeamOKC::Clamp(this->interface_->intake_config.max_output_retract, this->interface_->intake_config.max_output_deploy, &this->interface_->intake_position_power));

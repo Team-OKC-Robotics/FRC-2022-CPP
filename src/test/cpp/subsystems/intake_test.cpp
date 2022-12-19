@@ -28,9 +28,14 @@ TEST_F(IntakeTest, InitIntake) {
     // Test intake initialization.
     ASSERT_TRUE(intake_->Init());
 
-    // Check to see that the interface updated
-    EXPECT_EQ(sw_interface_.reset_encoders, true);
+    // Check to see that the interface updated with initial configured values
     EXPECT_DOUBLE_EQ(sw_interface_.intake_config.open_loop_ramp_rate, 0.5);
+    EXPECT_DOUBLE_EQ(sw_interface_.intake_config.EXTENDED, 43.75);
+    EXPECT_DOUBLE_EQ(sw_interface_.intake_config.RETRACTED, 0);
+    EXPECT_DOUBLE_EQ(sw_interface_.intake_config.max_output_deploy, 0.8);
+    EXPECT_DOUBLE_EQ(sw_interface_.intake_config.max_output_retract, -0.8);
+    EXPECT_DOUBLE_EQ(sw_interface_.intake_config.max_indexer_current, 20);
+    EXPECT_EQ(sw_interface_.reset_encoders, true);
     EXPECT_EQ(sw_interface_.update_config, true);
 }
 
@@ -78,17 +83,17 @@ TEST_F(IntakeTest, IntakePositionTest) {
     intake_->Periodic();
 
     last_intake_output = sw_interface_.intake_position_power;
-    EXPECT_EQ(last_intake_output > 0, true); // I think the output should be positive at least
+    EXPECT_GT(last_intake_output, 0); // should be at least positive
 
-    // set the intake encoder to slightly less than extended
-    sw_interface_.intake_position_encoder_val = sw_interface_.intake_config.EXTENDED - 1;
+    // set the intake encoder to slightly less than fully extended
+    sw_interface_.intake_position_encoder_val = sw_interface_.intake_config.EXTENDED - 0.1;
 
     // call periodic so logic updates
     intake_->Periodic();
     intake_->Periodic();
 
     // intake position output now should be less than earlier, because we're closer to the setpoint
-    EXPECT_EQ(sw_interface_.intake_position_power < last_intake_output, true);
+    EXPECT_GT(last_intake_output, sw_interface_.intake_position_power);
     last_intake_output = sw_interface_.intake_position_power;
 
     sw_interface_.deployed_limit_switch_val = false; // deployed limit switch uses inverse logic, so to simulate a press set it to false
@@ -109,23 +114,26 @@ TEST_F(IntakeTest, IntakePositionTest) {
     EXPECT_EQ(intake_->IsExtended(), true);
 
 
+
+
     // === RETRACT ===
     ASSERT_TRUE(intake_->SetExtended(false)); // method should not error out
     EXPECT_EQ(intake_->GetDirection(), -1); // internal var 'direction' should be -1
-    EXPECT_DOUBLE_EQ(abs(intake_->GetSetpoint()) < 1, true); // PID setpoint should be back to 0 (< 1 because floating point numbers gotta love 'em)
+    EXPECT_EQ(intake_->GetSetpoint(), 0); // PID setpoint should be back to 0
 
     intake_->Periodic(); // call periodic so logic updates
+
     last_intake_output = sw_interface_.intake_position_power;
-    EXPECT_EQ(last_intake_output < 0, true); // the output should be negative at least, as the encoder should still read EXTENDED
+    EXPECT_GT(0, last_intake_output); // the output should be negative at least, as the encoder should still read EXTENDED
 
     // set the intake encoder to slightly more than 0
-    sw_interface_.intake_position_encoder_val = 1;
+    sw_interface_.intake_position_encoder_val = 0.1;
 
     intake_->Periodic(); // call periodic so logic updates
 
     // intake position output now should be less than earlier, becuase we are closer to the setpoint
     // (remember output is negative now so less negative output > more negative output)
-    EXPECT_EQ(sw_interface_.intake_position_power == last_intake_output, true);
+    EXPECT_GT(last_intake_output, sw_interface_.intake_position_power);
     
     // set the encoder to be at our setpoint
     sw_interface_.intake_position_encoder_val = 0;
@@ -136,7 +144,7 @@ TEST_F(IntakeTest, IntakePositionTest) {
     intake_->Periodic();
 
     // and now everything should be all nice and 0 and stuff
-    EXPECT_EQ(abs(sw_interface_.intake_position_power) < 1, true);
+    EXPECT_EQ(sw_interface_.intake_position_power, 0);
 
     EXPECT_EQ(intake_->IsRetracted(), true);
     EXPECT_EQ(intake_->IsExtended(), false);
