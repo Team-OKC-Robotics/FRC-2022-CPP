@@ -86,12 +86,15 @@ TEST_F(IntakeTest, IntakePositionTest) {
     last_intake_output = sw_interface_.intake_position_power;
 
     sw_interface_.deployed_limit_switch_val = false; // deployed limit switch uses inverse logic, so to simulate a press set it to false
+    sw_interface_.intake_position_encoder_val = sw_interface_.intake_config.EXTENDED; // cheat and set the value to a known good value this would normally happen automagically but this is a unit test
 
     intake_->Periodic(); // call periodic so logic updates
 
     EXPECT_EQ(sw_interface_.intake_position_power, 0); // the limit switch is triggered so the motor should full stop
     EXPECT_EQ(sw_interface_.intake_position_encoder_val, sw_interface_.intake_config.EXTENDED); // and because encoders can get inacurrate, and starting position is never constant
                                                                                   // the code automatically sets the encoder to the known-good EXTENDED value
+                                                                                  // under normal conditions, but because this is a unit test, we cheat and just go ahead and set 
+                                                                                  // the value ourselves
     
     
     EXPECT_EQ(intake_->IsRetracted(), false);
