@@ -46,8 +46,8 @@ void Intake::Periodic() {
         } else { // otherwise keep going
             this->interface_->intake_position_power =  intake_pid.Calculate(this->interface_->intake_position_encoder_val);
             
-            //FIXME I think there's supposed to be an OKC_CALL() around this, but it was giving me errors, so I don't have it
-            TeamOKC::Clamp(this->interface_->intake_config.max_output_retract, this->interface_->intake_config.max_output_deploy, &this->interface_->intake_position_power);
+            // clamp the intake output between our configured max outputs
+            VOKC_CALL(TeamOKC::Clamp(this->interface_->intake_config.max_output_retract, this->interface_->intake_config.max_output_deploy, &this->interface_->intake_position_power));
         }
     }
 }
