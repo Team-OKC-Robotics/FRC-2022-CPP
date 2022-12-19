@@ -1,6 +1,5 @@
 
 #include <stdlib.h>
-#include <iostream>
 
 #include <gtest/gtest.h>
 #include <memory>

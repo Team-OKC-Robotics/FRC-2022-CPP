@@ -2,8 +2,6 @@
 #include "subsystems/Intake.h"
 #include "Utils.h"
 
-#include <iostream>
-
 bool Intake::Init() {
     // TODO: Set PID gains.
 
@@ -48,11 +46,6 @@ void Intake::Periodic() {
             this->interface_->intake_position_power = 0;
         } else { // otherwise keep going
             this->interface_->intake_position_power =  intake_pid.Calculate(this->interface_->intake_position_encoder_val);
-            std::cout << "setpoint: " << this->GetSetpoint();
-            std::cout << " | intake power: ";
-            std::cout << this->interface_->intake_position_power;
-            std::cout << " | intake encdoer val: ";
-            std::cout << this->interface_->intake_position_encoder_val << std::endl;
             
             // clamp the intake output between our configured max outputs
             VOKC_CALL(TeamOKC::Clamp(this->interface_->intake_config.max_output_retract, this->interface_->intake_config.max_output_deploy, &this->interface_->intake_position_power));
@@ -91,8 +84,6 @@ bool Intake::SetIndexerPower(const double &power) {
 bool Intake::SetExtended(const bool &extended) {
     if (extended) {
         intake_pid.SetSetpoint(this->interface_->intake_config.EXTENDED);
-        std::cout << "EXTENDED SETPOINT: ";
-        std::cout << this->interface_->intake_config.EXTENDED << std::endl;
         direction = 1;
     } else {
         intake_pid.SetSetpoint(this->interface_->intake_config.RETRACTED);
