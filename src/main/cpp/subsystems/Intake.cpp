@@ -127,5 +127,5 @@ bool Intake::IsExtended() {
  * abs(encoder_val) < 2 or something like that.
  */
 bool Intake::IsRetracted() {
-    return this->interface_->intake_position_encoder_val == 0;
+    return abs(this->interface_->intake_position_encoder_val) < 0.1; // stupid weird floaty numbers makin' me use abs()
 }
