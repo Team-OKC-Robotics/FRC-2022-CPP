@@ -9,16 +9,20 @@ class ParametersTest : public testing::Test {
 public:
     virtual void SetUp() {
         // Get the FRC deploy folder path
-        // std::string deploy_path = frc::filesystem::GetDeployDirectory();
-        // std::cout << "DEPLOY: " << deploy_path << std::endl;
-        // std::string param_file = deploy_path + "\\parameters.toml";
+        std::string deploy_path = frc::filesystem::GetDeployDirectory();
+        std::string param_file = deploy_path + "/parameters.toml";
 
-        // // Load parameters
-        // ASSERT_TRUE(RobotParams::LoadParameters(param_file));
+        // Load parameters
+        ASSERT_TRUE(RobotParams::LoadParameters(param_file));
     }
 
 protected:
 };
+
+TEST_F(ParametersTest, LoadParametersTest) {
+    std::string title = RobotParams::GetParam("title", "");
+    EXPECT_EQ(title, "OKC Robotics Beta 2022 Parameters");
+}
 
 TEST_F(ParametersTest, GetSetParams) {
     ASSERT_TRUE(RobotParams::SetParam("title", "Test Title"));

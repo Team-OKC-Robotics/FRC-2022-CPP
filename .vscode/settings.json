@@ -90,6 +90,7 @@
     "hash_map": "cpp",
     "hash_set": "cpp",
     "filesystem": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "charconv": "cpp"
   }
 }

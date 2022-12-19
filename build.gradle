@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id "cpp"
     id "google-test-test-suite"
@@ -97,3 +99,28 @@ model {
         }
     }
 }
+
+
+tasks.register('copyDeployDirForUnitTestsDebug', Copy) {
+    from project.fileTree('src/main/deploy')
+    if(OperatingSystem.current().isWindows()){
+        into layout.buildDirectory.dir("test-results/frcUserProgramTest/windowsx86-64/debug/src/main/deploy")
+    } else {
+        into layout.buildDirectory.dir("test-results/frcUserProgramTest/linuxathena/debug/src/main/deploy")
+    } 
+}
+
+tasks.register('copyDeployDirForUnitTestsRelease', Copy) {
+    from project.fileTree('src/main/deploy')
+    if(OperatingSystem.current().isWindows()){
+        into layout.buildDirectory.dir("test-results/frcUserProgramTest/windowsx86-64/release/src/main/deploy")
+    } else {
+        into layout.buildDirectory.dir("test-results/frcUserProgramTest/linuxathena/release/src/main/deploy")
+    } 
+}
+
+// Copy the deploy/ folder when doing unit tests (check) in order to load things like parameters.
+check.dependsOn copyDeployDirForUnitTestsDebug
+build.dependsOn copyDeployDirForUnitTestsDebug
+check.dependsOn copyDeployDirForUnitTestsRelease
+build.dependsOn copyDeployDirForUnitTestsRelease
