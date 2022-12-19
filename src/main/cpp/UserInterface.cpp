@@ -17,29 +17,20 @@ namespace DrivetrainUI {
         nt_tab.Add("distance error", 0).GetEntry();
 
     // Distance PID
-    nt::GenericEntry &nt_dist_kp =
-        nt_tab.Add("Distance kP", DrivetrainParams::distanceP).GetEntry();
-    nt::GenericEntry &nt_dist_ki =
-        nt_tab.Add("Distance kI", DrivetrainParams::distanceI).GetEntry();
-    nt::GenericEntry &nt_dist_kd =
-        nt_tab.Add("Distance kD", DrivetrainParams::distanceD).GetEntry();
+    nt::GenericEntry &nt_dist_kp = nt_tab.Add("Distance kP", 0).GetEntry();
+    nt::GenericEntry &nt_dist_ki = nt_tab.Add("Distance kI", 0).GetEntry();
+    nt::GenericEntry &nt_dist_kd = nt_tab.Add("Distance kD", 0).GetEntry();
 
     // Heading PID
     nt::GenericEntry &nt_heading = nt_tab.Add("Heading", 0).GetEntry();
-    nt::GenericEntry &nt_heading_kp =
-        nt_tab.Add("Heading kP", DrivetrainParams::headingP).GetEntry();
-    nt::GenericEntry &nt_heading_ki =
-        nt_tab.Add("Heading kI", DrivetrainParams::headingI).GetEntry();
-    nt::GenericEntry &nt_heading_kd =
-        nt_tab.Add("Heading kD", DrivetrainParams::headingD).GetEntry();
+    nt::GenericEntry &nt_heading_kp = nt_tab.Add("Heading kP", 0).GetEntry();
+    nt::GenericEntry &nt_heading_ki = nt_tab.Add("Heading kI", 0).GetEntry();
+    nt::GenericEntry &nt_heading_kd = nt_tab.Add("Heading kD", 0).GetEntry();
 
     // Turn PID
-    nt::GenericEntry &nt_turn_kp =
-        nt_tab.Add("Turn kP", DrivetrainParams::turnP).GetEntry();
-    nt::GenericEntry &nt_turn_ki =
-        nt_tab.Add("Turn kI", DrivetrainParams::turnI).GetEntry();
-    nt::GenericEntry &nt_turn_kd =
-        nt_tab.Add("Turn kD", DrivetrainParams::turnD).GetEntry();
+    nt::GenericEntry &nt_turn_kp = nt_tab.Add("Turn kP", 0).GetEntry();
+    nt::GenericEntry &nt_turn_ki = nt_tab.Add("Turn kI", 0).GetEntry();
+    nt::GenericEntry &nt_turn_kd = nt_tab.Add("Turn kD", 0).GetEntry();
 
     // Gyro
     nt::GenericEntry &nt_reset_gyro =

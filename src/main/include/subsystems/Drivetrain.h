@@ -9,7 +9,6 @@
 #include <frc/controller/PIDController.h>
 #include <frc2/command/SubsystemBase.h>
 
-#include "Constants.h"
 #include "Parameters.h"
 #include "UserInterface.h"
 #include "Utils.h"
@@ -67,7 +66,8 @@ public:
     bool SetMaxOutput(const double &max_output);
 
 private:
-    // Update Shuffleboard
+    // Shuffleboard funcitons
+    bool InitShuffleboard();
     bool UpdateShuffleboard();
 
     DrivetrainSoftwareInterface *const interface_;
