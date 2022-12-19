@@ -18,7 +18,8 @@ bool Intake::Init() {
     this->interface_->update_config = true;
 
     // Set PID tolerances
-    //intake_pid.SetTolerance(0.5, 0.5); //TODO change to actual number
+    intake_pid.SetTolerance(0.5, 0.5); //TODO change to actual number
+    intake_pid.SetSetpoint(0);
     
     // TODO: shuffleboard.
 
@@ -90,6 +91,8 @@ bool Intake::SetIndexerPower(const double &power) {
 bool Intake::SetExtended(const bool &extended) {
     if (extended) {
         intake_pid.SetSetpoint(this->interface_->intake_config.EXTENDED);
+        std::cout << "EXTENDED SETPOINT: ";
+        std::cout << this->interface_->intake_config.EXTENDED << std::endl;
         direction = 1;
     } else {
         intake_pid.SetSetpoint(this->interface_->intake_config.RETRACTED);
