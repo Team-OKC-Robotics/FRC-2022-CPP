@@ -5,11 +5,19 @@
 bool Intake::Init() {
     // TODO: Set PID gains.
 
+    // update the intake config
     this->interface_->intake_config.open_loop_ramp_rate = open_loop_ramp_;
+    this->interface_->intake_config.EXTENDED = 43.75; // TODO: replace with a reference to Constants. as-is the number is copypastad from there anyways, but still
+    this->interface_->intake_config.RETRACTED = 0;
+    this->interface_->intake_config.max_output_deploy = 0.8;
+    this->interface_->intake_config.max_output_retract = -0.8;
+    this->interface_->intake_config.max_indexer_current = 20; // limit to 20 amps
+
     this->interface_->update_config = true;
 
     // Set PID tolerances
-    intake_pid.SetTolerance(0, 0); //TODO change to actual number
+    intake_pid.SetTolerance(0.5, 0.5); //TODO change to actual number
+    intake_pid.SetSetpoint(0);
     
     // TODO: shuffleboard.
 
@@ -39,8 +47,8 @@ void Intake::Periodic() {
         } else { // otherwise keep going
             this->interface_->intake_position_power =  intake_pid.Calculate(this->interface_->intake_position_encoder_val);
             
-            //FIXME I think there's supposed to be an OKC_CALL() around this, but it was giving me errors, so I don't have it
-            TeamOKC::Clamp(this->interface_->intake_config.max_output_retract, this->interface_->intake_config.max_output_deploy, &this->interface_->intake_position_power);
+            // clamp the intake output between our configured max outputs
+            VOKC_CALL(TeamOKC::Clamp(this->interface_->intake_config.max_output_retract, this->interface_->intake_config.max_output_deploy, &this->interface_->intake_position_power));
         }
     }
 }
@@ -85,12 +93,40 @@ bool Intake::SetExtended(const bool &extended) {
     return true;
 }
 
-// this method seems useful but we don't end up using it in the Java version so it might get cut
-// leaving here (untouched except for commented out) for now
 /**
-bool Intake::IsExtended(bool *extended) { //TODO that's not the right code/logic to cover all cases and would be a bad idea anyways but this is a placeholder
-    *extended = this->interface_->deployed_limit_switch_val;
-    
-    return true;
+ * A method to get the 'direction' variable of the intake subsystem
+ * This should only be used to verify proper functioning of the intake subsystem
+ */
+int Intake::GetDirection() {
+    return direction;
 }
-*/
+
+/**
+ * A method to get the setpoint of the intake position PID controller
+ * Mainly for unit tests right now
+ */
+double Intake::GetSetpoint() {
+    return intake_pid.GetSetpoint();
+}
+
+/**
+ * Returns if the intake is extended or not
+ * aka if the limit switch is being pressed, although there are times when it *is* extended
+ * and the switch is not pressed, because it bounces and the switches break a lot. That is not
+ * an important edge case, however, because nothing relies on this method other than unit tests.
+ */
+bool Intake::IsExtended() {
+    // inverse logic, so false is pressed, and true is released
+    return this->interface_->deployed_limit_switch_val == false;
+}
+
+/**
+ * Returns if the intake is retracted or not
+ * probably wildely inaccurate because it's based on the encoder,
+ * but this is mainly here for unit testing purposes. In the future,
+ * might be better to have some kind of margin of error like
+ * abs(encoder_val) < 2 or something like that.
+ */
+bool Intake::IsRetracted() {
+    return abs(this->interface_->intake_position_encoder_val) < 0.1; // stupid weird floaty numbers makin' me use abs()
+}
