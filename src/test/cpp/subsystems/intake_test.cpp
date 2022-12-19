@@ -56,16 +56,24 @@ TEST_F(IntakeTest, IndexerPowerTest) {
  * Test to make sure the position logic works
  */
 TEST_F(IntakeTest, IntakeGetPositionTest) {
+    // the intake must be told to move before it will do any kind of extend/retract logic
+    EXPECT_EQ(intake_->SetExtended(true), true);
+
     sw_interface_.intake_position_encoder_val = 0; // set encoder to 0
     sw_interface_.deployed_limit_switch_val = true; // inverse logic, so false is pressed
+
 
     // call Periodic() so logic updates
     intake_->Periodic();
 
-    // the intake should read as retraced and not extended
+    // the intake should read as retracted and not extended
     EXPECT_EQ(intake_->IsRetracted(), true);
     EXPECT_EQ(intake_->IsExtended(), false);
 
+    // the intake must be told to move before it will do any kind of extend/retract logic. Pull it back in
+    EXPECT_EQ(intake_->SetExtended(false), true);
+
+    
     // now set it to read like it is extended
     sw_interface_.intake_position_encoder_val = sw_interface_.intake_config.EXTENDED;
     sw_interface_.deployed_limit_switch_val = false; // inverse logic, so false is pressed
