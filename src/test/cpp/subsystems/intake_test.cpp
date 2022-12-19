@@ -43,6 +43,29 @@ TEST_F(IntakeTest, IndexerPowerTest) {
     EXPECT_EQ(sw_interface_.indexer_power, kIndexerPower);
 }
 
+TEST_F(IntakeTest, IntakeGetPositionTest) {
+    sw_interface_.intake_position_encoder_val = 0 // set encoder to 0
+    sw_interface_.deployed_limit_switch = true; // inverse logic, so false is pressed
+
+    // call Periodic() so logic updates
+    intake->Periodic();
+
+    // the intake should read as retraced and not extended
+    EXPECT_EQ(intake->IsRetracted(), true);
+    EXPECT_EQ(intake->IsExtended(), false);
+
+    // now set it to read like it is extended
+    sw_interface_.intake_position_encoder_val = sw_interface_.EXTENDED;
+    sw_interface_.deployed_limit_switch = false; // inverse logic, so false is pressed
+
+    // call periodic to update the logic
+    intake->Periodic();
+
+    // and it should read like it is extended
+    EXPECT_EQ(intake->IsRetracted(), false);
+    EXPECT_EQ(intake->IsExtended(), true);
+}
+
 /**
  * The big test.
  * This needs to perform/test the following:
@@ -75,6 +98,9 @@ TEST_F(IntakeTest, IndexerPowerTest) {
  */
 TEST_F(IntakeTest, IntakePositionTest) {
     double last_intake_output = 0;
+
+    sw_interface_.intake_position_encoder_val = 0; // set the encoder to 0 because it was written to by the last test
+    sw_interface_.deployed_limit_switch = true; // reset the limit switch too
 
     // encoder should initially be 0
     EXPECT_DOUBLE_EQ(sw_interface_.intake_position_encoder_val, 0);

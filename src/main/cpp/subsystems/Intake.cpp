@@ -101,12 +101,23 @@ double Intake::GetSetpoint() {
     return intake_pid.GetSetpoint();
 }
 
-// this method seems useful but we don't end up using it in the Java version so it might get cut
-// leaving here (untouched except for commented out) for now
 /**
-bool Intake::IsExtended(bool *extended) { //TODO that's not the right code/logic to cover all cases and would be a bad idea anyways but this is a placeholder
-    *extended = this->interface_->deployed_limit_switch_val;
-    
-    return true;
+ * Returns if the intake is extended or not
+ * aka if the limit switch is being pressed, although there are times when it *is* extended
+ * and the switch is not pressed, because it bounces and the switches break a lot. That is not
+ * an important edge case, however, because nothing relies on this method other than unit tests.
+ */
+bool Intake::IsExtended() {
+    return this->interface_->deployed_limit_switch_val == true;
 }
-*/
+
+/**
+ * Returns if the intake is retracted or not
+ * probably wildely inaccurate because it's based on the encoder,
+ * but this is mainly here for unit testing purposes. In the future,
+ * might be better to have some kind of margin of error like
+ * abs(encoder_val) < 2 or something like that.
+ */
+bool Intake::IsRetracted() {
+    return this->interface_->intake_position_encoder_val == 0;
+}
