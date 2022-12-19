@@ -100,27 +100,64 @@ model {
     }
 }
 
+task copyDeployDir {
+    String prefix = 'test-results/frcUserProgramTest/'
+    String suffix = 'src/main/deploy'
 
-tasks.register('copyDeployDirForUnitTestsDebug', Copy) {
-    from project.fileTree('src/main/deploy')
-    if(OperatingSystem.current().isWindows()){
-        into layout.buildDirectory.dir("test-results/frcUserProgramTest/windowsx86-64/debug/src/main/deploy")
-    } else {
-        into layout.buildDirectory.dir("test-results/frcUserProgramTest/linuxathena/debug/src/main/deploy")
-    } 
-}
+    println prefix + suffix
+    println OperatingSystem.current()
 
-tasks.register('copyDeployDirForUnitTestsRelease', Copy) {
-    from project.fileTree('src/main/deploy')
     if(OperatingSystem.current().isWindows()){
-        into layout.buildDirectory.dir("test-results/frcUserProgramTest/windowsx86-64/release/src/main/deploy")
+        // Copy debug
+        copy {
+            from project.fileTree('src/main/deploy')
+            into layout.buildDirectory.dir(prefix + "windowsx86-64/debug/" + suffix)
+        }
+        // Copy release
+        copy {
+            from project.fileTree('src/main/deploy')
+            into layout.buildDirectory.dir(prefix + "windowsx86-64/release/" + suffix)
+        }
+        println 'Copied Windows configuration'
+        
     } else {
-        into layout.buildDirectory.dir("test-results/frcUserProgramTest/linuxathena/release/src/main/deploy")
+        // Linux Athena
+        // Copy debug
+        copy {
+            from project.fileTree('src/main/deploy')
+            into layout.buildDirectory.dir(prefix + "linuxathena/debug/" + suffix)
+        }
+        // Copy release
+        copy {
+            from project.fileTree('src/main/deploy')
+            into layout.buildDirectory.dir(prefix + "linuxathena/release/" + suffix)
+        }
+
+        // Linux x86-64
+        // Copy debug
+        copy {
+            from project.fileTree('src/main/deploy')
+            into layout.buildDirectory.dir(prefix + "linuxx86-64/debug/" + suffix)
+        }
+        // Copy release
+        copy {
+            from project.fileTree('src/main/deploy')
+            into layout.buildDirectory.dir(prefix + "linuxx86-64/release/" + suffix)
+        }
+        println 'Copied Linux configuration'
     } 
+    
 }
 
 // Copy the deploy/ folder when doing unit tests (check) in order to load things like parameters.
-check.dependsOn copyDeployDirForUnitTestsDebug
-build.dependsOn copyDeployDirForUnitTestsDebug
-check.dependsOn copyDeployDirForUnitTestsRelease
-build.dependsOn copyDeployDirForUnitTestsRelease
+check.dependsOn {
+    tasks.findAll {
+        task -> task.name.startsWith('copyDeployDir')
+    }
+}
+
+build.dependsOn {
+    tasks.findAll {
+        task -> task.name.startsWith('copyDeployDir')
+    }
+}
