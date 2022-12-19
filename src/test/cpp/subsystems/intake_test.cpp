@@ -133,7 +133,7 @@ TEST_F(IntakeTest, IntakePositionTest) {
 
     // intake position output now should be less than earlier, becuase we are closer to the setpoint
     // (remember output is negative now so less negative output > more negative output)
-    EXPECT_GT(last_intake_output, sw_interface_.intake_position_power);
+    EXPECT_GT(sw_interface_.intake_position_power, last_intake_output);
     
     // set the encoder to be at our setpoint
     sw_interface_.intake_position_encoder_val = 0;
