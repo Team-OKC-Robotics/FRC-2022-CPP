@@ -108,6 +108,9 @@ task copyDeployDir {
     println OperatingSystem.current()
 
     if(OperatingSystem.current().isWindows()){
+        println "COPYING DEPLOY FOR WINDOWS"
+        println "SRC: " + project.fileTree('src/main/deploy')
+        println "TO"
         // Copy debug
         copy {
             from project.fileTree('src/main/deploy')
@@ -118,9 +121,15 @@ task copyDeployDir {
             from project.fileTree('src/main/deploy')
             into layout.buildDirectory.dir(prefix + "windowsx86-64/release/" + suffix)
         }
+        println layout.buildDirectory.dir("")
+        println prefix + "windowsx86-64/debug/" + suffix
+        println prefix + "windowsx86-64/release/" + suffix
         println 'Copied Windows configuration'
         
     } else {
+        println "COPYING DEPLOY FOR LINUX"
+        println "SRC: " + project.fileTree('src/main/deploy')
+        println "TO"
         // Linux Athena
         // Copy debug
         copy {
@@ -132,6 +141,9 @@ task copyDeployDir {
             from project.fileTree('src/main/deploy')
             into layout.buildDirectory.dir(prefix + "linuxathena/release/" + suffix)
         }
+        println layout.buildDirectory.dir("")
+        println prefix + "linuxathena/debug/" + suffix
+        println prefix + "linuxathena/release/" + suffix
 
         // Linux x86-64
         // Copy debug
@@ -144,6 +156,9 @@ task copyDeployDir {
             from project.fileTree('src/main/deploy')
             into layout.buildDirectory.dir(prefix + "linuxx86-64/release/" + suffix)
         }
+
+        println prefix + "linuxx86-64/release/" + suffix
+        println prefix + "linuxx86-64/debug/" + suffix
         println 'Copied Linux configuration'
     } 
     
