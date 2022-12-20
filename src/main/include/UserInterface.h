@@ -39,4 +39,7 @@ namespace DrivetrainUI {
 
     // Gyro
     extern nt::GenericEntry &nt_reset_gyro;
+
+    // Save drivetrain parameters
+    extern nt::GenericEntry &nt_save;
 } // namespace DrivetrainUI

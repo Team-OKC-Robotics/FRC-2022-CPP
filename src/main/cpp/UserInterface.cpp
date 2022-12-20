@@ -35,4 +35,7 @@ namespace DrivetrainUI {
     // Gyro
     nt::GenericEntry &nt_reset_gyro =
         nt_tab.Add("Reset Gyro", false).GetEntry();
+
+    // Save parameters button
+    nt::GenericEntry &nt_save = nt_tab.Add("Save", false).GetEntry();
 } // namespace DrivetrainUI

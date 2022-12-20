@@ -4,11 +4,14 @@
 #include <fstream>
 #include <string.h>
 
+#include <frc/Filesystem.h>
+
 #include "Utils.h"
 #include "third_party/toml.hpp"
 
 namespace RobotParams {
     extern toml::table parameters;
+    extern std::string param_file;
 
     bool LoadParameters(const std::string &path);
     bool SaveParameters(const std::string &path);

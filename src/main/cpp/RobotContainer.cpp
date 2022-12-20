@@ -4,17 +4,11 @@
 
 #include "RobotContainer.h"
 
-#include <frc/Filesystem.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 RobotContainer::RobotContainer() {
     // Load robot parameters
-    // Get the FRC deploy folder path
-    std::string deploy_path = frc::filesystem::GetDeployDirectory();
-    std::string param_file = deploy_path + "/parameters.toml";
-
-    // Load parameters
-    VOKC_CALL(RobotParams::LoadParameters(param_file));
+    VOKC_CALL(RobotParams::LoadParameters(RobotParams::param_file));
 
     // Initialize the hardware interface.
     hardware_ = std::make_unique<HardwareInterface>();

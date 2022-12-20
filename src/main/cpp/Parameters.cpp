@@ -3,6 +3,10 @@
 namespace RobotParams {
     toml::table parameters;
 
+    // Save parameter file location.
+    std::string param_file =
+        frc::filesystem::GetDeployDirectory() + "/parameters.toml";
+
     bool LoadParameters(const std::string &path) {
         // Load the parameters from a file.
         try {

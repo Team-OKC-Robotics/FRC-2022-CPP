@@ -406,6 +406,13 @@ bool Drivetrain::UpdateShuffleboard() {
             heading_pid_.SetPID(heading_p, heading_i, heading_d);
             turn_pid_.SetPID(turn_p, turn_i, turn_d);
         }
+
+        // Allow saving parameters in non-competition modes
+        if (DrivetrainUI::nt_save.GetBoolean(true)) {
+            // Save the parameters.
+            OKC_CALL(RobotParams::SaveParameters(RobotParams::param_file));
+            DrivetrainUI::nt_save.SetBoolean(false);
+        }
     }
 
     // Resetting the Gyro needs to always be available.
