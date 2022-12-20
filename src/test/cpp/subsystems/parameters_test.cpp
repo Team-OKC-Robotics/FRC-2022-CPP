@@ -3,6 +3,9 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 #include "Parameters.h"
 
 class ParametersTest : public testing::Test {
@@ -12,6 +15,11 @@ public:
         std::string deploy_path = frc::filesystem::GetDeployDirectory();
         std::string param_file = deploy_path + "/parameters.toml";
         std::cout << param_file << std::endl;
+
+        for (const auto &entry : fs::directory_iterator(deploy_path))
+            std::cout << entry.path() << std::endl;
+
+        std::cout << "Loading Parameters...\n";
 
         // Load parameters
         ASSERT_TRUE(RobotParams::LoadParameters(param_file));
