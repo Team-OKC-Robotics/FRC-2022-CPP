@@ -11,6 +11,7 @@ public:
         // Get the FRC deploy folder path
         std::string deploy_path = frc::filesystem::GetDeployDirectory();
         std::string param_file = deploy_path + "/parameters.toml";
+        std::cout << param_file << std::endl;
 
         // Load parameters
         ASSERT_TRUE(RobotParams::LoadParameters(param_file));

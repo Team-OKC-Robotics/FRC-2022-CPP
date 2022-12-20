@@ -104,7 +104,7 @@ task copyDeployDir {
     String prefix = 'test-results/frcUserProgramTest/'
     String suffix = 'src/main/deploy'
 
-    println prefix + suffix
+    println prefix + "platform/version/" + suffix
     println OperatingSystem.current()
 
     if(OperatingSystem.current().isWindows()){
