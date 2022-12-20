@@ -176,3 +176,9 @@ build.dependsOn {
         task -> task.name.startsWith('copyDeployDir')
     }
 }
+
+run.dependsOn {
+    tasks.findAll {
+        task -> task.name.startsWith('copyDeployDir')
+    }
+}
