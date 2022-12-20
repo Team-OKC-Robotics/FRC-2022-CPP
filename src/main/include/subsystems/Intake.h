@@ -37,7 +37,10 @@ public:
     bool SetIndexerPower(const double &power);
     bool SetExtended(const bool &extended);
 
-    bool IsExtended(bool *extended);
+    int GetDirection();
+    double GetSetpoint();
+    bool IsExtended();
+    bool IsRetracted();
 
 private:
     IntakeSoftwareInterface *const interface_;
