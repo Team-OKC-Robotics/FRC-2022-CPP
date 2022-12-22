@@ -42,6 +42,20 @@ RobotContainer::RobotContainer() {
     // Link intake software to the I/O
     intake_ = std::make_shared<Intake>(intake_sw_.get());
 
+    // == Shooter ==
+    std::shared_ptr<ShooterHardwareInterface> shooter_hw;
+    VOKC_CALL(SetupShooterInterface(hardware_, &shooter_hw));
+
+    // Initialize the software interface
+    shooter_sw_ = std::make_shared<ShooterSoftwareInterface>();
+
+    // Link IntakeIO to hardware / software
+    shooter_io_ =
+        std::make_shared<ShooterIO>(shooter_hw.get(), shooter_sw_.get());
+
+    // Link intake software to the I/O
+    shooter_ = std::make_shared<Shooter>(shooter_sw_.get());
+
     // TODO: put other subsystems here.
 
     // Initialize the Gamepads
@@ -126,6 +140,15 @@ bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface) {
     actuators_interface->intake_motor->SetIdleMode(COAST);
     actuators_interface->indexer_motor->SetIdleMode(COAST);
 
+    // Shooter actuators
+    actuators_interface->shooter_motor =
+        std::make_unique<ctre_can::TalonFX>(SHOOTER_MOTOR);
+    actuators_interface->trigger_motor =
+        std::make_unique<rev::CANSparkMax>(TRIGGER_MOTOR, BRUSHLESS);
+
+    actuators_interface->trigger_motor->SetIdleMode(COAST);
+    actuators_interface->trigger_motor->SetSmartCurrentLimit(30);
+
     return true;
 }
 
@@ -149,6 +172,10 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
         std::make_unique<frc::DigitalInput>(DEPLOY_LIMIT_SWITCH);
     sensor_interface->retracted_limit_switch =
         std::make_unique<frc::DigitalInput>(RETRACTED_LIMIT_SWITCH);
+
+    // Shooter sensors
+    sensor_interface->ball_detector =
+        std::make_unique<frc::DigitalInput>(BALL_DETECTOR);
 
     return true;
 }
