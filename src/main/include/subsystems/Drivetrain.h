@@ -2,11 +2,15 @@
 
 #pragma once
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <memory>
 
 #include <frc/controller/PIDController.h>
 #include <frc2/command/SubsystemBase.h>
 
+#include "Parameters.h"
+#include "UserInterface.h"
 #include "Utils.h"
 #include "io/DrivetrainIO.h"
 
@@ -62,6 +66,10 @@ public:
     bool SetMaxOutput(const double &max_output);
 
 private:
+    // Shuffleboard funcitons
+    bool InitShuffleboard();
+    bool UpdateShuffleboard();
+
     DrivetrainSoftwareInterface *const interface_;
 
     // Controllers

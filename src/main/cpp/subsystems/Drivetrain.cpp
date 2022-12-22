@@ -2,8 +2,6 @@
 #include "subsystems/Drivetrain.h"
 
 bool Drivetrain::Init() {
-    // TODO: Set PID gains.
-
     // Set the open loop ramp rates for the motors.
     // for autonomous start with a fast ramp rate (not too fast otherwise we
     // kind of break the gearboxes) we had problems with stripping gears and
@@ -17,7 +15,26 @@ bool Drivetrain::Init() {
     heading_pid_.SetTolerance(7, 1);
     turn_pid_.SetTolerance(7, 2);
 
-    // TODO: shuffleboard.
+    // Get PID gains from parameters
+    double dist_p = RobotParams::GetParam("drivetrain.distance_pid.Kp", 0);
+    double dist_i = RobotParams::GetParam("drivetrain.distance_pid.Ki", 0);
+    double dist_d = RobotParams::GetParam("drivetrain.distance_pid.Kp", 0);
+
+    double heading_p = RobotParams::GetParam("drivetrain.heading_pid.Kp", 0);
+    double heading_i = RobotParams::GetParam("drivetrain.heading_pid.Ki", 0);
+    double heading_d = RobotParams::GetParam("drivetrain.heading_pid.Kp", 0);
+
+    double turn_p = RobotParams::GetParam("drivetrain.turn_pid.Kp", 0);
+    double turn_i = RobotParams::GetParam("drivetrain.turn_pid.Ki", 0);
+    double turn_d = RobotParams::GetParam("drivetrain.turn_pid.Kp", 0);
+
+    // Set PID gains.
+    dist_pid_.SetPID(dist_p, dist_i, dist_d);
+    heading_pid_.SetPID(heading_p, heading_i, heading_d);
+    turn_pid_.SetPID(turn_p, turn_i, turn_d);
+
+    // Initialize Shuffleboard from parameters.
+    OKC_CALL(InitShuffleboard());
 
     // Reset everything
     OKC_CALL(ResetEncoders());
@@ -30,8 +47,8 @@ bool Drivetrain::Init() {
 }
 
 void Drivetrain::Periodic() {
-    // TODO: implement once network tables and constants are set up
-    // It looks like this is just setting PID gains over and over.
+    // Update shuffleboard
+    VOKC_CALL(UpdateShuffleboard());
 }
 
 void Drivetrain::SimulationPeriodic() {
@@ -213,7 +230,10 @@ bool Drivetrain::ResetEncoders() {
     // Reset the encoders.
     interface_->reset_encoders = true;
 
-    // TODO: network tables.
+    // Update encoder UI
+    DrivetrainUI::nt_left_ticks.SetDouble(0);
+    DrivetrainUI::nt_right_ticks.SetDouble(0);
+    DrivetrainUI::nt_total_ticks.SetDouble(0);
 
     return true;
 }
@@ -221,7 +241,11 @@ bool Drivetrain::ResetEncoders() {
 bool Drivetrain::GetInches(const double &rotations, double *inches) {
     OKC_CHECK(inches != nullptr);
 
-    // TODO: implement once constants and network tables are set up.
+    double gear_ratio = RobotParams::GetParam("drivetrain.gear_ratio", 1);
+    double wheel_diameter =
+        RobotParams::GetParam("drivetrain.wheel_diameter", 1);
+
+    *inches = rotations * gear_ratio * wheel_diameter * M_PI;
 
     return true;
 }
@@ -286,6 +310,116 @@ bool Drivetrain::SetMaxOutput(const double &max_output) {
     OKC_CHECK(interface_ != nullptr);
 
     interface_->drive_config.max_output = max_output;
+
+    return true;
+}
+
+bool Drivetrain::InitShuffleboard() {
+    // Get parameters
+    double dist_p = RobotParams::GetParam("drivetrain.distance_pid.Kp", 0);
+    double dist_i = RobotParams::GetParam("drivetrain.distance_pid.Ki", 0);
+    double dist_d = RobotParams::GetParam("drivetrain.distance_pid.Kp", 0);
+
+    double heading_p = RobotParams::GetParam("drivetrain.heading_pid.Kp", 0);
+    double heading_i = RobotParams::GetParam("drivetrain.heading_pid.Ki", 0);
+    double heading_d = RobotParams::GetParam("drivetrain.heading_pid.Kp", 0);
+
+    double turn_p = RobotParams::GetParam("drivetrain.turn_pid.Kp", 0);
+    double turn_i = RobotParams::GetParam("drivetrain.turn_pid.Ki", 0);
+    double turn_d = RobotParams::GetParam("drivetrain.turn_pid.Kp", 0);
+
+    // Update dashboard.
+    DrivetrainUI::nt_dist_kp.SetDouble(dist_p);
+    DrivetrainUI::nt_dist_ki.SetDouble(dist_i);
+    DrivetrainUI::nt_dist_kd.SetDouble(dist_d);
+
+    DrivetrainUI::nt_heading_kp.SetDouble(heading_p);
+    DrivetrainUI::nt_heading_ki.SetDouble(heading_i);
+    DrivetrainUI::nt_heading_kd.SetDouble(heading_d);
+
+    DrivetrainUI::nt_turn_kp.SetDouble(turn_p);
+    DrivetrainUI::nt_turn_ki.SetDouble(turn_i);
+    DrivetrainUI::nt_turn_kd.SetDouble(turn_d);
+
+    return true;
+}
+
+bool Drivetrain::UpdateShuffleboard() {
+    // If competition mode isn't set to true, then allow the PID gains to be
+    // tuned.
+    bool is_competition = RobotParams::GetParam("competition", false);
+    if (!is_competition) {
+        // Update encoder UI
+        double encoder_tmp = 0.0;
+        OKC_CALL(GetLeftEncoderAverage(&encoder_tmp));
+        DrivetrainUI::nt_left_ticks.SetDouble(encoder_tmp);
+        OKC_CALL(GetRightEncoderAverage(&encoder_tmp));
+        DrivetrainUI::nt_right_ticks.SetDouble(encoder_tmp);
+        OKC_CALL(GetEncoderAverage(&encoder_tmp));
+        DrivetrainUI::nt_total_ticks.SetDouble(encoder_tmp);
+
+        // Heading UI
+        double heading_tmp = 0.0;
+        OKC_CALL(GetHeading(&heading_tmp));
+        DrivetrainUI::nt_heading.SetDouble(heading_tmp);
+
+        // Distance UI
+        double dist_err = dist_pid_.GetPositionError();
+        DrivetrainUI::nt_dist_error.SetDouble(dist_err);
+
+        // Update the PID Gains if write mode is true.
+        if (DrivetrainUI::nt_write_mode.GetBoolean(false)) {
+            // Get the current PID parameter values
+            double dist_p =
+                RobotParams::GetParam("drivetrain.distance_pid.Kp", 0);
+            double dist_i =
+                RobotParams::GetParam("drivetrain.distance_pid.Ki", 0);
+            double dist_d =
+                RobotParams::GetParam("drivetrain.distance_pid.Kp", 0);
+
+            double heading_p =
+                RobotParams::GetParam("drivetrain.heading_pid.Kp", 0);
+            double heading_i =
+                RobotParams::GetParam("drivetrain.heading_pid.Ki", 0);
+            double heading_d =
+                RobotParams::GetParam("drivetrain.heading_pid.Kp", 0);
+
+            double turn_p = RobotParams::GetParam("drivetrain.turn_pid.Kp", 0);
+            double turn_i = RobotParams::GetParam("drivetrain.turn_pid.Ki", 0);
+            double turn_d = RobotParams::GetParam("drivetrain.turn_pid.Kp", 0);
+
+            // Get the values from shuffleboard.
+            dist_p = DrivetrainUI::nt_dist_kp.GetDouble(dist_p);
+            dist_i = DrivetrainUI::nt_dist_ki.GetDouble(dist_i);
+            dist_d = DrivetrainUI::nt_dist_kd.GetDouble(dist_d);
+
+            heading_p = DrivetrainUI::nt_heading_kp.GetDouble(heading_p);
+            heading_i = DrivetrainUI::nt_heading_ki.GetDouble(heading_i);
+            heading_d = DrivetrainUI::nt_heading_kd.GetDouble(heading_d);
+
+            turn_p = DrivetrainUI::nt_turn_kp.GetDouble(turn_p);
+            turn_i = DrivetrainUI::nt_turn_ki.GetDouble(turn_i);
+            turn_d = DrivetrainUI::nt_turn_kd.GetDouble(turn_d);
+
+            // Distance PID
+            dist_pid_.SetPID(dist_p, dist_i, dist_d);
+            heading_pid_.SetPID(heading_p, heading_i, heading_d);
+            turn_pid_.SetPID(turn_p, turn_i, turn_d);
+        }
+
+        // Allow saving parameters in non-competition modes
+        if (DrivetrainUI::nt_save.GetBoolean(true)) {
+            // Save the parameters.
+            OKC_CALL(RobotParams::SaveParameters(RobotParams::param_file));
+            DrivetrainUI::nt_save.SetBoolean(false);
+        }
+    }
+
+    // Resetting the Gyro needs to always be available.
+    if (DrivetrainUI::nt_reset_gyro.GetBoolean(false)) {
+        interface_->reset_gyro = true;
+        DrivetrainUI::nt_reset_gyro.SetBoolean(false);
+    }
 
     return true;
 }
