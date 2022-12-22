@@ -44,17 +44,32 @@ RobotContainer::RobotContainer() {
 
     // TODO: put other subsystems here.
 
+    // Initialize the Gamepads
+    VOKC_CALL(InitGamepads());
+
+    // Initialize the commands
+    VOKC_CALL(InitCommands());
+
     // Configure the button bindings
     ConfigureButtonBindings();
 }
 
 void RobotContainer::ConfigureButtonBindings() {
     // Configure your button bindings here
+    driver_back_button_->OnTrue(teleop_drive_command_.get());
+    driver_a_button_->OnTrue(slow_teleop_drive_.get())
+        .OnFalse(teleop_drive_command_.get());
+    driver_b_button_->OnTrue(quick_teleop_drive_command_.get())
+        .OnFalse(teleop_drive_command_.get());
 }
 
-frc2::Command *RobotContainer::GetAutonomousCommand() {
+std::shared_ptr<frc2::Command> RobotContainer::GetAutonomousCommand() {
     // An example command will be run in autonomous
-    return &m_autonomousCommand;
+    return m_autonomousCommand;
+}
+
+std::shared_ptr<frc2::Command> RobotContainer::GetDriveCommand() {
+    return teleop_drive_command_;
 }
 
 bool RobotContainer::InitHardware(
@@ -134,6 +149,40 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
         std::make_unique<frc::DigitalInput>(DEPLOY_LIMIT_SWITCH);
     sensor_interface->retracted_limit_switch =
         std::make_unique<frc::DigitalInput>(RETRACTED_LIMIT_SWITCH);
+
+    return true;
+}
+
+bool RobotContainer::InitGamepads() {
+    // Get joystick IDs from parameters.toml
+    int gamepad1_id = RobotParams::GetParam("gamepad1_id", 0);
+    int gamepad2_id = RobotParams::GetParam("gamepad2_id", 2);
+
+    gamepad1_ = std::make_shared<frc::Joystick>(gamepad1_id);
+    gamepad2_ = std::make_shared<frc::Joystick>(gamepad2_id);
+
+    // Initialize the joystick buttons
+    driver_a_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad1_.get(), A_BUTTON);
+    driver_b_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad1_.get(), B_BUTTON);
+    driver_back_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad1_.get(), BACK_BUTTON);
+
+    return true;
+}
+
+bool RobotContainer::InitCommands() {
+    // Placeholder autonomous command.
+    m_autonomousCommand = std::make_shared<ExampleCommand>();
+
+    // Init drivetrain commands.
+    quick_teleop_drive_command_ =
+        std::make_shared<QuickTeleopDriveCommand>(drivetrain_, gamepad1_);
+    slow_teleop_drive_ =
+        std::make_shared<SlowTeleopDrive>(drivetrain_, gamepad1_);
+    teleop_drive_command_ =
+        std::make_shared<TeleopDriveCommand>(drivetrain_, gamepad1_);
 
     return true;
 }

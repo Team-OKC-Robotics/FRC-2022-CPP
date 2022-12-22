@@ -5,19 +5,41 @@
 #pragma once
 
 #include <frc/Errors.h>
-#include <frc2/command/Command.h>
-#include <frc2/command/SubsystemBase.h>
+
 #include <memory>
 #include <vector>
 
+#include "Parameters.h"
 #include "RobotContainer.h"
 #include "Utils.h"
-#include "commands/ExampleCommand.h"
+
+// Hardware
 #include "hardware/HardwareInterface.h"
+
+// I/O Subsystems
 #include "io/DrivetrainIO.h"
-#include "subsystems/Drivetrain.h"
 #include "io/IntakeIO.h"
+
+// Subsystems
+#include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
+
+// Gamepad
+#include "ui/GamepadMap.h"
+#include <frc/Joystick.h>
+#include <frc2/command/button/JoystickButton.h>
+
+// Commands
+#include "commands/ExampleCommand.h"
+#include "commands/drivetrain/DriveCommand.h"
+#include "commands/drivetrain/DriveSetSpeedCommand.h"
+#include "commands/drivetrain/QuickTeleopDriveCommand.h"
+#include "commands/drivetrain/SetSpeedDrive.h"
+#include "commands/drivetrain/SlowTeleopDrive.h"
+#include "commands/drivetrain/TeleopDriveCommand.h"
+#include "commands/drivetrain/TurnCommand.h"
+#include <frc2/command/Command.h>
+#include <frc2/command/SubsystemBase.h>
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -30,7 +52,8 @@ class RobotContainer {
 public:
     RobotContainer();
 
-    frc2::Command *GetAutonomousCommand();
+    std::shared_ptr<frc2::Command> GetAutonomousCommand();
+    std::shared_ptr<frc2::Command> GetDriveCommand();
 
 private:
     // Hardware Initialization
@@ -38,6 +61,13 @@ private:
     bool InitActuators(ActuatorInterface *actuators_interface);
     bool InitSensors(const ActuatorInterface &actuators,
                      SensorInterface *sensor_interface);
+
+    // Command initialization
+    bool InitCommands();
+
+    // Gamepad initialization
+    bool InitGamepads();
+    void ConfigureButtonBindings();
 
     // Robot Hardware
     std::unique_ptr<HardwareInterface> hardware_;
@@ -54,8 +84,25 @@ private:
     std::shared_ptr<Drivetrain> drivetrain_;
     std::shared_ptr<Intake> intake_;
 
-    // Commands
-    ExampleCommand m_autonomousCommand;
+    /**
+     * User interfaces
+     * - Gamepads
+     * - Joystick Buttons
+     */
+    std::shared_ptr<frc::Joystick> gamepad1_;
+    std::shared_ptr<frc::Joystick> gamepad2_;
 
-    void ConfigureButtonBindings();
+    std::shared_ptr<frc2::JoystickButton> driver_a_button_;
+    std::shared_ptr<frc2::JoystickButton> driver_b_button_;
+    std::shared_ptr<frc2::JoystickButton> driver_back_button_;
+
+    /**
+     * Commands
+     */
+    std::shared_ptr<ExampleCommand> m_autonomousCommand;
+
+    // Drivetrain
+    std::shared_ptr<QuickTeleopDriveCommand> quick_teleop_drive_command_;
+    std::shared_ptr<SlowTeleopDrive> slow_teleop_drive_;
+    std::shared_ptr<TeleopDriveCommand> teleop_drive_command_;
 };
