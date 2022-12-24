@@ -13,7 +13,8 @@ bool Shooter::Init() {
     shooter_pid_.SetTolerance(100, 100);
 
     // Configure shooter motor
-    interface_->shooter_config.inverted = true;
+    interface_->shooter_config.inverted =
+        ctre_mc::InvertType::InvertMotorOutput;
     interface_->shooter_config.Kp = shoot_p;
     interface_->shooter_config.Ki = shoot_i;
     interface_->shooter_config.Kd = shoot_d;

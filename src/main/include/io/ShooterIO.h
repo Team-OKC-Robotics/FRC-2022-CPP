@@ -3,8 +3,9 @@
 
 #include <memory>
 
+#include <ctre/phoenix/motorcontrol/FeedbackDevice.h>
+#include <ctre/phoenix/motorcontrol/InvertType.h>
 #include <ctre/phoenix/motorcontrol/can/TalonFX.h>
-#incld
 #include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
@@ -15,7 +16,7 @@ namespace ctre_mc = ctre::phoenix::motorcontrol;
 namespace ctre_can = ctre::phoenix::motorcontrol::can;
 
 typedef struct shooter_motor_config {
-    bool inverted;
+    ctre_mc::InvertType inverted;
     double neutral_deadband;
     ctre_mc::NeutralMode neutral_mode;
     double Kp;

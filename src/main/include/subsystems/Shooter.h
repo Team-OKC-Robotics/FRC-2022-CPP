@@ -11,9 +11,10 @@
 #include <wpi/DataLog.h>
 
 #include "Parameters.h"
-#include "UserInterface.h"
 #include "Utils.h"
 #include "io/ShooterIO.h"
+#include "ui/UserInterface.h"
+
 
 enum ShooterPreset {
     NORMAL_SHOT,

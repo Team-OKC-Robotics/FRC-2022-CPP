@@ -1,8 +1,10 @@
 
 #pragma once
 
+#include <ctre/phoenix/motorcontrol/can/TalonFX.h>
 #include <memory>
 #include <rev/CANSparkMax.h>
+
 
 // CTRE namespace
 namespace ctre_can = ctre::phoenix::motorcontrol::can;
