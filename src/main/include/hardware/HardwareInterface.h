@@ -9,6 +9,7 @@
 
 // Subsystem I/O
 #include "io/DrivetrainIO.h"
+#include "io/SwerveDriveIO.h"
 #include "io/IntakeIO.h"
 
 typedef struct hardware_t {
@@ -35,6 +36,19 @@ typedef struct hardware_t {
 bool SetupDrivetrainInterface(
     std::unique_ptr<HardwareInterface> &hardware,
     std::shared_ptr<DrivetrainHardwareInterface> *interface);
+
+/**
+ * @brief Link the Swerve drive to the hardware interfaces.
+ *
+ * @param interface
+ * @return true
+ * @return false
+ */
+bool SetupSwerveDriveInterface(
+    std::unique_ptr<HardwareInterface> &hardware,
+    std::shared_ptr<SwerveDriveHardwareInterface> *interface);
+
+
 
 /**
  * @brief Link the Intake to the hardware interfaces.
