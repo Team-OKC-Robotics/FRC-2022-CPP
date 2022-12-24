@@ -48,6 +48,9 @@ typedef struct shooter_software_interface_t {
     bool is_ball_detected;
 
     double shooter_rpm;
+    double shooter_output_pct;
+    double ticks;
+    double velocity_error;
 
     // SW OUTPUTS
     bool stop_shooter;
@@ -83,6 +86,11 @@ public:
     bool ProcessIO();
 
 private:
+    bool UpdateShooterConfig();
+    bool UpdateTriggerConfig();
+    bool SetMotorOutputs();
+    bool ReadSensors();
+
     ShooterHardwareInterface *const hw_interface_;
     ShooterSoftwareInterface *const sw_interface_;
 };

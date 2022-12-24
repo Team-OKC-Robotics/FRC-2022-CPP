@@ -49,7 +49,7 @@ namespace ShooterUI {
         nt_tab.Add("Write Mode", false).GetEntry();
 
     // sensors
-    nt::GenericEntry &nt__ticks = nt_tab.Add("Shooter Ticks", 0).GetEntry();
+    nt::GenericEntry &nt_ticks = nt_tab.Add("Shooter Ticks", 0).GetEntry();
     nt::GenericEntry &nt_rpm = nt_tab.Add("Shooter RPM", 0).GetEntry();
     nt::GenericEntry &nt_output = nt_tab.Add("Shooter Output", 0).GetEntry();
     nt::GenericEntry &nt_setpoint = nt_tab.Add("Setpoint", 0).GetEntry();

@@ -7,6 +7,11 @@
 #include <frc/controller/PIDController.h>
 #include <frc2/command/SubsystemBase.h>
 
+#include <frc/DataLogManager.h>
+#include <wpi/DataLog.h>
+
+#include "Parameters.h"
+#include "UserInterface.h"
 #include "Utils.h"
 #include "io/ShooterIO.h"
 
@@ -59,4 +64,10 @@ private:
 
     // Controllers
     frc2::PIDController shooter_pid_;
+
+    // Logging
+    std::unique_ptr<wpi::log::DoubleLogEntry> rpm_log_;
+    std::unique_ptr<wpi::log::DoubleLogEntry> setpoint_log_;
+    std::unique_ptr<wpi::log::DoubleLogEntry> output_log_;
+    std::unique_ptr<wpi::log::DoubleLogEntry> calculated_log_;
 };
