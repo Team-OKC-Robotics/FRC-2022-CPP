@@ -33,6 +33,19 @@ typedef struct actuator_interface_t {
     std::unique_ptr<rev::CANSparkMax> right_motor_2;
     std::unique_ptr<rev::CANSparkMax> right_motor_3;
 
+    // swerve drive motors
+    std::unique_ptr<rev::CANSparkMax> left_front_drive_motor;
+    std::unique_ptr<rev::CANSparkMax> left_back_drive_motor;
+
+    std::unique_ptr<rev::CANSparkMax> right_front_drive_motor;
+    std::unique_ptr<rev::CANSparkMax> right_back_drive_motor;
+
+    std::unique_ptr<rev::CANSparkMax> left_front_steer_motor;
+    std::unique_ptr<rev::CANSparkMax> left_back_steer_motor;
+
+    std::unique_ptr<rev::CANSparkMax> right_front_steer_motor;
+    std::unique_ptr<rev::CANSparkMax> right_back_steer_motor;
+
     // intake motors
     std::unique_ptr<rev::CANSparkMax> intake_position_motor;
     std::unique_ptr<rev::CANSparkMax> intake_motor;
