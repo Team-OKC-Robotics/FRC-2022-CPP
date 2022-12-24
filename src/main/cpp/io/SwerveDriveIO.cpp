@@ -17,7 +17,7 @@ bool SwerveDriveIO::ProcessIO() {
     // Set the software outputs
     // If the swerve drive configuration needs to be updated, update it.
     if (sw_interface_->update_config) {
-        OKC_CALL(UpdateDriveConfig(sw_interface_->swerve_drive_config));
+        OKC_CALL(UpdateDriveConfig(sw_interface_->drive_config));
 
         // Lower the update flag
         sw_interface_->update_config = false;
