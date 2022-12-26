@@ -15,8 +15,8 @@
 #include "io/ShooterIO.h"
 #include "ui/UserInterface.h"
 
-
 enum ShooterPreset {
+    NONE,
     NORMAL_SHOT,
     AGAINST_HUB,
     LOW_GOAL,
