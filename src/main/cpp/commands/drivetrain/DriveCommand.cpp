@@ -8,10 +8,14 @@ DriveCommand::DriveCommand(std::shared_ptr<Drivetrain> drivetrain,
     distance_ = distance;
     max_output_ = max_output;
 
-    this->AddRequirements(drivetrain_.get());
+    if (drivetrain_ != nullptr) {
+        this->AddRequirements(drivetrain_.get());
+    }
 }
 
 void DriveCommand::Initialize() {
+    VOKC_CHECK(drivetrain_ != nullptr);
+
     VOKC_CALL(drivetrain_->ResetEncoders());
     VOKC_CALL(drivetrain_->ResetDistancePID());
     VOKC_CALL(drivetrain_->ResetHeadingPID());
@@ -20,6 +24,7 @@ void DriveCommand::Initialize() {
 }
 
 void DriveCommand::Execute() {
+    VOKC_CHECK(drivetrain_ != nullptr);
     VOKC_CALL(drivetrain_->DriveDistance(distance_));
 }
 
@@ -28,6 +33,10 @@ void DriveCommand::End(bool executed) {
 }
 
 bool DriveCommand::IsFinished() {
+    if (drivetrain_ == nullptr) {
+        return true;
+    }
+
     bool distance_achieved = false;
     bool heading_achieved = false;
 

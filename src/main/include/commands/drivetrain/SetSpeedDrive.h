@@ -31,7 +31,9 @@ public:
         speed_ = speed;
         time_ = time;
 
-        this->AddRequirements(drivetrain_.get());
+        if (drivetrain_ != nullptr) {
+            this->AddRequirements(drivetrain_.get());
+        }
     };
 
     void Execute() override;

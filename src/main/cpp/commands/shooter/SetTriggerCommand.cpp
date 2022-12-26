@@ -8,7 +8,9 @@ SetTriggerCommand::SetTriggerCommand(std::shared_ptr<Shooter> shooter,
     power_ = power;
 
     // Add the shooter as a requirement
-    AddRequirements(shooter_.get());
+    if (shooter_ != nullptr) {
+        this->AddRequirements(shooter_.get());
+    }
 }
 
 void SetTriggerCommand::Execute() {

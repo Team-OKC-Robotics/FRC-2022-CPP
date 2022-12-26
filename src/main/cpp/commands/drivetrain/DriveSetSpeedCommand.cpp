@@ -8,10 +8,14 @@ DriveSetSpeedCommand::DriveSetSpeedCommand(
     distance_ = distance;
     speed_ = speed;
 
-    this->AddRequirements(drivetrain_.get());
+    if (drivetrain_ != nullptr) {
+        this->AddRequirements(drivetrain_.get());
+    }
 }
 
 void DriveSetSpeedCommand::Initialize() {
+    VOKC_CHECK(drivetrain_ != nullptr);
+
     VOKC_CALL(drivetrain_->ResetEncoders());
     VOKC_CALL(drivetrain_->ResetDistancePID());
     VOKC_CALL(drivetrain_->ResetHeadingPID());
@@ -20,10 +24,15 @@ void DriveSetSpeedCommand::Initialize() {
 }
 
 void DriveSetSpeedCommand::Execute() {
+    VOKC_CHECK(drivetrain_ != nullptr);
     VOKC_CALL(drivetrain_->DriveOnHeading(speed_, distance_));
 }
 
 bool DriveSetSpeedCommand::IsFinished() {
+    if (drivetrain_ == nullptr) {
+        return true;
+    }
+
     bool distance_achieved = false;
 
     if (drivetrain_->IsAtDistanceSetpoint(&distance_achieved)) {

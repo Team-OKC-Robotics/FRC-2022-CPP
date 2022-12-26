@@ -8,7 +8,9 @@ SetShooterCommand::SetShooterCommand(std::shared_ptr<Shooter> shooter,
     rpm_ = rpm;
 
     // Add the shooter as a requirement
-    AddRequirements(shooter_.get());
+    if (shooter_ != nullptr) {
+        this->AddRequirements(shooter_.get());
+    }
 }
 
 void SetShooterCommand::Execute() {
@@ -17,7 +19,9 @@ void SetShooterCommand::Execute() {
 }
 
 bool SetShooterCommand::IsFinished() {
-    VOKC_CHECK(shooter_ != nullptr);
+    if (shooter_ == nullptr) {
+        return true;
+    }
 
     bool at_setpoint = true;
     if (shooter_->IsAtShooterSetpoint(&at_setpoint)) {

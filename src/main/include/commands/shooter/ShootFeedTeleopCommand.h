@@ -28,7 +28,9 @@ public:
         : shooter_(shooter), rpm_(rpm), power_(power) {
 
         // Add the shooter as a requirement
-        AddRequirements(shooter_.get());
+        if (shooter_ != nullptr) {
+            this->AddRequirements(shooter_.get());
+        }
     }
 
     void Execute() override;

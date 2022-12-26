@@ -29,7 +29,9 @@ public:
         : shooter_(shooter), gamepad_(gamepad), power_(power) {
 
         // Add the shooter as a requirement
-        AddRequirements(shooter_.get());
+        if (shooter_ != nullptr) {
+            this->AddRequirements(shooter_.get());
+        }
     }
 
     void Execute() override;
