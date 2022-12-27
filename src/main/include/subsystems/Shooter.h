@@ -6,10 +6,9 @@
 
 #include <frc/controller/PIDController.h>
 #include <frc2/command/SubsystemBase.h>
-
-#include <frc/DataLogManager.h>
 #include <wpi/DataLog.h>
 
+#include "Logging.h"
 #include "Parameters.h"
 #include "Utils.h"
 #include "io/ShooterIO.h"

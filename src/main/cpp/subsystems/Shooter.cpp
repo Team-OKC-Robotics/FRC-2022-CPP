@@ -29,14 +29,14 @@ bool Shooter::Init() {
     interface_->update_trigger_config = true;
 
     // Initialize logging.
-    wpi::log::DataLog &log = frc::DataLogManager::GetLog();
-    rpm_log_ = std::make_unique<wpi::log::DoubleLogEntry>(log, "/shooter/rpm");
-    setpoint_log_ =
-        std::make_unique<wpi::log::DoubleLogEntry>(log, "/shooter/setpoint");
-    output_log_ =
-        std::make_unique<wpi::log::DoubleLogEntry>(log, "/shooter/output");
+    rpm_log_ = std::make_unique<wpi::log::DoubleLogEntry>(TeamOKC::log,
+                                                          "/shooter/rpm");
+    setpoint_log_ = std::make_unique<wpi::log::DoubleLogEntry>(
+        TeamOKC::log, "/shooter/setpoint");
+    output_log_ = std::make_unique<wpi::log::DoubleLogEntry>(TeamOKC::log,
+                                                             "/shooter/output");
     calculated_log_ = std::make_unique<wpi::log::DoubleLogEntry>(
-        log, "/shooter/pid-calculate");
+        TeamOKC::log, "/shooter/pid-calculate");
 
     return true;
 }

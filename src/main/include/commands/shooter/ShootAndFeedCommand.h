@@ -24,7 +24,7 @@ public:
      */
     explicit ShootAndFeedCommand(std::shared_ptr<Shooter> shooter, double rpm,
                                  units::second_t time)
-        : shooter_(shooter), rpm_(rpm), frc2::WaitCommand(time) {
+        : frc2::WaitCommand(time), shooter_(shooter), rpm_(rpm) {
         // Add the shooter as a requirement
         if (shooter_ != nullptr) {
             this->AddRequirements(shooter_.get());
