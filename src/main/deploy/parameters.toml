@@ -74,3 +74,9 @@ camera_angle = 0 # deg
 Kp = 0.03
 Ki = 0
 Kd = 0.001
+
+[swerve]
+# assumes our modules are located in a square, everything should be the same distance from the center
+# units are in meters
+x_disp = 0.3
+y_disp = 0.3
