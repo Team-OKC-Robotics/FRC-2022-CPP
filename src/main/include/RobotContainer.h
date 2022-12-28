@@ -31,8 +31,9 @@
 #include <frc/Joystick.h>
 #include <frc2/command/button/JoystickButton.h>
 
-// Commands
+/// Commands
 #include "commands/ExampleCommand.h"
+// Drivetrain
 #include "commands/drivetrain/DriveCommand.h"
 #include "commands/drivetrain/DriveSetSpeedCommand.h"
 #include "commands/drivetrain/QuickTeleopDriveCommand.h"
@@ -40,6 +41,12 @@
 #include "commands/drivetrain/SlowTeleopDrive.h"
 #include "commands/drivetrain/TeleopDriveCommand.h"
 #include "commands/drivetrain/TurnCommand.h"
+// Shooter
+#include "commands/shooter/FeedCommand.h"
+#include "commands/shooter/SetTriggerCommand.h"
+#include "commands/shooter/ShooterPresetCommand.h"
+#include "commands/shooter/StopShooterCommand.h"
+
 #include <frc2/command/Command.h>
 #include <frc2/command/SubsystemBase.h>
 
@@ -101,6 +108,9 @@ private:
     std::shared_ptr<frc2::JoystickButton> driver_b_button_;
     std::shared_ptr<frc2::JoystickButton> driver_back_button_;
 
+    std::shared_ptr<frc2::JoystickButton> manip_a_button_;
+    std::shared_ptr<frc2::JoystickButton> manip_b_button_;
+
     /**
      * Commands
      */
@@ -110,4 +120,10 @@ private:
     std::shared_ptr<QuickTeleopDriveCommand> quick_teleop_drive_command_;
     std::shared_ptr<SlowTeleopDrive> slow_teleop_drive_;
     std::shared_ptr<TeleopDriveCommand> teleop_drive_command_;
+
+    // Shooter
+    std::shared_ptr<FeedCommand> feed_command_;
+    std::shared_ptr<StopShooterCommand> stop_shooter_command_;
+    std::shared_ptr<SetTriggerCommand> stop_trigger_command_;
+    std::shared_ptr<ShooterPresetCommand> shooter_preset_command_;
 };

@@ -69,12 +69,25 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureButtonBindings() {
+    VOKC_CHECK(driver_a_button_ != nullptr);
+    VOKC_CHECK(driver_b_button_ != nullptr);
+    VOKC_CHECK(driver_back_button_ != nullptr);
+
     // Configure your button bindings here
     driver_back_button_->OnTrue(teleop_drive_command_.get());
     driver_a_button_->OnTrue(slow_teleop_drive_.get())
         .OnFalse(teleop_drive_command_.get());
     driver_b_button_->OnTrue(quick_teleop_drive_command_.get())
         .OnFalse(teleop_drive_command_.get());
+
+    // Shooter
+    VOKC_CHECK(manip_a_button_ != nullptr);
+    VOKC_CHECK(manip_b_button_ != nullptr);
+
+    manip_a_button_->OnTrue(shooter_preset_command_.get())
+        .OnFalse(stop_shooter_command_.get());
+    manip_b_button_->OnTrue(feed_command_.get())
+        .OnFalse(stop_trigger_command_.get());
 }
 
 std::shared_ptr<frc2::Command> RobotContainer::GetAutonomousCommand() {
@@ -196,6 +209,12 @@ bool RobotContainer::InitGamepads() {
     driver_back_button_ =
         std::make_shared<frc2::JoystickButton>(gamepad1_.get(), BACK_BUTTON);
 
+    // Shooter
+    manip_a_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad2_.get(), A_BUTTON);
+    manip_b_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad2_.get(), B_BUTTON);
+
     return true;
 }
 
@@ -210,6 +229,14 @@ bool RobotContainer::InitCommands() {
         std::make_shared<SlowTeleopDrive>(drivetrain_, gamepad1_);
     teleop_drive_command_ =
         std::make_shared<TeleopDriveCommand>(drivetrain_, gamepad1_);
+
+    // Init shooter commands
+    // TODO: make these parameterized.
+    feed_command_ = std::make_shared<FeedCommand>(shooter_, 0.4);
+    shooter_preset_command_ =
+        std::make_shared<ShooterPresetCommand>(shooter_, gamepad2_, 0.4);
+    stop_shooter_command_ = std::make_shared<StopShooterCommand>(shooter_);
+    stop_trigger_command_ = std::make_shared<SetTriggerCommand>(shooter_, 0);
 
     return true;
 }
