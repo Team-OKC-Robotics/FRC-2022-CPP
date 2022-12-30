@@ -19,18 +19,21 @@
 // I/O Subsystems
 #include "io/DrivetrainIO.h"
 #include "io/IntakeIO.h"
+#include "io/ShooterIO.h"
 
 // Subsystems
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Shooter.h"
 
 // Gamepad
 #include "ui/GamepadMap.h"
 #include <frc/Joystick.h>
 #include <frc2/command/button/JoystickButton.h>
 
-// Commands
+/// Commands
 #include "commands/ExampleCommand.h"
+// Drivetrain
 #include "commands/drivetrain/DriveCommand.h"
 #include "commands/drivetrain/DriveSetSpeedCommand.h"
 #include "commands/drivetrain/QuickTeleopDriveCommand.h"
@@ -38,6 +41,12 @@
 #include "commands/drivetrain/SlowTeleopDrive.h"
 #include "commands/drivetrain/TeleopDriveCommand.h"
 #include "commands/drivetrain/TurnCommand.h"
+// Shooter
+#include "commands/shooter/FeedCommand.h"
+#include "commands/shooter/SetTriggerCommand.h"
+#include "commands/shooter/ShooterPresetCommand.h"
+#include "commands/shooter/StopShooterCommand.h"
+
 #include <frc2/command/Command.h>
 #include <frc2/command/SubsystemBase.h>
 
@@ -75,14 +84,17 @@ private:
     // Hardware I/O interfaces
     std::shared_ptr<DrivetrainIO> drivetrain_io_;
     std::shared_ptr<IntakeIO> intake_io_;
+    std::shared_ptr<ShooterIO> shooter_io_;
 
     // Robot software interfaces.
     std::shared_ptr<DrivetrainSoftwareInterface> drivetrain_sw_;
     std::shared_ptr<IntakeSoftwareInterface> intake_sw_;
+    std::shared_ptr<ShooterSoftwareInterface> shooter_sw_;
 
     // Subsystems
     std::shared_ptr<Drivetrain> drivetrain_;
     std::shared_ptr<Intake> intake_;
+    std::shared_ptr<Shooter> shooter_;
 
     /**
      * User interfaces
@@ -96,6 +108,9 @@ private:
     std::shared_ptr<frc2::JoystickButton> driver_b_button_;
     std::shared_ptr<frc2::JoystickButton> driver_back_button_;
 
+    std::shared_ptr<frc2::JoystickButton> manip_a_button_;
+    std::shared_ptr<frc2::JoystickButton> manip_b_button_;
+
     /**
      * Commands
      */
@@ -105,4 +120,10 @@ private:
     std::shared_ptr<QuickTeleopDriveCommand> quick_teleop_drive_command_;
     std::shared_ptr<SlowTeleopDrive> slow_teleop_drive_;
     std::shared_ptr<TeleopDriveCommand> teleop_drive_command_;
+
+    // Shooter
+    std::shared_ptr<FeedCommand> feed_command_;
+    std::shared_ptr<StopShooterCommand> stop_shooter_command_;
+    std::shared_ptr<SetTriggerCommand> stop_trigger_command_;
+    std::shared_ptr<ShooterPresetCommand> shooter_preset_command_;
 };
