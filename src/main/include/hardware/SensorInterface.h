@@ -4,13 +4,15 @@
 #include <memory>
 
 #include "AHRS.h"
-#include <rev/RelativeEncoder.h>
 #include <frc/DigitalInput.h>
 #include <frc/AnalogInput.h>
+#include <rev/RelativeEncoder.h>
 
 // == sensor ports ==
 #define DEPLOY_LIMIT_SWITCH 2
 #define RETRACTED_LIMIT_SWITCH 3
+
+#define BALL_DETECTOR 9
 
 typedef struct sensors_t {
     // navX IMU
@@ -24,4 +26,7 @@ typedef struct sensors_t {
     std::unique_ptr<frc::AnalogInput> left_back_steer_encoder;
     std::unique_ptr<frc::AnalogInput> right_front_steer_encoder;
     std::unique_ptr<frc::AnalogInput> right_back_steer_encoder;
+
+    // Shooter ball detector
+    std::unique_ptr<frc::DigitalInput> ball_detector;
 } SensorInterface;

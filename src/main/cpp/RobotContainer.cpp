@@ -57,19 +57,61 @@ RobotContainer::RobotContainer() {
     // Link intake software to the I/O
     intake_ = std::make_shared<Intake>(intake_sw_.get());
 
+    // == Shooter ==
+    std::shared_ptr<ShooterHardwareInterface> shooter_hw;
+    VOKC_CALL(SetupShooterInterface(hardware_, &shooter_hw));
+
+    // Initialize the software interface
+    shooter_sw_ = std::make_shared<ShooterSoftwareInterface>();
+
+    // Link IntakeIO to hardware / software
+    shooter_io_ =
+        std::make_shared<ShooterIO>(shooter_hw.get(), shooter_sw_.get());
+
+    // Link intake software to the I/O
+    shooter_ = std::make_shared<Shooter>(shooter_sw_.get());
+
     // TODO: put other subsystems here.
+
+    // Initialize the Gamepads
+    VOKC_CALL(InitGamepads());
+
+    // Initialize the commands
+    VOKC_CALL(InitCommands());
 
     // Configure the button bindings
     ConfigureButtonBindings();
 }
 
 void RobotContainer::ConfigureButtonBindings() {
+    VOKC_CHECK(driver_a_button_ != nullptr);
+    VOKC_CHECK(driver_b_button_ != nullptr);
+    VOKC_CHECK(driver_back_button_ != nullptr);
+
     // Configure your button bindings here
+    driver_back_button_->OnTrue(teleop_drive_command_.get());
+    driver_a_button_->OnTrue(slow_teleop_drive_.get())
+        .OnFalse(teleop_drive_command_.get());
+    driver_b_button_->OnTrue(quick_teleop_drive_command_.get())
+        .OnFalse(teleop_drive_command_.get());
+
+    // Shooter
+    VOKC_CHECK(manip_a_button_ != nullptr);
+    VOKC_CHECK(manip_b_button_ != nullptr);
+
+    manip_a_button_->OnTrue(shooter_preset_command_.get())
+        .OnFalse(stop_shooter_command_.get());
+    manip_b_button_->OnTrue(feed_command_.get())
+        .OnFalse(stop_trigger_command_.get());
 }
 
-frc2::Command *RobotContainer::GetAutonomousCommand() {
+std::shared_ptr<frc2::Command> RobotContainer::GetAutonomousCommand() {
     // An example command will be run in autonomous
-    return &m_autonomousCommand;
+    return m_autonomousCommand;
+}
+
+std::shared_ptr<frc2::Command> RobotContainer::GetDriveCommand() {
+    return teleop_drive_command_;
 }
 
 bool RobotContainer::InitHardware(
@@ -126,6 +168,15 @@ bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface) {
     actuators_interface->intake_motor->SetIdleMode(COAST);
     actuators_interface->indexer_motor->SetIdleMode(COAST);
 
+    // Shooter actuators
+    actuators_interface->shooter_motor =
+        std::make_unique<ctre_can::TalonFX>(SHOOTER_MOTOR);
+    actuators_interface->trigger_motor =
+        std::make_unique<rev::CANSparkMax>(TRIGGER_MOTOR, BRUSHLESS);
+
+    actuators_interface->trigger_motor->SetIdleMode(COAST);
+    actuators_interface->trigger_motor->SetSmartCurrentLimit(30);
+
     return true;
 }
 
@@ -149,6 +200,58 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
         std::make_unique<frc::DigitalInput>(DEPLOY_LIMIT_SWITCH);
     sensor_interface->retracted_limit_switch =
         std::make_unique<frc::DigitalInput>(RETRACTED_LIMIT_SWITCH);
+
+    // Shooter sensors
+    sensor_interface->ball_detector =
+        std::make_unique<frc::DigitalInput>(BALL_DETECTOR);
+
+    return true;
+}
+
+bool RobotContainer::InitGamepads() {
+    // Get joystick IDs from parameters.toml
+    int gamepad1_id = RobotParams::GetParam("gamepad1_id", 0);
+    int gamepad2_id = RobotParams::GetParam("gamepad2_id", 2);
+
+    gamepad1_ = std::make_shared<frc::Joystick>(gamepad1_id);
+    gamepad2_ = std::make_shared<frc::Joystick>(gamepad2_id);
+
+    // Initialize the joystick buttons
+    driver_a_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad1_.get(), A_BUTTON);
+    driver_b_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad1_.get(), B_BUTTON);
+    driver_back_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad1_.get(), BACK_BUTTON);
+
+    // Shooter
+    manip_a_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad2_.get(), A_BUTTON);
+    manip_b_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad2_.get(), B_BUTTON);
+
+    return true;
+}
+
+bool RobotContainer::InitCommands() {
+    // Placeholder autonomous command.
+    m_autonomousCommand = std::make_shared<ExampleCommand>();
+
+    // Init drivetrain commands.
+    quick_teleop_drive_command_ =
+        std::make_shared<QuickTeleopDriveCommand>(drivetrain_, gamepad1_);
+    slow_teleop_drive_ =
+        std::make_shared<SlowTeleopDrive>(drivetrain_, gamepad1_);
+    teleop_drive_command_ =
+        std::make_shared<TeleopDriveCommand>(drivetrain_, gamepad1_);
+
+    // Init shooter commands
+    // TODO: make these parameterized.
+    feed_command_ = std::make_shared<FeedCommand>(shooter_, 0.4);
+    shooter_preset_command_ =
+        std::make_shared<ShooterPresetCommand>(shooter_, gamepad2_, 0.4);
+    stop_shooter_command_ = std::make_shared<StopShooterCommand>(shooter_);
+    stop_trigger_command_ = std::make_shared<SetTriggerCommand>(shooter_, 0);
 
     return true;
 }
