@@ -51,8 +51,11 @@ void Robot::TeleopInit() {
     // this line or comment it out.
     if (m_autonomousCommand != nullptr) {
         m_autonomousCommand->Cancel();
-        m_autonomousCommand = nullptr;
     }
+
+    teleop_command_ = m_container.GetDriveCommand();
+    VOKC_CALL(teleop_command_ != nullptr);
+    teleop_command_->Schedule();
 }
 
 /**

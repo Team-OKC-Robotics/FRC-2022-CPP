@@ -2,6 +2,10 @@
 title = "OKC Robotics Beta 2022 Parameters"
 competition = false
 
+[ui]
+gamepad1_id = 0
+gamepad2_id = 2
+
 [robot]
 neo_550_ticks_per_rev = 42
 neo_ticks_per_rev = 42
