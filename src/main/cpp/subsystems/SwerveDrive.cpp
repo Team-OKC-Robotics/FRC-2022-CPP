@@ -1,7 +1,6 @@
 
 #include "subsystems/SwerveDrive.h"
 #include "units/length.h"
-#include "frc/geometry/Rotation2d.h"
 
 bool SwerveDrive::Init() {
     // Initialize Shuffleboard from parameters.
@@ -17,13 +16,14 @@ bool SwerveDrive::Init() {
     // because that should be how the argumetns are passed in, and however they're passed in,
     // that's how they gonna get passed out
 
-    //TODO define displacements (the Translation2d stuff)
+    // define SwerveKinematics object
+    swerve_kinematics = frc::SwerveDriveKinematics<4>(frc::Translation2d(x_disp, y_disp), frc::Translation2d(-x_disp, y_disp), frc::Translation2d(x_disp, -y_disp), frc::Translation2d(-x_disp, -y_disp));
 
-    //TODO define SwerveKinematics object
+    // define SwerveOdometry object
+    swerve_odometry = frc::SwerveDriveOdometry(swerve_kinematics, frc::Rotation2d(), frc::Pose2d());
 
-    //TODO define SwerveOdometry object
-
-    //TODO define SwerveModuleStates objects
+    // define SwerveModuleStates objects
+    //TODO
 
 
 
