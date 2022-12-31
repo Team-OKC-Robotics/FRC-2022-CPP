@@ -11,6 +11,8 @@
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
+#include <wpi/array.h>
+#include "frc/geometry/Rotation2d.h"
 #include <frc2/command/SubsystemBase.h>
 
 #include "Parameters.h"
@@ -22,9 +24,9 @@ class SwerveDrive : public frc2::SubsystemBase {
 public:
     // TODO: put the actual constants in for the PID gains.
     SwerveDrive(SwerveDriveSoftwareInterface *interface)
-        : interface_(interface), swerve_kinematics(frc::Translation2d(/*TODO parameter loading, etc*/), frc::Translation2d(/*TODO*/), frc::Translation2d(/*TODO*/), frc::Translation2d(/*TODO*/),
-        swerve_odometry(&swerve_kinematics, 0, /*TODO*/),
-        left_front_module, left_back_module, right_front_module, right_back_module) {}
+        : interface_(interface), swerve_kinematics(frc::Translation2d(/*TODO parameter loading, etc*/), frc::Translation2d(/*TODO*/), frc::Translation2d(/*TODO*/), frc::Translation2d(/*TODO*/)),
+        left_front_module(), left_back_module(), right_front_module(), right_back_module(),
+        swerve_odometry(swerve_kinematics, frc::Rotation2d(), modules) {}
     ~SwerveDrive() {}
 
     bool Init();
@@ -65,17 +67,28 @@ private:
     // software interface
     SwerveDriveSoftwareInterface *const interface_;
 
+
+    // swerve modules states
+    frc::SwerveModuleState left_front_module;
+    frc::SwerveModuleState left_back_module;
+    frc::SwerveModuleState right_front_module;
+    frc::SwerveModuleState right_back_module;
+
+    // swerve module positions
+    frc::SwerveModulePosition left_front_pos;
+    frc::SwerveModulePosition left_back_pos;
+    frc::SwerveModulePosition right_front_pos;
+    frc::SwerveModulePosition right_back_pos;
+
+    // swerve module list
+    wpi::array<frc::SwerveModulePosition, 4> modules = {left_front_pos, left_back_pos, right_front_pos, right_back_pos};
+
     // kinematics
     frc::SwerveDriveKinematics<4> swerve_kinematics;
 
     // odometry
     frc::SwerveDriveOdometry<4> swerve_odometry;
 
-    // swerve modules
-    frc::SwerveModuleState left_front_module;
-    frc::SwerveModuleState left_back_module;
-    frc::SwerveModuleState right_front_module;
-    frc::SwerveModuleState right_back_module;
 
     // Speed modifier (the joystick input is multiplied by this value)
     double speed_modifier_drive = 0.75;

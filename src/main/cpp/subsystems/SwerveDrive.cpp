@@ -1,5 +1,7 @@
 
 #include "subsystems/SwerveDrive.h"
+#include "units/length.h"
+#include "frc/geometry/Rotation2d.h"
 
 bool SwerveDrive::Init() {
     // Initialize Shuffleboard from parameters.
@@ -36,8 +38,20 @@ void SwerveDrive::Periodic() {
     // Update shuffleboard
     VOKC_CALL(UpdateShuffleboard());
 
+    // get the heading
+    double heading = 0;
+    VOKC_CALL(this->GetHeading(&heading));
+
+    // update modules
+    //TODO figure out the conversion between steer motor encoder reading and actual reading in degees
+    modules[0] = frc::SwerveModulePosition(units::meter_t(this->interface_->left_front_drive_motor_enc), frc::Rotation2d(units::degree_t(this->interface_->left_front_steer_motor_enc)));
+    modules[1] = frc::SwerveModulePosition(units::meter_t(this->interface_->left_back_drive_motor_enc), frc::Rotation2d(units::degree_t(this->interface_->left_back_steer_motor_enc)));
+    modules[2] = frc::SwerveModulePosition(units::meter_t(this->interface_->right_front_drive_motor_enc), frc::Rotation2d(units::degree_t(this->interface_->right_front_steer_motor_enc)));
+    modules[3] = frc::SwerveModulePosition(units::meter_t(this->interface_->right_back_drive_motor_enc), frc::Rotation2d(units::degree_t(this->interface_->right_back_steer_motor_enc)));
+
+
     // update odometry
-    swerve_odometry.update(-this->GetHeading()); // negate heading because odometry expects counterclockwise to be positive, but the NavX is not
+    swerve_odometry.Update(frc::Rotation2d(units::degree_t(heading)), modules); // negate heading because odometry expects counterclockwise to be positive, but the NavX is not
 }
 
 void SwerveDrive::SimulationPeriodic() {
@@ -134,7 +148,11 @@ bool SwerveDrive::ResetGyro() {
 
 bool SwerveDrive::InitShuffleboard() {
     // Get parameters
+    //TODO
+
     // Update dashboard.
+    //TODO
+
     return true;
 }
 
@@ -143,63 +161,19 @@ bool SwerveDrive::UpdateShuffleboard() {
     // tuned.
     bool is_competition = RobotParams::GetParam("competition", false);
     if (!is_competition) {
-        // Update encoder UI
-        double encoder_tmp = 0.0;
-        OKC_CALL(GetLeftEncoderAverage(&encoder_tmp));
-        SwerveDriveUI::nt_left_ticks.SetDouble(encoder_tmp);
-        OKC_CALL(GetRightEncoderAverage(&encoder_tmp));
-        SwerveDriveUI::nt_right_ticks.SetDouble(encoder_tmp);
-        OKC_CALL(GetEncoderAverage(&encoder_tmp));
-        SwerveDriveUI::nt_total_ticks.SetDouble(encoder_tmp);
-
+        /*// Update encoder UI
+        //TODO
+   
         // Heading UI
         double heading_tmp = 0.0;
         OKC_CALL(GetHeading(&heading_tmp));
         SwerveDriveUI::nt_heading.SetDouble(heading_tmp);
 
         // Distance UI
-        double dist_err = dist_pid_.GetPositionError();
-        SwerveDriveUI::nt_dist_error.SetDouble(dist_err);
-
+        //TODO
+      
         // Update the PID Gains if write mode is true.
-        if (SwerveDriveUI::nt_write_mode.GetBoolean(false)) {
-            // Get the current PID parameter values
-            double dist_p =
-                RobotParams::GetParam("drivetrain.distance_pid.Kp", 0);
-            double dist_i =
-                RobotParams::GetParam("drivetrain.distance_pid.Ki", 0);
-            double dist_d =
-                RobotParams::GetParam("drivetrain.distance_pid.Kp", 0);
-
-            double heading_p =
-                RobotParams::GetParam("drivetrain.heading_pid.Kp", 0);
-            double heading_i =
-                RobotParams::GetParam("drivetrain.heading_pid.Ki", 0);
-            double heading_d =
-                RobotParams::GetParam("drivetrain.heading_pid.Kp", 0);
-
-            double turn_p = RobotParams::GetParam("drivetrain.turn_pid.Kp", 0);
-            double turn_i = RobotParams::GetParam("drivetrain.turn_pid.Ki", 0);
-            double turn_d = RobotParams::GetParam("drivetrain.turn_pid.Kp", 0);
-
-            // Get the values from shuffleboard.
-            dist_p = SwerveDriveUI::nt_dist_kp.GetDouble(dist_p);
-            dist_i = SwerveDriveUI::nt_dist_ki.GetDouble(dist_i);
-            dist_d = SwerveDriveUI::nt_dist_kd.GetDouble(dist_d);
-
-            heading_p = SwerveDriveUI::nt_heading_kp.GetDouble(heading_p);
-            heading_i = SwerveDriveUI::nt_heading_ki.GetDouble(heading_i);
-            heading_d = SwerveDriveUI::nt_heading_kd.GetDouble(heading_d);
-
-            turn_p = SwerveDriveUI::nt_turn_kp.GetDouble(turn_p);
-            turn_i = SwerveDriveUI::nt_turn_ki.GetDouble(turn_i);
-            turn_d = SwerveDriveUI::nt_turn_kd.GetDouble(turn_d);
-
-            // Distance PID
-            dist_pid_.SetPID(dist_p, dist_i, dist_d);
-            heading_pid_.SetPID(heading_p, heading_i, heading_d);
-            turn_pid_.SetPID(turn_p, turn_i, turn_d);
-        }
+        //TODO
 
         // Allow saving parameters in non-competition modes
         if (SwerveDriveUI::nt_save.GetBoolean(true)) {
@@ -213,6 +187,7 @@ bool SwerveDrive::UpdateShuffleboard() {
     if (SwerveDriveUI::nt_reset_gyro.GetBoolean(false)) {
         interface_->reset_gyro = true;
         SwerveDriveUI::nt_reset_gyro.SetBoolean(false);
+    }*/
     }
 
     return true;
