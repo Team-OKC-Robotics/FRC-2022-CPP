@@ -13,6 +13,7 @@
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <wpi/array.h>
 #include "frc/geometry/Rotation2d.h"
+#include "frc/geometry/Pose2d.h"
 #include <frc2/command/SubsystemBase.h>
 
 #include "Parameters.h"
@@ -26,7 +27,7 @@ public:
     SwerveDrive(SwerveDriveSoftwareInterface *interface)
         : interface_(interface), swerve_kinematics(frc::Translation2d(/*TODO parameter loading, etc*/), frc::Translation2d(/*TODO*/), frc::Translation2d(/*TODO*/), frc::Translation2d(/*TODO*/)),
         left_front_module(), left_back_module(), right_front_module(), right_back_module(),
-        swerve_odometry(swerve_kinematics, frc::Rotation2d(), modules) {}
+        swerve_odometry(swerve_kinematics, frc::Rotation2d(), frc::Pose2d()) {}
     ~SwerveDrive() {}
 
     bool Init();
