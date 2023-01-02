@@ -14,10 +14,13 @@
 #include <wpi/array.h>
 #include "frc/geometry/Rotation2d.h"
 #include "frc/geometry/Pose2d.h"
+#include "frc/geometry/Translation2d.h"
 #include <frc2/command/SubsystemBase.h>
+#include "units/length.h"
+#include "units/velocity.h"
 
 #include "Parameters.h"
-#include "UserInterface.h"
+#include "ui/UserInterface.h"
 #include "Utils.h"
 #include "io/SwerveDriveIO.h"
 
@@ -25,9 +28,11 @@ class SwerveDrive : public frc2::SubsystemBase {
 public:
     // TODO: put the actual constants in for the PID gains.
     SwerveDrive(SwerveDriveSoftwareInterface *interface)
-        : interface_(interface), swerve_kinematics(frc::Translation2d(/*TODO parameter loading, etc*/), frc::Translation2d(/*TODO*/), frc::Translation2d(/*TODO*/), frc::Translation2d(/*TODO*/)),
+        : interface_(interface), swerve_kinematics(frc::Translation2d(units::meter_t(0.3), units::meter_t(0.3)), frc::Translation2d(units::meter_t(-0.3), units::meter_t(0.3)), frc::Translation2d(units::meter_t(0.3), units::meter_t(-0.3)), frc::Translation2d(units::meter_t(-0.3), units::meter_t(-0.3))),
         left_front_module(), left_back_module(), right_front_module(), right_back_module(),
-        swerve_odometry(swerve_kinematics, frc::Rotation2d(), frc::Pose2d()) {}
+        swerve_odometry(swerve_kinematics, frc::Rotation2d(), modules, frc::Pose2d()), 
+        left_front_drive_pid(0, 0.001, 0.0001), left_back_drive_pid(0, 0.001, 0.0001), right_front_drive_pid(0, 0.001, 0.0001), right_back_drive_pid(0, 0.001, 0.0001), 
+        left_front_steer_pid(0, 0.001, 0.0001), left_back_steer_pid(0, 0.001, 0.0001), right_front_steer_pid(0, 0.001, 0.0001), right_back_steer_pid(0, 0.001, 0.0001) {}
     ~SwerveDrive() {}
 
     bool Init();
@@ -82,6 +87,7 @@ private:
     frc::SwerveModulePosition right_back_pos;
 
     // swerve module list
+    wpi::array<frc::SwerveModuleState, 4> outputs = {left_front_module, left_back_module, right_front_module, right_back_module};
     wpi::array<frc::SwerveModulePosition, 4> modules = {left_front_pos, left_back_pos, right_front_pos, right_back_pos};
 
     // kinematics
@@ -89,6 +95,17 @@ private:
 
     // odometry
     frc::SwerveDriveOdometry<4> swerve_odometry;
+
+    // PID Controllers
+    frc::PIDController left_front_drive_pid;
+    frc::PIDController left_back_drive_pid;
+    frc::PIDController right_front_drive_pid;
+    frc::PIDController right_back_drive_pid;
+
+    frc::PIDController left_front_steer_pid;
+    frc::PIDController left_back_steer_pid;
+    frc::PIDController right_front_steer_pid;
+    frc::PIDController right_back_steer_pid;
 
 
     // Speed modifier (the joystick input is multiplied by this value)
