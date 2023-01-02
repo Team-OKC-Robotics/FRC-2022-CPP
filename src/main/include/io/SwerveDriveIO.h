@@ -64,15 +64,18 @@ typedef struct swerve_drive_software_interface_t {
     // Input squaring
     bool square_inputs;
 
-    // Holonomic drive inputs
-    double drive_power;
-    double strafe_power;
-    double turn_power;
+    // motor outputs
+    double left_front_drive_motor_output;
+    double left_back_drive_motor_output;
 
-    // auto inputs
-    double translation_x;
-    double translation_y;
-    double rotation;
+    double right_front_drive_motor_output;
+    double right_back_drive_motor_output;
+
+    double left_front_steer_motor_output;
+    double left_back_steer_motor_output;
+
+    double right_front_steer_motor_output;
+    double right_back_steer_motor_output;
 
     // Reset flags
     bool reset_drive_encoders;
