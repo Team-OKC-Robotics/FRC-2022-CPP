@@ -1,6 +1,6 @@
 
 #include "subsystems/SwerveDrive.h"
-#include "units/length.h"
+
 
 bool SwerveDrive::Init() {
     // Initialize Shuffleboard from parameters.
@@ -8,6 +8,29 @@ bool SwerveDrive::Init() {
 
     double x_disp = RobotParams::GetParam("swerve.x_disp", 0.3); // in meters
     double y_disp = RobotParams::GetParam("swerve.y_disp", 0.3); // in meters
+
+    // PID Controller stuff
+    // drive PID gains
+    double drive_kP = RobotParams::GetParam("swerve.drive_pid.kP", 0.0);
+    double drive_kI = RobotParams::GetParam("swerve.drive_pid.kI", 0.001);
+    double drive_kD = RobotParams::GetParam("swerve.drive_pid.kD", 0.0001);
+
+    // steer PID gains
+    double steer_kP = RobotParams::GetParam("swerve.steer_pid.kP", 0.0);
+    double steer_kI = RobotParams::GetParam("swerve.steer_pid.kI", 0.001);
+    double steer_kD = RobotParams::GetParam("swerve.steer_pid.kD", 0.0001);
+
+    left_front_drive_pid = frc::PIDController(drive_kP, drive_kI, drive_kD);
+    left_back_drive_pid = frc::PIDController(drive_kP, drive_kI, drive_kD);
+    right_front_drive_pid = frc::PIDController(drive_kP, drive_kI, drive_kD);
+    right_back_drive_pid = frc::PIDController(drive_kP, drive_kI, drive_kD);
+
+    left_front_steer_pid = frc::PIDController(steer_kP, steer_kI, steer_kD);
+    left_back_steer_pid = frc::PIDController(steer_kP, steer_kI, steer_kD);
+    right_front_steer_pid = frc::PIDController(steer_kP, steer_kI, steer_kD);
+    right_back_steer_pid = frc::PIDController(steer_kP, steer_kI, steer_kD);
+
+
 
     // !! IMPORTANT ASSUMPTION/PRACTICE/WHATEVER !!
     // the order of swerve stuff should always be in:
@@ -17,15 +40,24 @@ bool SwerveDrive::Init() {
     // that's how they gonna get passed out
 
     // define SwerveKinematics object
-    swerve_kinematics = frc::SwerveDriveKinematics<4>(frc::Translation2d(x_disp, y_disp), frc::Translation2d(-x_disp, y_disp), frc::Translation2d(x_disp, -y_disp), frc::Translation2d(-x_disp, -y_disp));
+    swerve_kinematics = frc::SwerveDriveKinematics<4>(frc::Translation2d(units::meter_t(x_disp), units::meter_t(y_disp)), frc::Translation2d(units::meter_t(-x_disp), units::meter_t(y_disp)), frc::Translation2d(units::meter_t(x_disp), units::meter_t(-y_disp)), frc::Translation2d(units::meter_t(-x_disp), units::meter_t(-y_disp)));
 
     // define SwerveOdometry object
-    swerve_odometry = frc::SwerveDriveOdometry(swerve_kinematics, frc::Rotation2d(), frc::Pose2d());
+    swerve_odometry = frc::SwerveDriveOdometry(swerve_kinematics, frc::Rotation2d(), modules, frc::Pose2d());
 
     // define SwerveModuleStates objects
-    //TODO
+    // everything starts at a default of 0 m/s and 0 degrees
+    left_front_module = frc::SwerveModuleState(units::meters_per_second_t(0.0), frc::Rotation2d());
+    left_back_module = frc::SwerveModuleState(units::meters_per_second_t(0.0), frc::Rotation2d());
+    right_front_module = frc::SwerveModuleState(units::meters_per_second_t(0.0), frc::Rotation2d());
+    right_back_module = frc::SwerveModuleState(units::meters_per_second_t(0.0), frc::Rotation2d());
 
-
+    // define SwerveModulePosition objects
+    // everything starts at a default of 0m and 0 degrees
+    left_front_pos = frc::SwerveModulePosition(units::meter_t(0.0), frc::Rotation2d());
+    left_back_pos = frc::SwerveModulePosition(units::meter_t(0.0), frc::Rotation2d());
+    right_front_pos = frc::SwerveModulePosition(units::meter_t(0.0), frc::Rotation2d());
+    right_back_pos = frc::SwerveModulePosition(units::meter_t(0.0), frc::Rotation2d());
 
     // Reset everything
     OKC_CALL(ResetDriveEncoders());
@@ -99,7 +131,29 @@ bool SwerveDrive::SetMaxOutputSteer(const double &max_output) {
 }
 
 bool SwerveDrive::TeleOpDrive(const double &drive, const double &strafe, const double &turn) {
-    //TODO
+    // get outputs from the kinematics object based on joystick inputs
+    outputs = swerve_kinematics.ToSwerveModuleStates(frc::ChassisSpeeds(units::meters_per_second_t(drive), units::meters_per_second_t(strafe), units::radians_per_second_t(turn)));
+    
+    for(int i = 0; i < outputs.size(); i++) {
+        // optimize the angle of the wheel so we never turn more than 90 degrees or something like that
+        // basically we avoid unnecessary turning because positive negative angle stuff
+        outputs.at(i) = frc::SwerveModuleState::Optimize(modules.at(i).angle.Radians(), outputs.at(i).angle.Radians());
+    }
+
+    // set all the outputs in the interface
+    interface_->left_front_drive_motor_output = outputs.at(0).speed;
+    interface_->left_back_drive_motor_output = outputs.at(0).angle;
+
+    interface_->right_front_drive_motor_output = outputs.at(1).speed;
+    interface_->right_back_drive_motor_output = outputs.at(1).angle;
+
+    interface_->left_front_steer_motor_output = outputs.at(2).speed;
+    interface_->left_back_steer_motor_output = outputs.at(2).angle;
+
+    interface_->right_front_steer_motor_output = outputs.at(3).speed;
+    interface_->right_back_steer_motor_output = outputs.at(3).angle;
+
+    // return true
     return true;
 }
 
