@@ -46,6 +46,10 @@
 #include "commands/shooter/SetTriggerCommand.h"
 #include "commands/shooter/ShooterPresetCommand.h"
 #include "commands/shooter/StopShooterCommand.h"
+// Intake
+#include "commands/intake/SetIndexerCommand.h"
+#include "commands/intake/SetIntakeCommand.h"
+#include "commands/intake/SetIntakePositionCommand.h"
 
 #include <frc2/command/Command.h>
 #include <frc2/command/SubsystemBase.h>
@@ -107,9 +111,15 @@ private:
     std::shared_ptr<frc2::JoystickButton> driver_a_button_;
     std::shared_ptr<frc2::JoystickButton> driver_b_button_;
     std::shared_ptr<frc2::JoystickButton> driver_back_button_;
+    std::shared_ptr<frc2::JoystickButton> driver_left_bumper_;
+    std::shared_ptr<frc2::JoystickButton> driver_right_bumper_;
 
     std::shared_ptr<frc2::JoystickButton> manip_a_button_;
     std::shared_ptr<frc2::JoystickButton> manip_b_button_;
+    std::shared_ptr<frc2::JoystickButton> manip_back_button_;
+    std::shared_ptr<frc2::JoystickButton> manip_start_button_;
+    std::shared_ptr<frc2::JoystickButton> manip_left_stick_button_;
+    std::shared_ptr<frc2::JoystickButton> manip_right_stick_button_;
 
     /**
      * Commands
@@ -126,4 +136,16 @@ private:
     std::shared_ptr<StopShooterCommand> stop_shooter_command_;
     std::shared_ptr<SetTriggerCommand> stop_trigger_command_;
     std::shared_ptr<ShooterPresetCommand> shooter_preset_command_;
+    std::shared_ptr<SetTriggerCommand> trigger_in_;
+    std::shared_ptr<SetTriggerCommand> trigger_out_;
+
+    // Intake
+    std::shared_ptr<SetIndexerCommand> indexer_in_;
+    std::shared_ptr<SetIndexerCommand> indexer_out_;
+    std::shared_ptr<SetIndexerCommand> stop_indexer_;
+    std::shared_ptr<SetIntakeCommand> intake_in_;
+    std::shared_ptr<SetIntakeCommand> intake_out_;
+    std::shared_ptr<SetIntakeCommand> stop_intake_;
+    std::shared_ptr<SetIntakePositionCommand> deploy_intake_;
+    std::shared_ptr<SetIntakePositionCommand> retract_intake_;
 };

@@ -83,11 +83,34 @@ void RobotContainer::ConfigureButtonBindings() {
     // Shooter
     VOKC_CHECK(manip_a_button_ != nullptr);
     VOKC_CHECK(manip_b_button_ != nullptr);
+    VOKC_CHECK(driver_left_bumper_ != nullptr);
+    VOKC_CHECK(driver_right_bumper_ != nullptr);
 
     manip_a_button_->OnTrue(shooter_preset_command_.get())
         .OnFalse(stop_shooter_command_.get());
     manip_b_button_->OnTrue(feed_command_.get())
+        .OnFalse(stop_trigger_command_.get())
+        .OnTrue(indexer_in_.get())
+        .OnFalse(stop_indexer_.get());
+
+    // Intake
+    VOKC_CHECK(manip_back_button_ != nullptr);
+    VOKC_CHECK(manip_start_button_ != nullptr);
+    VOKC_CHECK(manip_left_stick_button_ != nullptr);
+    VOKC_CHECK(manip_right_stick_button_ != nullptr);
+
+    driver_left_bumper_->OnTrue(intake_in_.get()).OnFalse(stop_intake_.get());
+    driver_right_bumper_->OnTrue(intake_out_.get()).OnFalse(stop_intake_.get());
+    manip_back_button_->OnTrue(indexer_out_.get())
+        .OnTrue(trigger_out_.get())
+        .OnFalse(stop_indexer_.get())
         .OnFalse(stop_trigger_command_.get());
+    manip_start_button_->WhileTrue(indexer_in_.get())
+        .WhileTrue(trigger_in_.get())
+        .OnFalse(stop_indexer_.get())
+        .OnFalse(stop_trigger_command_.get());
+    manip_left_stick_button_->OnTrue(deploy_intake_.get());
+    manip_right_stick_button_->OnTrue(retract_intake_.get());
 }
 
 std::shared_ptr<frc2::Command> RobotContainer::GetAutonomousCommand() {
@@ -215,6 +238,20 @@ bool RobotContainer::InitGamepads() {
     manip_b_button_ =
         std::make_shared<frc2::JoystickButton>(gamepad2_.get(), B_BUTTON);
 
+    // Intake
+    driver_left_bumper_ =
+        std::make_shared<frc2::JoystickButton>(gamepad1_.get(), LEFT_BUMP);
+    driver_right_bumper_ =
+        std::make_shared<frc2::JoystickButton>(gamepad1_.get(), RIGHT_BUMP);
+    manip_back_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad2_.get(), BACK_BUTTON);
+    manip_start_button_ =
+        std::make_shared<frc2::JoystickButton>(gamepad2_.get(), START_BUTTON);
+    manip_left_stick_button_ = std::make_shared<frc2::JoystickButton>(
+        gamepad2_.get(), LEFT_STICK_BUTTON);
+    manip_right_stick_button_ = std::make_shared<frc2::JoystickButton>(
+        gamepad2_.get(), RIGHT_STICK_BUTTON);
+
     return true;
 }
 
@@ -237,6 +274,20 @@ bool RobotContainer::InitCommands() {
         std::make_shared<ShooterPresetCommand>(shooter_, gamepad2_, 0.4);
     stop_shooter_command_ = std::make_shared<StopShooterCommand>(shooter_);
     stop_trigger_command_ = std::make_shared<SetTriggerCommand>(shooter_, 0);
+    trigger_in_ = std::make_shared<SetTriggerCommand>(shooter_, 0.4);
+    trigger_out_ = std::make_shared<SetTriggerCommand>(shooter_, -0.4);
+
+    // Init intake commands
+    // TODO: make these parameterized as needed.
+    indexer_in_ = std::make_shared<SetIndexerCommand>(intake_, 0.5);
+    indexer_out_ = std::make_shared<SetIndexerCommand>(intake_, -0.5);
+    stop_indexer_ = std::make_shared<SetIndexerCommand>(intake_, 0.0);
+    intake_in_ = std::make_shared<SetIntakeCommand>(intake_, 0.8);
+    intake_out_ = std::make_shared<SetIntakeCommand>(intake_, -0.5);
+    stop_intake_ = std::make_shared<SetIntakeCommand>(intake_, 0.0);
+    deploy_intake_ = std::make_shared<SetIntakePositionCommand>(intake_, true);
+    retract_intake_ =
+        std::make_shared<SetIntakePositionCommand>(intake_, false);
 
     return true;
 }
