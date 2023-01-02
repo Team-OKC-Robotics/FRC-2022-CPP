@@ -84,3 +84,13 @@ Kd = 0.001
 # units are in meters
 x_disp = 0.3
 y_disp = 0.3
+
+[swerve.drive_pid]
+kP = 0.0
+kI = 0.001
+kD = 0.0001
+
+[swerve.steer_pid]
+kP = 0.0
+kI = 0.001
+kD = 0.0001
