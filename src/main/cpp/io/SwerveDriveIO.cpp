@@ -1,5 +1,6 @@
 
 #include "io/SwerveDriveIO.h"
+#include "Utils.h"
 
 void SwerveDriveIO::Periodic() {
     // Process all the inputs and outputs to/from high level software.
@@ -47,10 +48,16 @@ bool SwerveDriveIO::ProcessIO() {
     }
 
     // Set the drive outputs.
-    //TODO
+    hw_interface_->left_front_drive_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_drive, this->sw_interface_->drive_config.max_output_drive, &this->sw_interface_->left_front_drive_motor_output));
+    hw_interface_->left_back_drive_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_drive, this->sw_interface_->drive_config.max_output_drive, &this->sw_interface_->left_back_drive_motor_output));
+    hw_interface_->right_front_drive_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_drive, this->sw_interface_->drive_config.max_output_drive, &this->sw_interface_->right_front_drive_motor_output));
+    hw_interface_->right_back_drive_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_drive, this->sw_interface_->drive_config.max_output_drive, &this->sw_interface_->right_back_drive_motor_output));
 
     // set the steer outputs.
-    //TODO
+    hw_interface_->left_front_steer_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_steer, this->sw_interface_->drive_config.max_output_steer, &this->sw_interface_->left_front_steer_motor_output));
+    hw_interface_->left_back_steer_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_steer, this->sw_interface_->drive_config.max_output_steer, &this->sw_interface_->left_back_steer_motor_output));
+    hw_interface_->right_front_steer_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_steer, this->sw_interface_->drive_config.max_output_steer, &this->sw_interface_->right_front_steer_motor_output));
+    hw_interface_->right_back_steer_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_steer, this->sw_interface_->drive_config.max_output_steer, &this->sw_interface_->right_back_steer_motor_output));
 
     // Get the hardware sensor values.
     // navX IMU:
@@ -106,10 +113,6 @@ bool SwerveDriveIO::UpdateDriveConfig(SwerveDriveConfig &config) {
     hw_interface_->left_back_steer_motor->SetOpenLoopRampRate(open_loop_ramp_steer);
     hw_interface_->right_front_steer_motor->SetOpenLoopRampRate(open_loop_ramp_steer);
     hw_interface_->right_back_steer_motor->SetOpenLoopRampRate(open_loop_ramp_steer);
-
-    // Swerve drive Max Output
-    //TODO drive motors
-    //TODO steer motors
 
     return true;
 }
