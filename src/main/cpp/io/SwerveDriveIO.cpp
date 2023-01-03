@@ -46,7 +46,10 @@ bool SwerveDriveIO::ProcessIO() {
         sw_interface_->reset_gyro = false;
     }
 
-    // Set the drive outputs based on the drive mode.
+    // Set the drive outputs.
+    //TODO
+
+    // set the steer outputs.
     //TODO
 
     // Get the hardware sensor values.
@@ -54,7 +57,31 @@ bool SwerveDriveIO::ProcessIO() {
     sw_interface_->imu_yaw = hw_interface_->ahrs->GetAngle();
 
     // Encoders
-    //TODO
+    // position
+    // drive
+    sw_interface_->left_front_drive_motor_enc = hw_interface_->left_front_drive_motor->GetEncoder().GetPosition();
+    sw_interface_->left_back_drive_motor_enc = hw_interface_->left_back_drive_motor->GetEncoder().GetPosition();
+    sw_interface_->right_front_drive_motor_enc = hw_interface_->right_front_drive_motor->GetEncoder().GetPosition();
+    sw_interface_->right_back_drive_motor_enc = hw_interface_->right_back_drive_motor->GetEncoder().GetPosition();
+
+    // steer
+    sw_interface_->left_front_steer_motor_enc = hw_interface_->left_front_steer_motor->GetEncoder().GetPosition();
+    sw_interface_->left_back_steer_motor_enc = hw_interface_->left_back_steer_motor->GetEncoder().GetPosition();
+    sw_interface_->right_front_steer_motor_enc = hw_interface_->right_front_steer_motor->GetEncoder().GetPosition();
+    sw_interface_->right_back_steer_motor_enc = hw_interface_->right_back_steer_motor->GetEncoder().GetPosition();
+
+    // velocity
+    // drive
+    sw_interface_->left_front_drive_enc_vel = hw_interface_->left_front_drive_motor->GetEncoder().GetVelocity();
+    sw_interface_->left_back_drive_enc_vel = hw_interface_->left_back_drive_motor->GetEncoder().GetVelocity();
+    sw_interface_->right_front_drive_enc_vel = hw_interface_->right_front_drive_motor->GetEncoder().GetVelocity();
+    sw_interface_->right_back_drive_enc_vel = hw_interface_->right_back_drive_motor->GetEncoder().GetVelocity();
+
+    // steer
+    sw_interface_->left_front_steer_enc_vel = hw_interface_->left_front_steer_motor->GetEncoder().GetVelocity();
+    sw_interface_->left_back_steer_enc_vel = hw_interface_->left_back_steer_motor->GetEncoder().GetVelocity();
+    sw_interface_->right_front_steer_enc_vel = hw_interface_->right_front_steer_motor->GetEncoder().GetVelocity();
+    sw_interface_->right_back_steer_enc_vel = hw_interface_->right_back_steer_motor->GetEncoder().GetVelocity();
 
     return true;
 }

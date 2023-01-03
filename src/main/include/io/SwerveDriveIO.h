@@ -45,16 +45,24 @@ typedef struct swerve_drive_software_interface_t {
     // Encoders
     double left_front_drive_motor_enc;
     double left_back_drive_motor_enc;
-
     double right_front_drive_motor_enc;
     double right_back_drive_motor_enc;
 
     double left_front_steer_motor_enc;
     double left_back_steer_motor_enc;
-
     double right_front_steer_motor_enc;
     double right_back_steer_motor_enc;
 
+    // encoder velocities
+    double left_front_drive_enc_vel;
+    double left_back_drive_enc_vel;
+    double right_front_drive_enc_vel;
+    double right_back_drive_enc_vel;
+
+    double left_front_steer_enc_vel;
+    double left_back_steer_enc_vel;
+    double right_front_steer_enc_vel;
+    double right_back_steer_enc_vel;
 
     // SW OUTPUTS
     // Configure swerve drive variables
