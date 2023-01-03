@@ -36,7 +36,7 @@ public:
     SwerveModule();
     ~SwerveModule();
 
-    bool Init();
+    bool Init(Location loc);
 
     bool GetSwerveModulePosition(frc::SwerveModulePosition *pos);
     bool GetSwerveModuleState(frc::SwerveModuleState *state);
@@ -59,7 +59,7 @@ private:
 
     frc::Translation2d trans;
 
-    Location loc;
+    Location location;
 
     double drive_enc_vel;
     double steer_enc_vel;

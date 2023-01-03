@@ -1,7 +1,7 @@
 
 #include "SwerveModule.h"
 
-bool SwerveModule::Init() {
+bool SwerveModule::Init(Location loc) {
     // PID Controller stuff
     // drive PID gains
     double drive_kP = RobotParams::GetParam("swerve.drive_pid.kP", 0.0);
@@ -24,6 +24,7 @@ bool SwerveModule::Init() {
     // create a default swerve module position with no distance traveled or angle    
     pos = frc::SwerveModulePosition(units::meter_t(0.0), frc::Rotation2d());
 
+    this->location = loc;
 
     // physical location on the robot
     double x_disp = RobotParams::GetParam("swerve.x_disp", 0.3); // in meters
@@ -134,6 +135,7 @@ bool SwerveModule::Update(double drive_enc, double steer_enc, double drive_vel, 
     drive_enc = drive_enc / 6.75 * 3.14159265358979323846264338327950288419716939937510582097494459230781 * 4;
 
     // steering gear ratio of 12.8:1
+    //TODO fix steer encoder readings (like, converting from raw voltage value or whatever to this)
     steer_enc = steer_enc / 12.8;
 
     this->pos = frc::SwerveModulePosition(units::meter_t(drive_enc), frc::Rotation2d(units::degree_t(steer_enc)));
