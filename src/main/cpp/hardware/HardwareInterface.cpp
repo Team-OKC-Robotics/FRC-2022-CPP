@@ -78,6 +78,11 @@ bool SetupSwerveDriveInterface(
         actuators->right_back_steer_motor.get(),
 
         sensors->ahrs.get(),
+
+        sensors->left_front_steer_encoder.get(),
+        sensors->left_back_steer_encoder.get(),
+        sensors->right_front_steer_encoder.get(),
+        sensors->right_back_steer_encoder.get(),
     };
 
     // set the output interface
