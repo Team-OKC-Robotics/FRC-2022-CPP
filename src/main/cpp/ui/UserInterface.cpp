@@ -74,3 +74,36 @@ namespace ShooterUI {
     nt::GenericEntry &nt_far_shot = nt_tab.Add("Far Shot Preset", 0).GetEntry();
 
 } // namespace ShooterUI
+
+namespace SwerveDriveUI {
+    // Get the tab
+    frc::ShuffleboardTab &nt_tab = frc::Shuffleboard::GetTab("SwerveDrive");
+
+    // Add all the defaults
+    // Write mode
+    nt::GenericEntry &nt_write_mode =
+        nt_tab.Add("Write Mode", false).GetEntry();
+
+    // Encoder
+    nt::GenericEntry &nt_left_ticks = nt_tab.Add("left avg dist", 0).GetEntry();
+    nt::GenericEntry &nt_right_ticks = nt_tab.Add("right avg dist", 0).GetEntry();
+    nt::GenericEntry &nt_total_ticks = nt_tab.Add("avg dist", 0).GetEntry();
+
+    // Distance PID
+    nt::GenericEntry &nt_dist_kp = nt_tab.Add("Distance kP", 0).GetEntry();
+    nt::GenericEntry &nt_dist_ki = nt_tab.Add("Distance kI", 0).GetEntry();
+    nt::GenericEntry &nt_dist_kd = nt_tab.Add("Distance kD", 0).GetEntry();
+
+    // Steer PID
+    nt::GenericEntry &nt_steer_kp = nt_tab.Add("Steer kP", 0).GetEntry();
+    nt::GenericEntry &nt_steer_ki = nt_tab.Add("Steer kI", 0).GetEntry();
+    nt::GenericEntry &nt_steer_kd = nt_tab.Add("Steer kD", 0).GetEntry();
+
+    // Gyro
+    nt::GenericEntry &nt_heading = nt_tab.Add("Heading", 0).GetEntry();
+    nt::GenericEntry &nt_reset_gyro =
+        nt_tab.Add("Reset Gyro", false).GetEntry();
+
+    // Save parameters button
+    nt::GenericEntry &nt_save = nt_tab.Add("Save", false).GetEntry();
+} // namespace SwerveDriveUI
