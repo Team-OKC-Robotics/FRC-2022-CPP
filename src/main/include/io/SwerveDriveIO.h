@@ -8,7 +8,7 @@
 
 #include "AHRS.h"
 #include "Utils.h"
-
+#include "frc/AnalogInput.h"
 
 typedef struct swerve_drive_config_t {
     double max_output_drive;
@@ -34,6 +34,12 @@ typedef struct swerve_drive_hardware_interface_t {
 
     // AHRS
     AHRS *const ahrs;
+
+    // Steer encoders
+    frc::AnalogInput *const left_front_steer_encoder;
+    frc::AnalogInput *const left_back_steer_encoder;
+    frc::AnalogInput *const right_front_steer_encoder;
+    frc::AnalogInput *const right_back_steer_encoder;
 
 } SwerveDriveHardwareInterface;
 
