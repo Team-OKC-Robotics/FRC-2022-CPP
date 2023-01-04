@@ -33,8 +33,9 @@ enum Location {
 
 class SwerveModule {
 public:
-    SwerveModule();
-    ~SwerveModule();
+    SwerveModule()
+     : drive_pid(0.0, 0.001, 0.0001), steer_pid(0.0, 0.001, 0.0001), state(), pos(), trans(), location() {};
+    ~SwerveModule() {}
 
     bool Init(Location loc);
 
