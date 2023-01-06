@@ -66,6 +66,22 @@ bool SetupSwerveDriveInterface(
     std::unique_ptr<ActuatorInterface> &actuators = hardware->actuators;
     std::unique_ptr<SensorInterface> &sensors = hardware->sensors;
 
+    OKC_CHECK(actuators->left_front_drive_motor != nullptr);
+    OKC_CHECK(actuators->left_back_drive_motor != nullptr);
+    OKC_CHECK(actuators->right_front_drive_motor != nullptr);
+    OKC_CHECK(actuators->right_back_drive_motor != nullptr);
+    OKC_CHECK(actuators->left_front_steer_motor != nullptr);
+    OKC_CHECK(actuators->left_back_steer_motor != nullptr);
+    OKC_CHECK(actuators->right_front_steer_motor != nullptr);
+    OKC_CHECK(actuators->right_back_steer_motor != nullptr);
+
+    OKC_CHECK(sensors->ahrs != nullptr);
+    OKC_CHECK(sensors->left_front_steer_encoder != nullptr);
+    OKC_CHECK(sensors->left_back_steer_encoder != nullptr);
+    OKC_CHECK(sensors->right_front_steer_encoder != nullptr);
+    OKC_CHECK(sensors->right_back_steer_encoder != nullptr);
+
+
     // set up swerve drive interface.
     SwerveDriveHardwareInterface swerve_drive_interface = {
         actuators->left_front_drive_motor.get(),
