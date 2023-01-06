@@ -79,27 +79,27 @@ namespace SwerveDriveUI {
 
     // Add all the defaults
     // Write mode
-    extern nt::GenericEntry &nt_write_mode;
+    extern nt::GenericEntry *const nt_write_mode;
 
     // Encoder
-    extern nt::GenericEntry &nt_left_avg;
-    extern nt::GenericEntry &nt_right_avg;
-    extern nt::GenericEntry &nt_avg_dist;
+    extern nt::GenericEntry *const nt_left_avg;
+    extern nt::GenericEntry *const nt_right_avg;
+    extern nt::GenericEntry *const nt_avg_dist;
 
     // Distance PID
-    extern nt::GenericEntry &nt_dist_kp;
-    extern nt::GenericEntry &nt_dist_ki;
-    extern nt::GenericEntry &nt_dist_kd;
+    extern nt::GenericEntry *const nt_dist_kp;
+    extern nt::GenericEntry *const nt_dist_ki;
+    extern nt::GenericEntry *const nt_dist_kd;
 
     // Steer PID
-    extern nt::GenericEntry &nt_steer_kp;
-    extern nt::GenericEntry &nt_steer_ki;
-    extern nt::GenericEntry &nt_steer_kd;
+    extern nt::GenericEntry *const nt_steer_kp;
+    extern nt::GenericEntry *const nt_steer_ki;
+    extern nt::GenericEntry *const nt_steer_kd;
 
     // Gyro
-    extern nt::GenericEntry &nt_heading;
-    extern nt::GenericEntry &nt_reset_gyro;
+    extern nt::GenericEntry *const nt_heading;
+    extern nt::GenericEntry *const nt_reset_gyro;
 
     // Save drivetrain parameters
-    extern nt::GenericEntry &nt_save;
+    extern nt::GenericEntry *const nt_save;
 } // namespace SwerveDriveUI

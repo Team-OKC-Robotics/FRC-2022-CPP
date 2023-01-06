@@ -416,13 +416,13 @@ bool SwerveDrive::InitShuffleboard() {
     double steer_d = RobotParams::GetParam("swerve.steer_pid.kD", 0);
 
     // Update dashboard.
-    SwerveDriveUI::nt_dist_kp.SetDouble(dist_p);
-    SwerveDriveUI::nt_dist_ki.SetDouble(dist_i);
-    SwerveDriveUI::nt_dist_kd.SetDouble(dist_d);
+    SwerveDriveUI::nt_dist_kp->SetDouble(dist_p);
+    SwerveDriveUI::nt_dist_ki->SetDouble(dist_i);
+    SwerveDriveUI::nt_dist_kd->SetDouble(dist_d);
 
-    SwerveDriveUI::nt_steer_kp.SetDouble(steer_p);
-    SwerveDriveUI::nt_steer_ki.SetDouble(steer_i);
-    SwerveDriveUI::nt_steer_kd.SetDouble(steer_d);
+    SwerveDriveUI::nt_steer_kp->SetDouble(steer_p);
+    SwerveDriveUI::nt_steer_ki->SetDouble(steer_i);
+    SwerveDriveUI::nt_steer_kd->SetDouble(steer_d);
 
     return true;
 }
@@ -431,23 +431,23 @@ bool SwerveDrive::UpdateShuffleboard() {
     // Update encoder UI
     double encoder_tmp = 0.0;
     this->GetLeftDriveEncoderAverage(&encoder_tmp);
-    SwerveDriveUI::nt_left_avg.SetDouble(encoder_tmp);
+    SwerveDriveUI::nt_left_avg->SetDouble(encoder_tmp);
     GetRightDriveEncoderAverage(&encoder_tmp);
-    SwerveDriveUI::nt_right_avg.SetDouble(encoder_tmp);
+    SwerveDriveUI::nt_right_avg->SetDouble(encoder_tmp);
     GetDriveEncoderAverage(&encoder_tmp);
-    SwerveDriveUI::nt_avg_dist.SetDouble(encoder_tmp);
+    SwerveDriveUI::nt_avg_dist->SetDouble(encoder_tmp);
 
     // Heading UI
     double heading_tmp = 0.0;
     GetHeading(&heading_tmp);
-    SwerveDriveUI::nt_heading.SetDouble(heading_tmp);
+    SwerveDriveUI::nt_heading->SetDouble(heading_tmp);
 
     // If competition mode isn't set to true, then allow the PID gains to be
     // tuned.
     bool is_competition = RobotParams::GetParam("competition", false);
     if (!is_competition) {
         // Update the PID Gains if write mode is true.
-        if (DrivetrainUI::nt_write_mode.GetBoolean(false)) {
+        if (SwerveDriveUI::nt_write_mode->GetBoolean(false)) {
             // Get the current PID parameter values
             double dist_p = RobotParams::GetParam("swerve.distance_pid.Kp", 0);
             double dist_i = RobotParams::GetParam("swerve.distance_pid.Ki", 0);
@@ -458,13 +458,13 @@ bool SwerveDrive::UpdateShuffleboard() {
             double steer_d = RobotParams::GetParam("swerve.steer_pid.Kp", 0);
 
             // Get the values from shuffleboard.
-            dist_p = SwerveDriveUI::nt_dist_kp.GetDouble(dist_p);
-            dist_i = SwerveDriveUI::nt_dist_ki.GetDouble(dist_i);
-            dist_d = SwerveDriveUI::nt_dist_kd.GetDouble(dist_d);
+            dist_p = SwerveDriveUI::nt_dist_kp->GetDouble(dist_p);
+            dist_i = SwerveDriveUI::nt_dist_ki->GetDouble(dist_i);
+            dist_d = SwerveDriveUI::nt_dist_kd->GetDouble(dist_d);
 
-            steer_p = SwerveDriveUI::nt_steer_kp.GetDouble(steer_p);
-            steer_i = SwerveDriveUI::nt_steer_ki.GetDouble(steer_i);
-            steer_d = SwerveDriveUI::nt_steer_kd.GetDouble(steer_d);
+            steer_p = SwerveDriveUI::nt_steer_kp->GetDouble(steer_p);
+            steer_i = SwerveDriveUI::nt_steer_ki->GetDouble(steer_i);
+            steer_d = SwerveDriveUI::nt_steer_kd->GetDouble(steer_d);
 
             // Update PIDs with values
             left_front_module.SetDrivePID(dist_p, dist_i, dist_d);
@@ -479,17 +479,17 @@ bool SwerveDrive::UpdateShuffleboard() {
         }
 
         // Allow saving parameters in non-competition modes
-        if (SwerveDriveUI::nt_save.GetBoolean(true)) {
+        if (SwerveDriveUI::nt_save->GetBoolean(true)) {
             // Save the parameters.
             OKC_CALL(RobotParams::SaveParameters(RobotParams::param_file));
-            SwerveDriveUI::nt_save.SetBoolean(false);
+            SwerveDriveUI::nt_save->SetBoolean(false);
         }
     }
 
     // Resetting the Gyro needs to always be available.
-    if (SwerveDriveUI::nt_reset_gyro.GetBoolean(false)) {
+    if (SwerveDriveUI::nt_reset_gyro->GetBoolean(false)) {
         interface_->reset_gyro = true;
-        SwerveDriveUI::nt_reset_gyro.SetBoolean(false);
+        SwerveDriveUI::nt_reset_gyro->SetBoolean(false);
     }
 
     return true;
