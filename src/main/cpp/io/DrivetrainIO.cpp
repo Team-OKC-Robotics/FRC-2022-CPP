@@ -77,6 +77,12 @@ bool DrivetrainIO::ProcessIO() {
 
 bool DrivetrainIO::UpdateDriveConfig(DrivetrainConfig &config) {
     OKC_CHECK(hw_interface_ != nullptr);
+    OKC_CHECK(hw_interface_->left_motor_1 != nullptr);
+    OKC_CHECK(hw_interface_->left_motor_2 != nullptr);
+    OKC_CHECK(hw_interface_->left_motor_3 != nullptr);
+    OKC_CHECK(hw_interface_->right_motor_1 != nullptr);
+    OKC_CHECK(hw_interface_->right_motor_2 != nullptr);
+    OKC_CHECK(hw_interface_->right_motor_3 != nullptr);
 
     // Get the configuration
     double open_loop_ramp = config.open_loop_ramp_rate;
