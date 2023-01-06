@@ -127,6 +127,25 @@ bool SwerveModule::GetSteerOutput(double *output) {
     return true;
 }
 
+bool SwerveModule::SetDrivePID(double kP, double kI, double kD) {
+    //TODO null pointer checks
+    //OKC_CHECK(this->drive_pid != nullptr);
+
+    this->drive_pid.SetPID(kP, kI, kD);
+
+    return true;
+}
+
+bool SwerveModule::SetSteerPID(double kP, double kI, double kD) {
+    //TODO null pointer checks
+    //OKC_CHECK(this->steer_pid != nullptr);
+
+    this->steer_pid.SetPID(kP, kI, kD);
+
+    return true;
+}
+
+
 bool SwerveModule::Update(double drive_enc, double steer_enc, double drive_vel, double steer_vel) {
     // update the SwerveModulePosition with the given sensor readings
     
