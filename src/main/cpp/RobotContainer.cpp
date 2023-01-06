@@ -29,6 +29,21 @@ RobotContainer::RobotContainer() {
     drivetrain_ = std::make_shared<Drivetrain>(drivetrain_sw_.get());
     VOKC_CALL(drivetrain_->Init());
 
+
+    // == swerve drive ==
+    std::shared_ptr<SwerveDriveHardwareInterface> swerve_drive_hw;
+    VOKC_CALL(SetupSwerveDriveInterface(hardware_, &swerve_drive_hw));
+
+    // Initialize the software interface
+    swerve_drive_sw_ = std::make_shared<SwerveDriveSoftwareInterface>();
+
+    // Link SwerveDriveIO to hardware / software
+    swerve_drive_io_ = std::make_shared<SwerveDriveIO>(swerve_drive_hw.get(), swerve_drive_sw_.get());
+
+    // Link intake software to the I/O
+    swerve_drive_ = std::make_shared<SwerveDrive>(swerve_drive_sw_.get());
+
+
     // == intake ==
     std::shared_ptr<IntakeHardwareInterface> intake_hw;
     VOKC_CALL(SetupIntakeInterface(hardware_, &intake_hw));

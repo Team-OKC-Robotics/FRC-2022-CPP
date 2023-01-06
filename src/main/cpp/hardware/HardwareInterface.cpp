@@ -55,6 +55,40 @@ bool SetupDrivetrainInterface(
     return true;
 }
 
+bool SetupSwerveDriveInterface(
+    std::unique_ptr<HardwareInterface> &hardware,
+    std::shared_ptr<SwerveDriveHardwareInterface> *interface) {
+    OKC_CHECK(interface != nullptr);
+    OKC_CHECK(hardware->actuators != nullptr);
+    OKC_CHECK(hardware->sensors != nullptr);
+
+    // Get actuators interface for swerve drive.
+    std::unique_ptr<ActuatorInterface> &actuators = hardware->actuators;
+    std::unique_ptr<SensorInterface> &sensors = hardware->sensors;
+
+    // set up swerve drive interface.
+    SwerveDriveHardwareInterface swerve_drive_interface = {
+        actuators->left_front_drive_motor.get(),
+        actuators->left_back_drive_motor.get(),
+        actuators->right_front_drive_motor.get(),
+        actuators->right_back_drive_motor.get(),
+        actuators->left_front_steer_motor.get(),
+        actuators->left_back_steer_motor.get(),
+        actuators->right_front_steer_motor.get(),
+        actuators->right_back_steer_motor.get(),
+
+        sensors->ahrs.get(),
+
+        sensors->left_front_steer_encoder.get(),
+        sensors->left_back_steer_encoder.get(),
+        sensors->right_front_steer_encoder.get(),
+        sensors->right_back_steer_encoder.get(),
+    };
+
+    // set the output interface
+    *interface = std::make_shared<SwerveDriveHardwareInterface>(swerve_drive_interface);
+}
+
 bool SetupIntakeInterface(std::unique_ptr<HardwareInterface> &hardware,
                           std::shared_ptr<IntakeHardwareInterface> *interface) {
     OKC_CHECK(interface != nullptr);

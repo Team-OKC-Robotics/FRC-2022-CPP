@@ -18,6 +18,9 @@
 
 // I/O Subsystems
 #include "io/DrivetrainIO.h"
+#include "subsystems/Drivetrain.h"
+#include "io/SwerveDriveIO.h"
+#include "subsystems/SwerveDrive.h"
 #include "io/IntakeIO.h"
 #include "io/ShooterIO.h"
 
@@ -87,16 +90,19 @@ private:
 
     // Hardware I/O interfaces
     std::shared_ptr<DrivetrainIO> drivetrain_io_;
+    std::shared_ptr<SwerveDriveIO> swerve_drive_io_;
     std::shared_ptr<IntakeIO> intake_io_;
     std::shared_ptr<ShooterIO> shooter_io_;
 
     // Robot software interfaces.
     std::shared_ptr<DrivetrainSoftwareInterface> drivetrain_sw_;
+    std::shared_ptr<SwerveDriveSoftwareInterface> swerve_drive_sw_;
     std::shared_ptr<IntakeSoftwareInterface> intake_sw_;
     std::shared_ptr<ShooterSoftwareInterface> shooter_sw_;
 
     // Subsystems
     std::shared_ptr<Drivetrain> drivetrain_;
+    std::shared_ptr<SwerveDrive> swerve_drive_;
     std::shared_ptr<Intake> intake_;
     std::shared_ptr<Shooter> shooter_;
 

@@ -5,6 +5,7 @@
 
 #include "AHRS.h"
 #include <frc/DigitalInput.h>
+#include <frc/AnalogInput.h>
 #include <rev/RelativeEncoder.h>
 
 // == sensor ports ==
@@ -20,6 +21,12 @@ typedef struct sensors_t {
     // intake limit switches
     std::unique_ptr<frc::DigitalInput> deploy_limit_switch;
     std::unique_ptr<frc::DigitalInput> retracted_limit_switch;
+
+    // swerve drive steer encoders
+    std::unique_ptr<frc::AnalogInput> left_front_steer_encoder;
+    std::unique_ptr<frc::AnalogInput> left_back_steer_encoder;
+    std::unique_ptr<frc::AnalogInput> right_front_steer_encoder;
+    std::unique_ptr<frc::AnalogInput> right_back_steer_encoder;
 
     // Shooter ball detector
     std::unique_ptr<frc::DigitalInput> ball_detector;
