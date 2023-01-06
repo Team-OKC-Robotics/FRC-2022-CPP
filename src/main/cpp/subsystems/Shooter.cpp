@@ -79,7 +79,7 @@ bool Shooter::SetShooter(const double &rpm) {
     output_log_->Append(power);
 
     // Update shuffleboard setpoint.
-    ShooterUI::nt_setpoint.SetDouble(rpm);
+    ShooterUI::nt_setpoint->SetDouble(rpm);
 
     // Output power.
     interface_->shooter_power = power;
@@ -168,9 +168,9 @@ bool Shooter::InitShuffleboard() {
     double shoot_i = RobotParams::GetParam("shooter.shoot_pid.Ki", 0);
     double shoot_d = RobotParams::GetParam("shooter.shoot_pid.Kp", 0);
 
-    ShooterUI::nt_shoot_kp.SetDouble(shoot_p);
-    ShooterUI::nt_shoot_ki.SetDouble(shoot_i);
-    ShooterUI::nt_shoot_kd.SetDouble(shoot_d);
+    ShooterUI::nt_shoot_kp->SetDouble(shoot_p);
+    ShooterUI::nt_shoot_ki->SetDouble(shoot_i);
+    ShooterUI::nt_shoot_kd->SetDouble(shoot_d);
 
     return true;
 }
@@ -182,26 +182,26 @@ bool Shooter::UpdateShuffleboard() {
     if (!is_competition) {
         // For some reason we don't update the shooter displays if it's a
         // competition
-        ShooterUI::nt_rpm.SetDouble(interface_->shooter_rpm);
+        ShooterUI::nt_rpm->SetDouble(interface_->shooter_rpm);
 
         bool at_setpoint = false;
         OKC_CALL(IsAtShooterSetpoint(&at_setpoint));
-        ShooterUI::nt_shooter_good.SetBoolean(at_setpoint);
+        ShooterUI::nt_shooter_good->SetBoolean(at_setpoint);
 
-        ShooterUI::nt_vel_err.SetDouble(interface_->velocity_error);
-        ShooterUI::nt_ticks.SetDouble(interface_->ticks);
-        ShooterUI::nt_output.SetDouble(interface_->shooter_output_pct);
+        ShooterUI::nt_vel_err->SetDouble(interface_->velocity_error);
+        ShooterUI::nt_ticks->SetDouble(interface_->ticks);
+        ShooterUI::nt_output->SetDouble(interface_->shooter_output_pct);
 
-        if (ShooterUI::nt_write_mode.GetBoolean(false)) {
+        if (ShooterUI::nt_write_mode->GetBoolean(false)) {
             // Get the current PID parameter values.
             double shoot_p = RobotParams::GetParam("shooter.shoot_pid.Kp", 0);
             double shoot_i = RobotParams::GetParam("shooter.shoot_pid.Ki", 0);
             double shoot_d = RobotParams::GetParam("shooter.shoot_pid.Kp", 0);
 
             // Get the values from shuffleboard.
-            shoot_p = ShooterUI::nt_shoot_kp.GetDouble(shoot_p);
-            shoot_i = ShooterUI::nt_shoot_ki.GetDouble(shoot_i);
-            shoot_d = ShooterUI::nt_shoot_kd.GetDouble(shoot_d);
+            shoot_p = ShooterUI::nt_shoot_kp->GetDouble(shoot_p);
+            shoot_i = ShooterUI::nt_shoot_ki->GetDouble(shoot_i);
+            shoot_d = ShooterUI::nt_shoot_kd->GetDouble(shoot_d);
 
             // Set the PID gains.
             shooter_pid_.SetPID(shoot_p, shoot_i, shoot_d);
