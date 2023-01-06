@@ -85,9 +85,9 @@ namespace SwerveDriveUI {
         nt_tab.Add("Write Mode", false).GetEntry();
 
     // Encoder
-    nt::GenericEntry &nt_left_ticks = nt_tab.Add("left avg dist", 0).GetEntry();
-    nt::GenericEntry &nt_right_ticks = nt_tab.Add("right avg dist", 0).GetEntry();
-    nt::GenericEntry &nt_total_ticks = nt_tab.Add("avg dist", 0).GetEntry();
+    nt::GenericEntry &nt_left_avg = nt_tab.Add("left avg dist", 0).GetEntry();
+    nt::GenericEntry &nt_right_avg = nt_tab.Add("right avg dist", 0).GetEntry();
+    nt::GenericEntry &nt_avg_dist = nt_tab.Add("avg dist", 0).GetEntry();
 
     // Distance PID
     nt::GenericEntry &nt_dist_kp = nt_tab.Add("Distance kP", 0).GetEntry();

@@ -25,6 +25,10 @@ void TeleOpSwerveCommand::Execute() {
     VOKC_CALL(swerve_->TeleOpDrive(drive_power, strafe_power, turn_power));
 }
 
+void TeleOpSwerveCommand::End(bool interrupted) {
+    // do nothing lol
+}
+
 bool TeleOpSwerveCommand::IsFinished() {
     // this command should never end, unless it is interrupted by another
     return false;

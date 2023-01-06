@@ -194,7 +194,9 @@ bool SwerveDrive::InitAuto(frc::Pose2d pos) {
     this->heading_to_goal = atan((position.X().value() - pos.X().value()) / (position.Y().value() - pos.Y().value()));
 
     //  2. figure out distance
-    this->distance_to_goal = sqrt(pow(position.X().value() + pos.X(), 2) + pow(position.Y().value() + pos.Y(), 2));
+    this->distance_to_goal = sqrt(pow(position.X().value() + pos.X().value(), 2) + pow(position.Y().value() + pos.Y().value(), 2));
+
+    return true;
 }
 
 bool SwerveDrive::DriveToGoal(frc::Pose2d pos) {
@@ -428,16 +430,16 @@ bool SwerveDrive::InitShuffleboard() {
 bool SwerveDrive::UpdateShuffleboard() {
     // Update encoder UI
     double encoder_tmp = 0.0;
-    VOKC_CALL(this->GetLeftDriveEncoderAverage(&encoder_tmp));
+    this->GetLeftDriveEncoderAverage(&encoder_tmp);
     SwerveDriveUI::nt_left_avg.SetDouble(encoder_tmp);
-    VOKC_CALL(GetRightDriveEncoderAverage(&encoder_tmp));
+    GetRightDriveEncoderAverage(&encoder_tmp);
     SwerveDriveUI::nt_right_avg.SetDouble(encoder_tmp);
-    VOKC_CALL(GetDriveEncoderAverage(&encoder_tmp));
+    GetDriveEncoderAverage(&encoder_tmp);
     SwerveDriveUI::nt_avg_dist.SetDouble(encoder_tmp);
 
     // Heading UI
     double heading_tmp = 0.0;
-    VOKC_CALL(GetHeading(&heading_tmp));
+    GetHeading(&heading_tmp);
     SwerveDriveUI::nt_heading.SetDouble(heading_tmp);
 
     // If competition mode isn't set to true, then allow the PID gains to be
@@ -465,15 +467,15 @@ bool SwerveDrive::UpdateShuffleboard() {
             steer_d = SwerveDriveUI::nt_steer_kd.GetDouble(steer_d);
 
             // Update PIDs with values
-            VOKC_CALL(left_front_module.SetDrivePID(dist_p, dist_i, dist_d));
-            VOKC_CALL(left_back_module.SetDrivePID(dist_p, dist_i, dist_d));
-            VOKC_CALL(right_front_module.SetDrivePID(dist_p, dist_i, dist_d));
-            VOKC_CALL(right_back_module.SetDrivePID(dist_p, dist_i, dist_d));
+            left_front_module.SetDrivePID(dist_p, dist_i, dist_d);
+            left_back_module.SetDrivePID(dist_p, dist_i, dist_d);
+            right_front_module.SetDrivePID(dist_p, dist_i, dist_d);
+            right_back_module.SetDrivePID(dist_p, dist_i, dist_d);
 
-            VOKC_CALL(left_front_module.SetSteerPID(steer_p, steer_i, steer_d));
-            VOKC_CALL(left_back_module.SetSteerPID(steer_p, steer_i, steer_d));
-            VOKC_CALL(right_front_module.SetSteerPID(steer_p, steer_i, steer_d));
-            VOKC_CALL(right_back_module.SetSteerPID(steer_p, steer_i, steer_d));
+            left_front_module.SetSteerPID(steer_p, steer_i, steer_d);
+            left_back_module.SetSteerPID(steer_p, steer_i, steer_d);
+            right_front_module.SetSteerPID(steer_p, steer_i, steer_d);
+            right_back_module.SetSteerPID(steer_p, steer_i, steer_d);
         }
 
         // Allow saving parameters in non-competition modes
