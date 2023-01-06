@@ -20,12 +20,19 @@
 #include "io/SwerveDriveIO.h"
 #include "SwerveModule.h"
 
+enum AutoStage {
+    TURN_TO_GOAL,
+    DRIVE_TO_GOAL,
+    TURN_TO_FINAL_HEADING,
+    FINISHED
+};
+
 class SwerveDrive : public frc2::SubsystemBase {
 public:
     SwerveDrive(SwerveDriveSoftwareInterface *interface)
         : interface_(interface), left_front_module(), left_back_module(), right_front_module(), right_back_module(),
         swerve_kinematics(frc::Translation2d(units::meter_t(0.3), units::meter_t(0.3)), frc::Translation2d(units::meter_t(-0.3), units::meter_t(0.3)), frc::Translation2d(units::meter_t(0.3), units::meter_t(-0.3)), frc::Translation2d(units::meter_t(-0.3), units::meter_t(-0.3))),
-        swerve_odometry(swerve_kinematics, frc::Rotation2d(), positions, frc::Pose2d()) {}
+        swerve_odometry(swerve_kinematics, frc::Rotation2d(), positions, frc::Pose2d()), position() {}
     ~SwerveDrive() {}
 
     bool Init();
@@ -49,13 +56,29 @@ public:
     bool SetMaxOutputSteer(const double &max_output);
 
     bool TeleOpDrive(const double &drive, const double &strafe, const double &turn);
+    bool DumbTeleOpDrive(const double &drive, const double &strafe, const double &turn);
     
-    bool TranslateAuto(const double &x, const double &y, const double &rot);
-    bool TurnToHeading(const double &heading);
+    bool TranslateAuto(frc::Pose2d pos);
+    bool TurnToHeading(frc::Pose2d pos);
+    bool InitAuto(frc::Pose2d pos);
+    bool TurnToGoal(frc::Pose2d pos);
+    bool SetDrive(const double &power);
+    bool DriveToGoal(frc::Pose2d pos);
+    bool TurnToGoalHeading(frc::Pose2d pos);
+    bool TranslateAutoLockHeading(frc::Pose2d pos);
+
+    bool GetLeftDriveEncoderAverage(double *avg);
+    bool GetRightDriveEncoderAverage(double *avg);
+    bool GetDriveEncoderAverage(double *avg);
+    bool GetLeftSteerEncoderAverage(double *avg);
+    bool GetRightSteerEncoderAverage(double *avg);
     bool GetHeading(double *heading);
+
+    bool AtSetpoint(bool *at);
     
     bool ResetDriveEncoders();
     bool ResetSteerEncoders();
+    bool ResetPIDs();
     bool ResetGyro();
 
 private:
@@ -93,10 +116,20 @@ private:
     // odometry
     frc::SwerveDriveOdometry<4> swerve_odometry;
 
+    // position
+    frc::Pose2d position;
+
     // Speed modifier (the joystick input is multiplied by this value)
     double speed_modifier_drive = 0.75;
     double speed_modifier_steer = 0.75;
 
-    // Open loop ramp rate
-    double open_loop_ramp_ = 0.5;
+    // max output
+    double max_output_drive = 1;
+    double max_output_steer = 1;
+
+    // if the robot has reached the autonomous setpoint
+    bool at_setpoint = false;
+
+    double heading_to_goal;
+    double distance_to_goal;
 };
