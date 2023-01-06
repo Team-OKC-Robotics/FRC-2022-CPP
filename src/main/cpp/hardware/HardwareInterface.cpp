@@ -113,3 +113,26 @@ bool SetupShooterInterface(
 
     return true;
 }
+
+bool SetupVisionInterface(std::unique_ptr<HardwareInterface> &hardware,
+                          std::shared_ptr<VisionHardwareInterface> *interface) {
+    OKC_CHECK(interface != nullptr);
+    OKC_CHECK(hardware->actuators != nullptr);
+    OKC_CHECK(hardware->sensors != nullptr);
+
+    // Get actuators and sensors interfaces for shooter.
+    std::unique_ptr<ActuatorInterface> &actuators = hardware->actuators;
+    std::unique_ptr<SensorInterface> &sensors = hardware->sensors;
+
+    // Protect against nullptr actuators/sensors
+    OKC_CHECK(actuators->led_relay != nullptr);
+    OKC_CHECK(sensors->camera != nullptr);
+
+    VisionHardwareInterface vision_interface = {actuators->led_relay.get(),
+                                                sensors->camera.get()};
+
+    // Set the output interface
+    *interface = std::make_shared<VisionHardwareInterface>(vision_interface);
+
+    return true;
+}

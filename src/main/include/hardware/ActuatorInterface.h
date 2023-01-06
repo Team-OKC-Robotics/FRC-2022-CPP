@@ -2,9 +2,9 @@
 #pragma once
 
 #include <ctre/phoenix/motorcontrol/can/TalonFX.h>
+#include <frc/Relay.h>
 #include <memory>
 #include <rev/CANSparkMax.h>
-
 
 // CTRE namespace
 namespace ctre_can = ctre::phoenix::motorcontrol::can;
@@ -49,4 +49,7 @@ typedef struct actuator_interface_t {
     // Shooter motors
     std::unique_ptr<ctre_can::TalonFX> shooter_motor;
     std::unique_ptr<rev::CANSparkMax> trigger_motor;
+
+    // Vision LEDs
+    std::unique_ptr<frc::Relay> led_relay;
 } ActuatorInterface;

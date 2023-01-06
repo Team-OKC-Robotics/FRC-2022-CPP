@@ -11,6 +11,7 @@
 #include "io/DrivetrainIO.h"
 #include "io/IntakeIO.h"
 #include "io/ShooterIO.h"
+#include "io/VisionIO.h"
 
 typedef struct hardware_t {
     // Actuators
@@ -57,3 +58,13 @@ bool SetupIntakeInterface(std::unique_ptr<HardwareInterface> &hardware,
 bool SetupShooterInterface(
     std::unique_ptr<HardwareInterface> &hardware,
     std::shared_ptr<ShooterHardwareInterface> *interface);
+
+/**
+ * @brief Link the Vision I/O to the hardware interfaces.
+ *
+ * @param interface
+ * @return true
+ * @return false
+ */
+bool SetupVisionInterface(std::unique_ptr<HardwareInterface> &hardware,
+                          std::shared_ptr<VisionHardwareInterface> *interface);

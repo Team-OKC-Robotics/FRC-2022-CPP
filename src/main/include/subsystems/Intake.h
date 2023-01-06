@@ -32,7 +32,7 @@ public:
 
     bool ResetPositionEncoder();
     bool ResetPositionPID();
-    
+
     bool SetIntakePower(const double &power);
     bool SetIndexerPower(const double &power);
     bool SetExtended(const bool &extended);

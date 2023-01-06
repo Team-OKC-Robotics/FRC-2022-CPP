@@ -5,6 +5,7 @@
 
 #include "AHRS.h"
 #include <frc/DigitalInput.h>
+#include <photonlib/PhotonCamera.h>
 #include <rev/RelativeEncoder.h>
 
 // == sensor ports ==
@@ -23,4 +24,7 @@ typedef struct sensors_t {
 
     // Shooter ball detector
     std::unique_ptr<frc::DigitalInput> ball_detector;
+
+    // Vision
+    std::unique_ptr<photonlib::PhotonCamera> camera;
 } SensorInterface;

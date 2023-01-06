@@ -20,11 +20,13 @@
 #include "io/DrivetrainIO.h"
 #include "io/IntakeIO.h"
 #include "io/ShooterIO.h"
+#include "io/VisionIO.h"
 
 // Subsystems
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Shooter.h"
+#include "subsystems/Vision.h"
 
 // Gamepad
 #include "ui/GamepadMap.h"
@@ -74,6 +76,7 @@ private:
     bool InitActuators(ActuatorInterface *actuators_interface);
     bool InitSensors(const ActuatorInterface &actuators,
                      SensorInterface *sensor_interface);
+    bool InitSubsystems();
 
     // Command initialization
     bool InitCommands();
@@ -89,16 +92,19 @@ private:
     std::shared_ptr<DrivetrainIO> drivetrain_io_;
     std::shared_ptr<IntakeIO> intake_io_;
     std::shared_ptr<ShooterIO> shooter_io_;
+    std::shared_ptr<VisionIO> vision_io_;
 
     // Robot software interfaces.
     std::shared_ptr<DrivetrainSoftwareInterface> drivetrain_sw_;
     std::shared_ptr<IntakeSoftwareInterface> intake_sw_;
     std::shared_ptr<ShooterSoftwareInterface> shooter_sw_;
+    std::shared_ptr<VisionSoftwareInterface> vision_sw_;
 
     // Subsystems
     std::shared_ptr<Drivetrain> drivetrain_;
     std::shared_ptr<Intake> intake_;
     std::shared_ptr<Shooter> shooter_;
+    std::shared_ptr<Vision> vision_;
 
     /**
      * User interfaces

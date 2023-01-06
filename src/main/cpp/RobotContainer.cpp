@@ -14,47 +14,7 @@ RobotContainer::RobotContainer() {
     hardware_ = std::make_unique<HardwareInterface>();
     VOKC_CALL(this->InitHardware(hardware_));
 
-    // Initialize the hardware interface
-    std::shared_ptr<DrivetrainHardwareInterface> drivetrain_hw;
-    VOKC_CALL(SetupDrivetrainInterface(hardware_, &drivetrain_hw));
-
-    // Initialize the software interface
-    drivetrain_sw_ = std::make_shared<DrivetrainSoftwareInterface>();
-
-    // Link DrivetrainIO to hardware / software
-    drivetrain_io_ = std::make_shared<DrivetrainIO>(drivetrain_hw.get(),
-                                                    drivetrain_sw_.get());
-
-    // Link Drivetrain software to the I/O
-    drivetrain_ = std::make_shared<Drivetrain>(drivetrain_sw_.get());
-    VOKC_CALL(drivetrain_->Init());
-
-    // == intake ==
-    std::shared_ptr<IntakeHardwareInterface> intake_hw;
-    VOKC_CALL(SetupIntakeInterface(hardware_, &intake_hw));
-
-    // Initialize the software interface
-    intake_sw_ = std::make_shared<IntakeSoftwareInterface>();
-
-    // Link IntakeIO to hardware / software
-    intake_io_ = std::make_shared<IntakeIO>(intake_hw.get(), intake_sw_.get());
-
-    // Link intake software to the I/O
-    intake_ = std::make_shared<Intake>(intake_sw_.get());
-
-    // == Shooter ==
-    std::shared_ptr<ShooterHardwareInterface> shooter_hw;
-    VOKC_CALL(SetupShooterInterface(hardware_, &shooter_hw));
-
-    // Initialize the software interface
-    shooter_sw_ = std::make_shared<ShooterSoftwareInterface>();
-
-    // Link IntakeIO to hardware / software
-    shooter_io_ =
-        std::make_shared<ShooterIO>(shooter_hw.get(), shooter_sw_.get());
-
-    // Link intake software to the I/O
-    shooter_ = std::make_shared<Shooter>(shooter_sw_.get());
+    VOKC_CALL(InitSubsystems());
 
     // TODO: put other subsystems here.
 
@@ -66,6 +26,70 @@ RobotContainer::RobotContainer() {
 
     // Configure the button bindings
     ConfigureButtonBindings();
+}
+
+bool RobotContainer::InitSubsystems() {
+    OKC_CHECK(hardware_ != nullptr);
+
+    // Initialize the hardware interface
+    std::shared_ptr<DrivetrainHardwareInterface> drivetrain_hw;
+    OKC_CALL(SetupDrivetrainInterface(hardware_, &drivetrain_hw));
+
+    // Initialize the software interface
+    drivetrain_sw_ = std::make_shared<DrivetrainSoftwareInterface>();
+
+    // Link DrivetrainIO to hardware / software
+    drivetrain_io_ = std::make_shared<DrivetrainIO>(drivetrain_hw.get(),
+                                                    drivetrain_sw_.get());
+
+    // Link Drivetrain software to the I/O
+    drivetrain_ = std::make_shared<Drivetrain>(drivetrain_sw_.get());
+    OKC_CALL(drivetrain_->Init());
+
+    // == intake ==
+    std::shared_ptr<IntakeHardwareInterface> intake_hw;
+    OKC_CALL(SetupIntakeInterface(hardware_, &intake_hw));
+
+    // Initialize the software interface
+    intake_sw_ = std::make_shared<IntakeSoftwareInterface>();
+
+    // Link IntakeIO to hardware / software
+    intake_io_ = std::make_shared<IntakeIO>(intake_hw.get(), intake_sw_.get());
+
+    // Link intake software to the I/O
+    intake_ = std::make_shared<Intake>(intake_sw_.get());
+    OKC_CALL(intake_->Init());
+
+    // == Shooter ==
+    std::shared_ptr<ShooterHardwareInterface> shooter_hw;
+    OKC_CALL(SetupShooterInterface(hardware_, &shooter_hw));
+
+    // Initialize the software interface
+    shooter_sw_ = std::make_shared<ShooterSoftwareInterface>();
+
+    // Link ShooterIO to hardware / software
+    shooter_io_ =
+        std::make_shared<ShooterIO>(shooter_hw.get(), shooter_sw_.get());
+
+    // Link shooter software to the I/O
+    shooter_ = std::make_shared<Shooter>(shooter_sw_.get());
+    OKC_CALL(shooter_->Init());
+
+    // == Vision ==
+    std::shared_ptr<VisionHardwareInterface> vision_hw;
+    OKC_CALL(SetupVisionInterface(hardware_, &vision_hw));
+
+    // Initialize the software interface
+    vision_sw_ = std::make_shared<VisionSoftwareInterface>();
+
+    // Link the VisionIO to the hardware and software
+    vision_io_ = std::make_shared<VisionIO>(vision_hw.get(), vision_sw_.get());
+
+    // Link vision software to the I/O
+    vision_ = std::make_shared<Vision>(vision_sw_.get());
+    OKC_CALL(vision_->Init());
+
+    return true;
 }
 
 void RobotContainer::ConfigureButtonBindings() {
@@ -185,6 +209,10 @@ bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface) {
     actuators_interface->trigger_motor->SetIdleMode(COAST);
     actuators_interface->trigger_motor->SetSmartCurrentLimit(30);
 
+    // Vision actuators
+    actuators_interface->led_relay =
+        std::make_unique<frc::Relay>(2, frc::Relay::kBothDirections);
+
     return true;
 }
 
@@ -212,6 +240,10 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
     // Shooter sensors
     sensor_interface->ball_detector =
         std::make_unique<frc::DigitalInput>(BALL_DETECTOR);
+
+    // Initialize the camera
+    sensor_interface->camera =
+        std::make_unique<photonlib::PhotonCamera>("mmal_service_16.1");
 
     return true;
 }
