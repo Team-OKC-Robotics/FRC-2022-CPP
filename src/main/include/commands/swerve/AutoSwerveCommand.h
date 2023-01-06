@@ -19,7 +19,7 @@ public:
      *
      * @param swerve The swerve drive used by this command.
      */
-    explicit AutoSwerveCommand(std::shared_ptr<SwerveDrive> swerve, frc::Translation2d end_pos, frc::Rotation2d final_angle);
+    explicit AutoSwerveCommand(std::shared_ptr<SwerveDrive> swerve, frc::Pose2d end_pos);
 
     void Initialize() override;
     void Execute() override;
@@ -28,6 +28,5 @@ public:
 
 private:
     std::shared_ptr<SwerveDrive> swerve_;
-    frc::Translation2d end_pos;
-    frc::Rotation2d final_angle;
+    frc::Pose2d end_pos;
 };
