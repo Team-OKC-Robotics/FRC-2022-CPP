@@ -1,9 +1,7 @@
-import org.gradle.internal.os.OperatingSystem
-
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2023.1.1-beta-7"
+    id "edu.wpi.first.GradleRIO" version "2023.1.1"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -97,82 +95,5 @@ model {
             wpi.cpp.deps.wpilib(it)
             wpi.cpp.deps.googleTest(it)
         }
-    }
-}
-
-task copyDeployDir {
-    String prefix = 'test-results/frcUserProgramTest/'
-    String suffix = 'src/main/deploy'
-
-    // println prefix + "platform/version/" + suffix
-    // println OperatingSystem.current()
-
-    if(OperatingSystem.current().isWindows()){
-        // println "COPYING DEPLOY FOR WINDOWS"
-        // println "SRC: " + project.fileTree('src/main/deploy')
-        // println "TO"
-        // Copy debug
-        copy {
-            from project.fileTree('src/main/deploy')
-            into layout.buildDirectory.dir(prefix + "windowsx86-64/debug/" + suffix)
-        }
-        // Copy release
-        copy {
-            from project.fileTree('src/main/deploy')
-            into layout.buildDirectory.dir(prefix + "windowsx86-64/release/" + suffix)
-        }
-        // println layout.buildDirectory.dir("")
-        // println prefix + "windowsx86-64/debug/" + suffix
-        // println prefix + "windowsx86-64/release/" + suffix
-        // println 'Copied Windows configuration'
-        
-    } else {
-        // println "COPYING DEPLOY FOR LINUX"
-        // println "SRC: " + project.fileTree('src/main/deploy')
-        // println "TO"
-        // Linux Athena
-        // Copy debug
-        copy {
-            from project.fileTree('src/main/deploy')
-            into layout.buildDirectory.dir(prefix + "linuxathena/debug/" + suffix)
-        }
-        // Copy release
-        copy {
-            from project.fileTree('src/main/deploy')
-            into layout.buildDirectory.dir(prefix + "linuxathena/release/" + suffix)
-        }
-        // println layout.buildDirectory.dir("")
-        // println prefix + "linuxathena/debug/" + suffix
-        // println prefix + "linuxathena/release/" + suffix
-
-        // Linux x86-64
-        // Copy debug
-        copy {
-            from project.fileTree('src/main/deploy')
-            into layout.buildDirectory.dir(prefix + "linuxx86-64/debug/" + suffix)
-        }
-        // Copy release
-        copy {
-            from project.fileTree('src/main/deploy')
-            into layout.buildDirectory.dir(prefix + "linuxx86-64/release/" + suffix)
-        }
-
-        // println prefix + "linuxx86-64/release/" + suffix
-        // println prefix + "linuxx86-64/debug/" + suffix
-        // println 'Copied Linux configuration'
-    } 
-    
-}
-
-// Copy the deploy/ folder when doing unit tests (check) in order to load things like parameters.
-check.dependsOn {
-    tasks.findAll {
-        task -> task.name.startsWith('copyDeployDir')
-    }
-}
-
-build.dependsOn {
-    tasks.findAll {
-        task -> task.name.startsWith('copyDeployDir')
     }
 }
