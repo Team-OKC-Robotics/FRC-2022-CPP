@@ -44,6 +44,8 @@
 #include "commands/drivetrain/SlowTeleopDrive.h"
 #include "commands/drivetrain/TeleopDriveCommand.h"
 #include "commands/drivetrain/TurnCommand.h"
+// swerve
+#include "commands/swerve/TeleOpSwerveCommand.h"
 // Shooter
 #include "commands/shooter/FeedCommand.h"
 #include "commands/shooter/SetTriggerCommand.h"
@@ -136,6 +138,9 @@ private:
     std::shared_ptr<QuickTeleopDriveCommand> quick_teleop_drive_command_;
     std::shared_ptr<SlowTeleopDrive> slow_teleop_drive_;
     std::shared_ptr<TeleopDriveCommand> teleop_drive_command_;
+
+    // swerve drive
+    std::shared_ptr<TeleOpSwerveCommand> swerve_teleop_command_;
 
     // Shooter
     std::shared_ptr<FeedCommand> feed_command_;
