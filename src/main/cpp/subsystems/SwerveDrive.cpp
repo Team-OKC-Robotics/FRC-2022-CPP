@@ -26,6 +26,11 @@ bool SwerveDrive::Init() {
     right_front_module->Init(RIGHT_FRONT);
     right_back_module->Init(RIGHT_BACK);
 
+    OKC_CHECK(left_front_module != nullptr);
+    OKC_CHECK(left_back_module != nullptr);
+    OKC_CHECK(right_front_module != nullptr);
+    OKC_CHECK(right_back_module != nullptr);
+
     // create location objects
     left_front_loc = std::make_shared<frc::Translation2d>();
     left_back_loc = std::make_shared<frc::Translation2d>();
@@ -36,9 +41,15 @@ bool SwerveDrive::Init() {
     left_back_module->GetLocationOnRobot(left_back_loc.get());
     right_front_module->GetLocationOnRobot(right_front_loc.get());
     right_back_module->GetLocationOnRobot(right_back_loc.get());
+    
+    OKC_CHECK(left_front_loc != nullptr);
+    OKC_CHECK(left_back_loc != nullptr);
+    OKC_CHECK(right_front_loc != nullptr);
+    OKC_CHECK(right_back_loc != nullptr);
 
     // define SwerveKinematics object
-    swerve_kinematics = std::make_shared<frc::SwerveDriveKinematics<4>>(left_front_loc, left_back_loc, right_front_loc, right_back_loc);
+    swerve_kinematics = std::make_shared<frc::SwerveDriveKinematics<4>>(*left_front_loc, *left_back_loc, *right_front_loc, *right_back_loc);
+    OKC_CHECK(swerve_kinematics != nullptr);
 
     // create position objects
     left_front_pos = std::make_shared<frc::SwerveModulePosition>();
@@ -50,15 +61,24 @@ bool SwerveDrive::Init() {
     left_back_module->GetSwerveModulePosition(left_back_pos.get());
     right_front_module->GetSwerveModulePosition(right_front_pos.get());
     right_back_module->GetSwerveModulePosition(right_back_pos.get());
+
+    OKC_CHECK(left_front_pos != nullptr);
+    OKC_CHECK(left_back_pos != nullptr);
+    OKC_CHECK(right_front_pos != nullptr);
+    OKC_CHECK(right_back_pos != nullptr);
+
     
     // create list of position objects
-    positions = std::make_shared<wpi::array<frc::SwerveModulePosition, 4>>(left_front_pos, left_back_pos, right_front_pos, right_back_pos);
-    
+    positions = std::make_shared<wpi::array<frc::SwerveModulePosition, 4>>(*left_front_pos, *left_back_pos, *right_front_pos, *right_back_pos);
+    OKC_CHECK(positions != nullptr);
+
     // define SwerveOdometry object with default 0 starting parameters
     swerve_odometry = std::make_shared<frc::SwerveDriveOdometry<4>>(*swerve_kinematics, frc::Rotation2d(), *positions, frc::Pose2d());
+    OKC_CHECK(swerve_odometry != nullptr);
 
     // our internal position object
     position = std::make_shared<frc::Pose2d>();
+    OKC_CHECK(position != nullptr);
 
     // setpoint
     at_setpoint = false;

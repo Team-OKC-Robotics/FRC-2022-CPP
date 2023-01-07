@@ -27,6 +27,12 @@ typedef struct sensors_t {
     std::unique_ptr<frc::DigitalInput> deploy_limit_switch;
     std::unique_ptr<frc::DigitalInput> retracted_limit_switch;
 
+    // swerve drive drive endoders
+    std::unique_ptr<rev::RelativeEncoder> left_front_drive_encoder;
+    std::unique_ptr<rev::RelativeEncoder> left_back_drive_encoder;
+    std::unique_ptr<rev::RelativeEncoder> right_front_drive_encoder;
+    std::unique_ptr<rev::RelativeEncoder> right_back_drive_encoder;
+
     // swerve drive steer encoders
     std::unique_ptr<frc::AnalogInput> left_front_steer_encoder;
     std::unique_ptr<frc::AnalogInput> left_back_steer_encoder;

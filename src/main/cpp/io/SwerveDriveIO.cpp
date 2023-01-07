@@ -72,10 +72,10 @@ bool SwerveDriveIO::ProcessIO() {
     sw_interface_->right_back_drive_motor_enc = hw_interface_->right_back_drive_motor->GetEncoder().GetPosition();
 
     // steer
-    sw_interface_->left_front_steer_motor_enc = hw_interface_->left_front_steer_motor->GetEncoder().GetPosition();
-    sw_interface_->left_back_steer_motor_enc = hw_interface_->left_back_steer_motor->GetEncoder().GetPosition();
-    sw_interface_->right_front_steer_motor_enc = hw_interface_->right_front_steer_motor->GetEncoder().GetPosition();
-    sw_interface_->right_back_steer_motor_enc = hw_interface_->right_back_steer_motor->GetEncoder().GetPosition();
+    sw_interface_->left_front_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage(); //TODO maybe do some processing? unless that's handled by the SwerveModule class
+    sw_interface_->left_back_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage(); //TODO maybe do some processing? unless that's handled by the SwerveModule class
+    sw_interface_->right_front_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage(); //TODO maybe do some processing? unless that's handled by the SwerveModule class
+    sw_interface_->right_back_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage(); //TODO maybe do some processing? unless that's handled by the SwerveModule class
 
     // velocity
     // drive
@@ -85,10 +85,7 @@ bool SwerveDriveIO::ProcessIO() {
     sw_interface_->right_back_drive_enc_vel = hw_interface_->right_back_drive_motor->GetEncoder().GetVelocity();
 
     // steer
-    sw_interface_->left_front_steer_enc_vel = hw_interface_->left_front_steer_motor->GetEncoder().GetVelocity();
-    sw_interface_->left_back_steer_enc_vel = hw_interface_->left_back_steer_motor->GetEncoder().GetVelocity();
-    sw_interface_->right_front_steer_enc_vel = hw_interface_->right_front_steer_motor->GetEncoder().GetVelocity();
-    sw_interface_->right_back_steer_enc_vel = hw_interface_->right_back_steer_motor->GetEncoder().GetVelocity();
+    //TODO steer velocity
 
     return true;
 }

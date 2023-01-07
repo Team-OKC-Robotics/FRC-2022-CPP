@@ -66,6 +66,7 @@ bool SetupSwerveDriveInterface(
     std::unique_ptr<ActuatorInterface> &actuators = hardware->actuators;
     std::unique_ptr<SensorInterface> &sensors = hardware->sensors;
 
+    // make sure all the actuators actually exist
     OKC_CHECK(actuators->left_front_drive_motor != nullptr);
     OKC_CHECK(actuators->left_back_drive_motor != nullptr);
     OKC_CHECK(actuators->right_front_drive_motor != nullptr);
@@ -103,6 +104,8 @@ bool SetupSwerveDriveInterface(
 
     // set the output interface
     *interface = std::make_shared<SwerveDriveHardwareInterface>(swerve_drive_interface);
+
+    return true;
 }
 
 bool SetupIntakeInterface(std::unique_ptr<HardwareInterface> &hardware,
