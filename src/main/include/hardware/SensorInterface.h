@@ -14,6 +14,11 @@
 
 #define BALL_DETECTOR 9
 
+#define LEFT_FRONT_STEER_ENCODER 0
+#define LEFT_BACK_STEER_ENCODER 1
+#define RIGHT_FRONT_STEER_ENCODER 2
+#define RIGHT_BACK_STEER_ENCODER 3
+
 typedef struct sensors_t {
     // navX IMU
     std::unique_ptr<AHRS> ahrs;
