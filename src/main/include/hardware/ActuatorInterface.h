@@ -30,6 +30,16 @@ namespace ctre_can = ctre::phoenix::motorcontrol::can;
 #define SHOOTER_MOTOR 8
 #define TRIGGER_MOTOR 9
 
+#define LEFT_FRONT_DRIVE_MOTOR 1
+#define LEFT_BACK_DRIVE_MOTOR 3
+#define RIGHT_FRONT_DRIVE_MOTOR 5
+#define RIGHT_BACK_DRIVE_MOTOR 7
+#define LEFT_FRONT_STEER_MOTOR 2
+#define LEFT_BACK_STEER_MOTOR 4
+#define RIGHT_FRONT_STEER_MOTOR 6
+#define RIGHT_BACK_STEER_MOTOR 8
+
+
 typedef struct actuator_interface_t {
     // Left drivetrain motors
     std::unique_ptr<rev::CANSparkMax> left_motor_1;
