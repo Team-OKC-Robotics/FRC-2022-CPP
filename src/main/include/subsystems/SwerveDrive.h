@@ -30,9 +30,7 @@ enum AutoStage {
 class SwerveDrive : public frc2::SubsystemBase {
 public:
     SwerveDrive(SwerveDriveSoftwareInterface *interface)
-        : interface_(interface), left_front_module(), left_back_module(), right_front_module(), right_back_module(),
-        swerve_kinematics(frc::Translation2d(units::meter_t(0.3), units::meter_t(0.3)), frc::Translation2d(units::meter_t(-0.3), units::meter_t(0.3)), frc::Translation2d(units::meter_t(0.3), units::meter_t(-0.3)), frc::Translation2d(units::meter_t(-0.3), units::meter_t(-0.3))),
-        swerve_odometry(swerve_kinematics, frc::Rotation2d(), positions, frc::Pose2d()), position() {}
+        : interface_(interface) {}
     ~SwerveDrive() {}
 
     bool Init();
@@ -90,34 +88,34 @@ private:
     SwerveDriveSoftwareInterface *const interface_;
 
     // swerve modules
-    SwerveModule left_front_module;
-    SwerveModule left_back_module;
-    SwerveModule right_front_module;
-    SwerveModule right_back_module;
+    std::shared_ptr<SwerveModule> left_front_module;
+    std::shared_ptr<SwerveModule> left_back_module;
+    std::shared_ptr<SwerveModule> right_front_module;
+    std::shared_ptr<SwerveModule> right_back_module;
 
     // swerve module positions
-    frc::Translation2d *left_front_loc;
-    frc::Translation2d *left_back_loc;
-    frc::Translation2d *right_front_loc;
-    frc::Translation2d *right_back_loc;
+    std::shared_ptr<frc::Translation2d> left_front_loc;
+    std::shared_ptr<frc::Translation2d> left_back_loc;
+    std::shared_ptr<frc::Translation2d> right_front_loc;
+    std::shared_ptr<frc::Translation2d> right_back_loc;
 
     // swerve module states
-    frc::SwerveModulePosition *left_front_pos;
-    frc::SwerveModulePosition *left_back_pos;
-    frc::SwerveModulePosition *right_front_pos;
-    frc::SwerveModulePosition *right_back_pos;    
+    std::shared_ptr<frc::SwerveModulePosition> left_front_pos;
+    std::shared_ptr<frc::SwerveModulePosition> left_back_pos;
+    std::shared_ptr<frc::SwerveModulePosition> right_front_pos;
+    std::shared_ptr<frc::SwerveModulePosition> right_back_pos;    
 
     // swerve module positions
-    wpi::array<frc::SwerveModulePosition, 4> positions = {*left_front_pos, *left_back_pos, *right_front_pos, *right_back_pos};
+    std::shared_ptr<wpi::array<frc::SwerveModulePosition, 4>> positions;
 
     // kinematics
-    frc::SwerveDriveKinematics<4> swerve_kinematics;
+    std::shared_ptr<frc::SwerveDriveKinematics<4>> swerve_kinematics;
 
     // odometry
-    frc::SwerveDriveOdometry<4> swerve_odometry;
+    std::shared_ptr<frc::SwerveDriveOdometry<4>> swerve_odometry;
 
     // position
-    frc::Pose2d position;
+    std::shared_ptr<frc::Pose2d> position;
 
     // Speed modifier (the joystick input is multiplied by this value)
     double speed_modifier_drive = 0.75;

@@ -16,33 +16,49 @@ bool SwerveDrive::Init() {
     // that's how they gonna get passed out
 
     // initialize swerve modules
-    left_front_module.Init(LEFT_FRONT);
-    left_back_module.Init(LEFT_BACK);
-    right_front_module.Init(RIGHT_FRONT);
-    right_back_module.Init(RIGHT_BACK);
+    left_front_module = std::make_shared<SwerveModule>();
+    left_back_module = std::make_shared<SwerveModule>();
+    right_front_module = std::make_shared<SwerveModule>();
+    right_back_module = std::make_shared<SwerveModule>();
+
+    left_front_module->Init(LEFT_FRONT);
+    left_back_module->Init(LEFT_BACK);
+    right_front_module->Init(RIGHT_FRONT);
+    right_back_module->Init(RIGHT_BACK);
 
     // create location objects
-    left_front_module.GetLocationOnRobot(left_front_loc);
-    left_back_module.GetLocationOnRobot(left_back_loc);
-    right_front_module.GetLocationOnRobot(right_front_loc);
-    right_back_module.GetLocationOnRobot(right_back_loc);
+    left_front_loc = std::make_shared<frc::Translation2d>();
+    left_back_loc = std::make_shared<frc::Translation2d>();
+    right_front_loc = std::make_shared<frc::Translation2d>();
+    right_back_loc = std::make_shared<frc::Translation2d>();
+
+    left_front_module->GetLocationOnRobot(left_front_loc.get());
+    left_back_module->GetLocationOnRobot(left_back_loc.get());
+    right_front_module->GetLocationOnRobot(right_front_loc.get());
+    right_back_module->GetLocationOnRobot(right_back_loc.get());
 
     // define SwerveKinematics object
-    swerve_kinematics = frc::SwerveDriveKinematics<4>(*left_front_loc, *left_back_loc, *right_front_loc, *right_back_loc);
+    swerve_kinematics = std::make_shared<frc::SwerveDriveKinematics<4>>(left_front_loc, left_back_loc, right_front_loc, right_back_loc);
 
     // create position objects
-    left_front_module.GetSwerveModulePosition(left_front_pos);
-    left_back_module.GetSwerveModulePosition(left_back_pos);
-    right_front_module.GetSwerveModulePosition(right_front_pos);
-    right_back_module.GetSwerveModulePosition(right_back_pos);
+    left_front_pos = std::make_shared<frc::SwerveModulePosition>();
+    left_back_pos = std::make_shared<frc::SwerveModulePosition>();
+    right_front_pos = std::make_shared<frc::SwerveModulePosition>();
+    right_back_pos = std::make_shared<frc::SwerveModulePosition>();
+
+    left_front_module->GetSwerveModulePosition(left_front_pos.get());
+    left_back_module->GetSwerveModulePosition(left_back_pos.get());
+    right_front_module->GetSwerveModulePosition(right_front_pos.get());
+    right_back_module->GetSwerveModulePosition(right_back_pos.get());
     
-    positions = wpi::array<frc::SwerveModulePosition, 4>(*left_front_pos, *left_back_pos, *right_front_pos, *right_back_pos);
+    // create list of position objects
+    positions = std::make_shared<wpi::array<frc::SwerveModulePosition, 4>>(left_front_pos, left_back_pos, right_front_pos, right_back_pos);
     
     // define SwerveOdometry object with default 0 starting parameters
-    swerve_odometry = frc::SwerveDriveOdometry(swerve_kinematics, frc::Rotation2d(), positions, frc::Pose2d());
+    swerve_odometry = std::make_shared<frc::SwerveDriveOdometry<4>>(*swerve_kinematics, frc::Rotation2d(), *positions, frc::Pose2d());
 
     // our internal position object
-    position = frc::Pose2d();
+    position = std::make_shared<frc::Pose2d>();
 
     // setpoint
     at_setpoint = false;
@@ -64,22 +80,22 @@ void SwerveDrive::Periodic() {
     VOKC_CALL(this->GetHeading(&heading));
 
     // update modules
-    left_front_module.Update(this->interface_->left_front_drive_motor_enc, this->interface_->left_front_steer_motor_enc, this->interface_->left_front_drive_enc_vel, this->interface_->left_front_steer_enc_vel);
-    left_back_module.Update(this->interface_->left_back_drive_motor_enc, this->interface_->left_back_steer_motor_enc, this->interface_->left_back_drive_enc_vel, this->interface_->left_back_steer_enc_vel);
-    right_front_module.Update(this->interface_->right_front_drive_motor_enc, this->interface_->right_front_steer_motor_enc, this->interface_->right_front_drive_enc_vel, this->interface_->right_front_steer_enc_vel);
-    right_back_module.Update(this->interface_->right_back_drive_motor_enc, this->interface_->right_back_steer_motor_enc, this->interface_->right_back_drive_enc_vel, this->interface_->right_back_steer_enc_vel);
+    left_front_module->Update(this->interface_->left_front_drive_motor_enc, this->interface_->left_front_steer_motor_enc, this->interface_->left_front_drive_enc_vel, this->interface_->left_front_steer_enc_vel);
+    left_back_module->Update(this->interface_->left_back_drive_motor_enc, this->interface_->left_back_steer_motor_enc, this->interface_->left_back_drive_enc_vel, this->interface_->left_back_steer_enc_vel);
+    right_front_module->Update(this->interface_->right_front_drive_motor_enc, this->interface_->right_front_steer_motor_enc, this->interface_->right_front_drive_enc_vel, this->interface_->right_front_steer_enc_vel);
+    right_back_module->Update(this->interface_->right_back_drive_motor_enc, this->interface_->right_back_steer_motor_enc, this->interface_->right_back_drive_enc_vel, this->interface_->right_back_steer_enc_vel);
 
     // update module positions
-    left_front_module.GetSwerveModulePosition(left_front_pos);
-    left_back_module.GetSwerveModulePosition(left_back_pos);
-    right_front_module.GetSwerveModulePosition(right_front_pos);
-    right_back_module.GetSwerveModulePosition(right_back_pos);
+    left_front_module->GetSwerveModulePosition(left_front_pos.get());
+    left_back_module->GetSwerveModulePosition(left_back_pos.get());
+    right_front_module->GetSwerveModulePosition(right_front_pos.get());
+    right_back_module->GetSwerveModulePosition(right_back_pos.get());
 
     // update odometry
-    swerve_odometry.Update(frc::Rotation2d(units::degree_t(-heading)), positions); // negate heading because odometry expects counterclockwise to be positive, but the NavX is not
+    swerve_odometry->Update(frc::Rotation2d(units::degree_t(-heading)), *positions); // negate heading because odometry expects counterclockwise to be positive, but the NavX is not
 
     // update our position object
-    position = swerve_odometry.GetPose();
+    *position = swerve_odometry->GetPose();
 }
 
 void SwerveDrive::SimulationPeriodic() {
@@ -128,28 +144,28 @@ bool SwerveDrive::SetMaxOutputSteer(const double &max_output) {
 
 bool SwerveDrive::TeleOpDrive(const double &drive, const double &strafe, const double &turn) {
     // get outputs from the kinematics object based on joystick inputs
-    auto outputs = swerve_kinematics.ToSwerveModuleStates(frc::ChassisSpeeds(units::meters_per_second_t(drive), units::meters_per_second_t(strafe), units::radians_per_second_t(turn)));
+    auto outputs = swerve_kinematics->ToSwerveModuleStates(frc::ChassisSpeeds(units::meters_per_second_t(drive), units::meters_per_second_t(strafe), units::radians_per_second_t(turn)));
     
     // set desired state in all the modules (set setpoints for PIDs)
-    left_front_module.SetDesiredState(outputs[0]);
-    left_back_module.SetDesiredState(outputs[1]);
-    right_front_module.SetDesiredState(outputs[2]);
-    right_back_module.SetDesiredState(outputs[3]);
+    left_front_module->SetDesiredState(outputs[0]);
+    left_back_module->SetDesiredState(outputs[1]);
+    right_front_module->SetDesiredState(outputs[2]);
+    right_back_module->SetDesiredState(outputs[3]);
 
     // set all the outputs in the interface
     // drive outputs
-    left_front_module.GetDriveOutput(&this->interface_->left_front_drive_motor_output);
-    left_back_module.GetDriveOutput(&this->interface_->left_back_drive_motor_output);
+    left_front_module->GetDriveOutput(&this->interface_->left_front_drive_motor_output);
+    left_back_module->GetDriveOutput(&this->interface_->left_back_drive_motor_output);
 
-    right_front_module.GetDriveOutput(&this->interface_->right_front_drive_motor_output);
-    right_back_module.GetDriveOutput(&this->interface_->right_back_drive_motor_output);
+    right_front_module->GetDriveOutput(&this->interface_->right_front_drive_motor_output);
+    right_back_module->GetDriveOutput(&this->interface_->right_back_drive_motor_output);
     
     // steer outputs
-    left_front_module.GetSteerOutput(&this->interface_->left_front_steer_motor_output);
-    left_back_module.GetSteerOutput(&this->interface_->left_back_steer_motor_output);
+    left_front_module->GetSteerOutput(&this->interface_->left_front_steer_motor_output);
+    left_back_module->GetSteerOutput(&this->interface_->left_back_steer_motor_output);
     
-    right_front_module.GetSteerOutput(&this->interface_->right_front_steer_motor_output);
-    right_back_module.GetSteerOutput(&this->interface_->right_back_steer_motor_output);
+    right_front_module->GetSteerOutput(&this->interface_->right_front_steer_motor_output);
+    right_back_module->GetSteerOutput(&this->interface_->right_back_steer_motor_output);
 
     // if we've made it here, we haven't errored, so return true
     return true;
@@ -191,10 +207,10 @@ bool SwerveDrive::DumbTeleOpDrive(const double &drive, const double &strafe, con
 
 bool SwerveDrive::InitAuto(frc::Pose2d pos) {
     //  1. figure out angle between here and there
-    this->heading_to_goal = atan((position.X().value() - pos.X().value()) / (position.Y().value() - pos.Y().value()));
+    this->heading_to_goal = atan((position->X().value() - pos.X().value()) / (position->Y().value() - pos.Y().value()));
 
     //  2. figure out distance
-    this->distance_to_goal = sqrt(pow(position.X().value() + pos.X().value(), 2) + pow(position.Y().value() + pos.Y().value(), 2));
+    this->distance_to_goal = sqrt(pow(position->X().value() + pos.X().value(), 2) + pow(position->Y().value() + pos.Y().value(), 2));
 
     return true;
 }
@@ -207,10 +223,10 @@ bool SwerveDrive::DriveToGoal(frc::Pose2d pos) {
     // double drive_power = this->dist_pid.Calculate(sqrt(pow(position.X().value() + pos.X(), 2) + pow(position.Y().value() + pos.Y(), 2)));
     double drive_power = 0;
 
-    left_front_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(drive_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
-    left_back_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(drive_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
-    right_front_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(drive_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
-    right_back_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(drive_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
+    left_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(drive_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
+    left_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(drive_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
+    right_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(drive_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
+    right_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(drive_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
 
     return true;
 }
@@ -224,13 +240,13 @@ bool SwerveDrive::TurnToHeading(frc::Pose2d pos) {
 
     // 1. set steering to 45 (well, for half of them) degrees (cut the corners of the robot, basically)
     // left front needs to be 135 degrees (because x axis goes from robot back through robot front positive)
-    left_front_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(135))));
+    left_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(135))));
     // left back needs to be 45 degrees
-    left_back_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(45))));
+    left_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(45))));
     // right front is 45
-    right_front_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(45))));
+    right_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(45))));
     // right back is 135
-    right_back_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(135))));
+    right_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(135))));
 
     return true;
 }
@@ -245,10 +261,10 @@ bool SwerveDrive::TranslateAutoLockHeading(frc::Pose2d pos) {
 
     double steer_power = 0;
 
-    left_front_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
-    left_back_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
-    right_front_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
-    right_back_module.SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
+    left_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
+    left_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
+    right_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
+    right_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(heading_to_goal))));
 
 
     return true;
@@ -274,13 +290,13 @@ bool SwerveDrive::TranslateAuto(frc::Pose2d pos) {
      * 7. at_setpoint = true;
      */
 
-    double heading_to_goal = atan((position.X().value() - pos.X().value()) / (position.Y().value() - pos.Y().value()));
-    double distance_to_goal = sqrt(pow(position.X().value() + pos.X().value(), 2) + pow(position.Y().value() + pos.Y().value(), 2));
+    double heading_to_goal = atan((position->X().value() - pos.X().value()) / (position->Y().value() - pos.Y().value()));
+    double distance_to_goal = sqrt(pow(position->X().value() + pos.X().value(), 2) + pow(position->Y().value() + pos.Y().value(), 2));
 
     //TODO
     //TODO
 
-    double heading_to_goal_heading = pos.Rotation().Degrees().value() - position.Rotation().Degrees().value();
+    double heading_to_goal_heading = pos.Rotation().Degrees().value() - position->Rotation().Degrees().value();
 
     //TODO
 
@@ -373,10 +389,10 @@ bool SwerveDrive::AtSetpoint(bool *at) {
 }
 
 bool SwerveDrive::ResetPIDs() {
-    left_front_module.Reset();
-    left_back_module.Reset();
-    right_front_module.Reset();
-    right_back_module.Reset();
+    left_front_module->Reset();
+    left_back_module->Reset();
+    right_front_module->Reset();
+    right_back_module->Reset();
 
     return true;
 }
@@ -467,15 +483,15 @@ bool SwerveDrive::UpdateShuffleboard() {
             steer_d = SwerveDriveUI::nt_steer_kd->GetDouble(steer_d);
 
             // Update PIDs with values
-            left_front_module.SetDrivePID(dist_p, dist_i, dist_d);
-            left_back_module.SetDrivePID(dist_p, dist_i, dist_d);
-            right_front_module.SetDrivePID(dist_p, dist_i, dist_d);
-            right_back_module.SetDrivePID(dist_p, dist_i, dist_d);
+            left_front_module->SetDrivePID(dist_p, dist_i, dist_d);
+            left_back_module->SetDrivePID(dist_p, dist_i, dist_d);
+            right_front_module->SetDrivePID(dist_p, dist_i, dist_d);
+            right_back_module->SetDrivePID(dist_p, dist_i, dist_d);
 
-            left_front_module.SetSteerPID(steer_p, steer_i, steer_d);
-            left_back_module.SetSteerPID(steer_p, steer_i, steer_d);
-            right_front_module.SetSteerPID(steer_p, steer_i, steer_d);
-            right_back_module.SetSteerPID(steer_p, steer_i, steer_d);
+            left_front_module->SetSteerPID(steer_p, steer_i, steer_d);
+            left_back_module->SetSteerPID(steer_p, steer_i, steer_d);
+            right_front_module->SetSteerPID(steer_p, steer_i, steer_d);
+            right_back_module->SetSteerPID(steer_p, steer_i, steer_d);
         }
 
         // Allow saving parameters in non-competition modes
