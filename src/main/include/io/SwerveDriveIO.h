@@ -35,12 +35,23 @@ typedef struct swerve_drive_hardware_interface_t {
     // AHRS
     AHRS *const ahrs;
 
+    // drive encoders
+    rev::SparkMaxRelativeEncoder *const left_front_drive_encoder;
+    rev::SparkMaxRelativeEncoder *const left_back_drive_encoder;
+    rev::SparkMaxRelativeEncoder *const right_front_drive_encoder;
+    rev::SparkMaxRelativeEncoder *const right_back_drive_encoder;
+
     // Steer encoders
     frc::AnalogInput *const left_front_steer_encoder;
     frc::AnalogInput *const left_back_steer_encoder;
     frc::AnalogInput *const right_front_steer_encoder;
     frc::AnalogInput *const right_back_steer_encoder;
 
+    // other steer encoders
+    rev::SparkMaxRelativeEncoder *const left_front_steer_vel_encoder;
+    rev::SparkMaxRelativeEncoder *const left_back_steer_vel_encoder;
+    rev::SparkMaxRelativeEncoder *const right_front_steer_vel_encoder;
+    rev::SparkMaxRelativeEncoder *const right_back_steer_vel_encoder;
 } SwerveDriveHardwareInterface;
 
 typedef struct swerve_drive_software_interface_t {

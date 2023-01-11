@@ -27,17 +27,23 @@ typedef struct sensors_t {
     std::unique_ptr<frc::DigitalInput> deploy_limit_switch;
     std::unique_ptr<frc::DigitalInput> retracted_limit_switch;
 
-    // swerve drive drive endoders
-    std::unique_ptr<rev::RelativeEncoder> left_front_drive_encoder;
-    std::unique_ptr<rev::RelativeEncoder> left_back_drive_encoder;
-    std::unique_ptr<rev::RelativeEncoder> right_front_drive_encoder;
-    std::unique_ptr<rev::RelativeEncoder> right_back_drive_encoder;
+    // swerve drive drive encoders
+    std::unique_ptr<rev::SparkMaxRelativeEncoder> left_front_drive_encoder;
+    std::unique_ptr<rev::SparkMaxRelativeEncoder> left_back_drive_encoder;
+    std::unique_ptr<rev::SparkMaxRelativeEncoder> right_front_drive_encoder;
+    std::unique_ptr<rev::SparkMaxRelativeEncoder> right_back_drive_encoder;
 
     // swerve drive steer encoders
     std::unique_ptr<frc::AnalogInput> left_front_steer_encoder;
     std::unique_ptr<frc::AnalogInput> left_back_steer_encoder;
     std::unique_ptr<frc::AnalogInput> right_front_steer_encoder;
     std::unique_ptr<frc::AnalogInput> right_back_steer_encoder;
+
+    // other steer encoders
+    std::unique_ptr<rev::SparkMaxRelativeEncoder> left_front_steer_vel_encoder;
+    std::unique_ptr<rev::SparkMaxRelativeEncoder> left_back_steer_vel_encoder;
+    std::unique_ptr<rev::SparkMaxRelativeEncoder> right_front_steer_vel_encoder;
+    std::unique_ptr<rev::SparkMaxRelativeEncoder> right_back_steer_vel_encoder;
 
     // Shooter ball detector
     std::unique_ptr<frc::DigitalInput> ball_detector;
