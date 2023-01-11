@@ -92,12 +92,20 @@ bool SwerveDrive::Init() {
 }
 
 void SwerveDrive::Periodic() {
+    VOKC_CHECK(interface_ != nullptr);
+    
     // Update shuffleboard
     VOKC_CALL(UpdateShuffleboard());
 
     // get the heading
     double heading = 0;
     VOKC_CALL(this->GetHeading(&heading));
+
+    VOKC_CHECK(left_front_module != nullptr);
+    VOKC_CHECK(left_back_module != nullptr);
+    VOKC_CHECK(right_front_module != nullptr);
+    VOKC_CHECK(right_back_module != nullptr);
+
 
     // update modules
     left_front_module->Update(this->interface_->left_front_drive_motor_enc, this->interface_->left_front_steer_motor_enc, this->interface_->left_front_drive_enc_vel, this->interface_->left_front_steer_enc_vel);
