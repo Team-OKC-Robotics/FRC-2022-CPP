@@ -40,13 +40,15 @@ RobotContainer::RobotContainer() {
     // Link SwerveDriveIO to hardware / software
     swerve_drive_io_ = std::make_shared<SwerveDriveIO>(swerve_drive_hw.get(), swerve_drive_sw_.get());
 
-    // Link intake software to the I/O
+    // Link swerve dirve software to the I/O
     swerve_drive_ = std::make_shared<SwerveDrive>(swerve_drive_sw_.get());
 
     VOKC_CHECK(swerve_drive_hw != nullptr);
     VOKC_CHECK(swerve_drive_sw_ != nullptr);
     VOKC_CHECK(swerve_drive_io_ != nullptr);
     VOKC_CHECK(swerve_drive_ != nullptr);
+    
+    VOKC_CALL(swerve_drive_->Init());
 
 
     // // == intake ==
@@ -250,6 +252,16 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
     sensor_interface->right_front_steer_encoder = std::make_unique<frc::AnalogInput>(RIGHT_FRONT_STEER_ENCODER);
     sensor_interface->right_back_steer_encoder = std::make_unique<frc::AnalogInput>(RIGHT_BACK_STEER_ENCODER);
 
+    sensor_interface->left_front_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_front_drive_motor->GetEncoder());
+    sensor_interface->left_back_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_back_drive_motor->GetEncoder());
+    sensor_interface->right_front_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_front_drive_motor->GetEncoder());
+    sensor_interface->right_back_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_back_drive_motor->GetEncoder());
+
+    sensor_interface->left_front_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_front_steer_motor->GetEncoder());
+    sensor_interface->left_back_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_back_steer_motor->GetEncoder());
+    sensor_interface->right_front_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_front_steer_motor->GetEncoder());
+    sensor_interface->right_back_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_back_steer_motor->GetEncoder());
+
     return true;
 }
 
@@ -293,6 +305,8 @@ bool RobotContainer::InitGamepads() {
 }
 
 bool RobotContainer::InitCommands() {
+    OKC_CHECK(swerve_drive_ != nullptr);
+
     // Placeholder autonomous command.
     m_autonomousCommand = std::make_shared<ExampleCommand>();
 
