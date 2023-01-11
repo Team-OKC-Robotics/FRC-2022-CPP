@@ -47,6 +47,11 @@ bool SwerveDriveIO::ProcessIO() {
         sw_interface_->reset_gyro = false;
     }
 
+    OKC_CHECK(hw_interface_->left_front_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->left_back_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->right_front_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->right_back_drive_motor != nullptr);
+
     // Set the drive outputs.
     hw_interface_->left_front_drive_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_drive, this->sw_interface_->drive_config.max_output_drive, &this->sw_interface_->left_front_drive_motor_output));
     hw_interface_->left_back_drive_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_drive, this->sw_interface_->drive_config.max_output_drive, &this->sw_interface_->left_back_drive_motor_output));
@@ -66,32 +71,40 @@ bool SwerveDriveIO::ProcessIO() {
     // Encoders
     // position
     // drive
-    sw_interface_->left_front_drive_motor_enc = hw_interface_->left_front_drive_motor->GetEncoder().GetPosition();
-    sw_interface_->left_back_drive_motor_enc = hw_interface_->left_back_drive_motor->GetEncoder().GetPosition();
-    sw_interface_->right_front_drive_motor_enc = hw_interface_->right_front_drive_motor->GetEncoder().GetPosition();
-    sw_interface_->right_back_drive_motor_enc = hw_interface_->right_back_drive_motor->GetEncoder().GetPosition();
+    sw_interface_->left_front_drive_motor_enc = hw_interface_->left_front_drive_encoder->GetPosition();
+    sw_interface_->left_back_drive_motor_enc = hw_interface_->left_back_drive_encoder->GetPosition();
+    sw_interface_->right_front_drive_motor_enc = hw_interface_->right_front_drive_encoder->GetPosition();
+    sw_interface_->right_back_drive_motor_enc = hw_interface_->right_back_drive_encoder->GetPosition();
 
     // steer
-    sw_interface_->left_front_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage(); //TODO maybe do some processing? unless that's handled by the SwerveModule class
-    sw_interface_->left_back_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage(); //TODO maybe do some processing? unless that's handled by the SwerveModule class
-    sw_interface_->right_front_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage(); //TODO maybe do some processing? unless that's handled by the SwerveModule class
-    sw_interface_->right_back_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage(); //TODO maybe do some processing? unless that's handled by the SwerveModule class
+    sw_interface_->left_front_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage();
+    sw_interface_->left_back_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage();
+    sw_interface_->right_front_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage();
+    sw_interface_->right_back_steer_motor_enc = hw_interface_->left_front_steer_encoder->GetVoltage();
 
     // velocity
     // drive
-    sw_interface_->left_front_drive_enc_vel = hw_interface_->left_front_drive_motor->GetEncoder().GetVelocity();
-    sw_interface_->left_back_drive_enc_vel = hw_interface_->left_back_drive_motor->GetEncoder().GetVelocity();
-    sw_interface_->right_front_drive_enc_vel = hw_interface_->right_front_drive_motor->GetEncoder().GetVelocity();
-    sw_interface_->right_back_drive_enc_vel = hw_interface_->right_back_drive_motor->GetEncoder().GetVelocity();
+    sw_interface_->left_front_drive_enc_vel = hw_interface_->left_front_drive_encoder->GetVelocity();
+    sw_interface_->left_back_drive_enc_vel = hw_interface_->left_back_drive_encoder->GetVelocity();
+    sw_interface_->right_front_drive_enc_vel = hw_interface_->right_front_drive_encoder->GetVelocity();
+    sw_interface_->right_back_drive_enc_vel = hw_interface_->right_back_drive_encoder->GetVelocity();
 
     // steer
-    //TODO steer velocity
+    sw_interface_->left_front_steer_enc_vel = hw_interface_->left_front_steer_vel_encoder->GetVelocity();
+    sw_interface_->left_back_steer_enc_vel = hw_interface_->left_back_steer_vel_encoder->GetVelocity();
+    sw_interface_->right_front_steer_enc_vel = hw_interface_->right_front_steer_vel_encoder->GetVelocity();
+    sw_interface_->right_back_steer_enc_vel = hw_interface_->right_back_steer_vel_encoder->GetVelocity();
 
     return true;
 }
 
 bool SwerveDriveIO::UpdateDriveConfig(SwerveDriveConfig &config) {
     OKC_CHECK(hw_interface_ != nullptr);
+
+    OKC_CHECK(hw_interface_->left_front_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->left_back_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->right_front_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->right_back_drive_motor != nullptr);
 
     // Get the configuration
     double open_loop_ramp_drive = config.open_loop_ramp_rate_drive;
@@ -117,11 +130,21 @@ bool SwerveDriveIO::UpdateDriveConfig(SwerveDriveConfig &config) {
 bool SwerveDriveIO::ResetDriveEncoders() {
     OKC_CHECK(hw_interface_ != nullptr);
 
+    OKC_CHECK(hw_interface_->left_front_drive_encoder != nullptr);
+    OKC_CHECK(hw_interface_->left_back_drive_encoder != nullptr);
+    OKC_CHECK(hw_interface_->right_front_drive_encoder != nullptr);
+    OKC_CHECK(hw_interface_->right_back_drive_encoder != nullptr);
+
+    OKC_CHECK(hw_interface_->left_front_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->left_back_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->right_front_drive_motor != nullptr);
+    OKC_CHECK(hw_interface_->right_back_drive_motor != nullptr);
+
     // internal encoders
-    hw_interface_->left_front_drive_motor->GetEncoder().SetPosition(0.0);
-    hw_interface_->left_back_drive_motor->GetEncoder().SetPosition(0.0);
-    hw_interface_->right_front_drive_motor->GetEncoder().SetPosition(0.0);
-    hw_interface_->right_back_drive_motor->GetEncoder().SetPosition(0.0);
+    hw_interface_->left_front_drive_encoder->SetPosition(0);
+    hw_interface_->left_back_drive_encoder->SetPosition(0);
+    hw_interface_->right_front_drive_encoder->SetPosition(0);
+    hw_interface_->right_back_drive_encoder->SetPosition(0);
 
     return true;
 }
