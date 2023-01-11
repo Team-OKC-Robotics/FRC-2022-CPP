@@ -36,7 +36,7 @@ enum Location {
 class SwerveModule {
 public:
     SwerveModule()
-     : drive_pid(0.0, 0.001, 0.0001), steer_pid(0.0, 0.001, 0.0001), state(), pos(), trans(), location()/*, drive_ff(units::volt_t(0.0), units::volt_t(0.0) * units::second_t(1.0) / units::meter_t(1.0), units::volts_seconds_squared_per_meter(0.0)), steer_ff(0, 0, 0)*/ {};
+     : drive_pid(0.0, 0.001, 0.0001), steer_pid(0.0, 0.001, 0.0001), state(), pos(), trans(), location() {};
     ~SwerveModule() {}
 
     bool Init(Location loc);
@@ -59,9 +59,6 @@ public:
 private:
     frc::PIDController drive_pid;
     frc::PIDController steer_pid;
-
-    frc::SimpleMotorFeedforward<units::meters> drive_ff;
-    frc::SimpleMotorFeedforward<units::degrees> steer_ff;
 
     frc::SwerveModuleState state;
     frc::SwerveModulePosition pos;
