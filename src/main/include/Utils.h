@@ -13,46 +13,58 @@
 #endif
 
 #define OKC_CALL(res)                                                          \
-    if (!(res)) {                                                              \
-        std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__         \
-                  << "] - " << __SHOW_LINE_INFO__ << std::endl;                \
-        return false;                                                          \
-    }
+    do {                                                                       \
+        if (!(res)) {                                                          \
+            std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__     \
+                      << "] - " << #res << std::endl;                          \
+            return false;                                                      \
+        }                                                                      \
+    } while (0)
 
 #define OKC_CHECK(check)                                                       \
-    if (!(check)) {                                                            \
-        std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__         \
-                  << "] - " << __SHOW_LINE_INFO__ << std::endl;                \
-        return false;                                                          \
-    }
+    do {                                                                       \
+        if (!(check)) {                                                        \
+            std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__     \
+                      << "] - " << #check << std::endl;                        \
+            return false;                                                      \
+        }                                                                      \
+    } while (0)
 
 #define OKC_CHECK_MSG(check, msg)                                              \
-    if (!(check)) {                                                            \
-        std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__         \
-                  << "] - " << __SHOW_LINE_INFO__ << ": " << msg << std::endl; \
-        return false;                                                          \
-    }
+    do {                                                                       \
+        if (!(check)) {                                                        \
+            std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__     \
+                      << "] - " << #check << ": " << msg << std::endl;         \
+            return false;                                                      \
+        }                                                                      \
+    } while (0)
 
 #define VOKC_CALL(res)                                                         \
-    if (!(res)) {                                                              \
-        std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__         \
-                  << "] - " << __SHOW_LINE_INFO__ << std::endl;                \
-        return;                                                                \
-    }
+    do {                                                                       \
+        if (!(res)) {                                                          \
+            std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__     \
+                      << "] - " << #res << std::endl;                          \
+            return;                                                            \
+        }                                                                      \
+    } while (0)
 
 #define VOKC_CHECK(check)                                                      \
-    if (!(check)) {                                                            \
-        std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__         \
-                  << "] - " << __SHOW_LINE_INFO__ << std::endl;                \
-        return;                                                                \
-    }
+    do {                                                                       \
+        if (!(check)) {                                                        \
+            std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__     \
+                      << "] - " << #check << std::endl;                        \
+            return;                                                            \
+        }                                                                      \
+    } while (0)
 
 #define VOKC_CHECK_MSG(check, msg)                                             \
-    if (!(check)) {                                                            \
-        std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__         \
-                  << "] - " << __SHOW_LINE_INFO__ << ": " << msg << std::endl; \
-        return;                                                                \
-    }
+    do {                                                                       \
+        if (!(check)) {                                                        \
+            std::cerr << "OKC_CHECK FAIL [" << __FILE__ << ":" << __LINE__     \
+                      << "] - " << #check << ": " << msg << std::endl;         \
+            return;                                                            \
+        }                                                                      \
+    } while (0)
 
 namespace TeamOKC {
 
