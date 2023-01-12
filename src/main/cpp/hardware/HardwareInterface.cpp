@@ -3,8 +3,7 @@
 
 bool SetupSwerveDriveInterface(
     std::unique_ptr<HardwareInterface> &hardware,
-    std::shared_ptr<SwerveDriveHardwareInterface> *interface) {
-    OKC_CHECK(interface != nullptr);
+    std::shared_ptr<SwerveDriveHardwareInterface> &interface) {
     OKC_CHECK(hardware->actuators != nullptr);
     OKC_CHECK(hardware->sensors != nullptr);
 
@@ -59,7 +58,7 @@ bool SetupSwerveDriveInterface(
     };
 
     // set the output interface
-    *interface = std::make_shared<SwerveDriveHardwareInterface>(swerve_drive_interface);
+    interface = std::make_shared<SwerveDriveHardwareInterface>(swerve_drive_interface);
 
     return true;
 }

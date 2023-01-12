@@ -11,8 +11,7 @@ RobotContainer::RobotContainer() {
     VOKC_CALL(this->InitHardware(hardware_));
 
     // == swerve drive ==
-    std::shared_ptr<SwerveDriveHardwareInterface> swerve_drive_hw;
-    VOKC_CALL(SetupSwerveDriveInterface(hardware_, &swerve_drive_hw));
+    VOKC_CALL(SetupSwerveDriveInterface(hardware_, swerve_drive_hw));
 
     // Initialize the software interface
     swerve_drive_sw_ = std::make_shared<SwerveDriveSoftwareInterface>();

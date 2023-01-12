@@ -13,7 +13,7 @@
 typedef struct hardware_t {
     // Actuators
     std::unique_ptr<ActuatorInterface> actuators;
-    
+
     // Sensors
     std::unique_ptr<SensorInterface> sensors;
 
@@ -29,4 +29,4 @@ typedef struct hardware_t {
  */
 bool SetupSwerveDriveInterface(
     std::unique_ptr<HardwareInterface> &hardware,
-    std::shared_ptr<SwerveDriveHardwareInterface> *interface);
+    std::shared_ptr<SwerveDriveHardwareInterface> &interface);
