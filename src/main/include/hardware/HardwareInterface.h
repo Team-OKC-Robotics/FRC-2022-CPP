@@ -10,8 +10,6 @@
 // Subsystem I/O
 #include "io/DrivetrainIO.h"
 #include "io/SwerveDriveIO.h"
-#include "io/IntakeIO.h"
-#include "io/ShooterIO.h"
 
 typedef struct hardware_t {
     // Actuators
@@ -48,26 +46,3 @@ bool SetupDrivetrainInterface(
 bool SetupSwerveDriveInterface(
     std::unique_ptr<HardwareInterface> &hardware,
     std::shared_ptr<SwerveDriveHardwareInterface> *interface);
-
-
-
-/**
- * @brief Link the Intake to the hardware interfaces.
- *
- * @param interface
- * @return true
- * @return false
- */
-bool SetupIntakeInterface(std::unique_ptr<HardwareInterface> &hardware,
-                          std::shared_ptr<IntakeHardwareInterface> *interface);
-
-/**
- * @brief Link the Shooter to the hardware interfaces.
- *
- * @param interface
- * @return true
- * @return false
- */
-bool SetupShooterInterface(
-    std::unique_ptr<HardwareInterface> &hardware,
-    std::shared_ptr<ShooterHardwareInterface> *interface);
