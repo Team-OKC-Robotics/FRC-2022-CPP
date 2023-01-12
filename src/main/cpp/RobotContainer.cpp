@@ -102,6 +102,16 @@ bool RobotContainer::InitActuators(ActuatorInterface *actuators_interface) {
     actuators_interface->right_front_steer_motor = std::make_unique<rev::CANSparkMax>(RIGHT_FRONT_STEER_MOTOR, BRUSHLESS);
     actuators_interface->right_back_steer_motor = std::make_unique<rev::CANSparkMax>(RIGHT_BACK_STEER_MOTOR, BRUSHLESS);
 
+    OKC_CHECK(actuators_interface->left_front_drive_motor != nullptr);
+    OKC_CHECK(actuators_interface->left_back_drive_motor != nullptr);
+    OKC_CHECK(actuators_interface->right_front_drive_motor != nullptr);
+    OKC_CHECK(actuators_interface->right_back_drive_motor != nullptr);
+
+    OKC_CHECK(actuators_interface->left_front_steer_motor != nullptr);
+    OKC_CHECK(actuators_interface->left_back_steer_motor != nullptr);
+    OKC_CHECK(actuators_interface->right_front_steer_motor != nullptr);
+    OKC_CHECK(actuators_interface->right_back_steer_motor != nullptr);
+
     return true;
 }
 
@@ -121,20 +131,40 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
         OKC_CHECK_MSG(false, p_err_msg);
     }
 
-   sensor_interface->left_front_steer_encoder = std::make_unique<frc::AnalogInput>(LEFT_FRONT_STEER_ENCODER);
-    sensor_interface->left_back_steer_encoder = std::make_unique<frc::AnalogInput>(LEFT_BACK_STEER_ENCODER);
-    sensor_interface->right_front_steer_encoder = std::make_unique<frc::AnalogInput>(RIGHT_FRONT_STEER_ENCODER);
-    sensor_interface->right_back_steer_encoder = std::make_unique<frc::AnalogInput>(RIGHT_BACK_STEER_ENCODER);
+    OKC_CHECK(actuators.left_front_drive_motor != nullptr);
+    OKC_CHECK(actuators.left_back_drive_motor != nullptr);
+    OKC_CHECK(actuators.right_front_drive_motor != nullptr);
+    OKC_CHECK(actuators.right_back_drive_motor != nullptr);
+
+    OKC_CHECK(actuators.left_front_steer_motor != nullptr);
+    OKC_CHECK(actuators.left_back_steer_motor != nullptr);
+    OKC_CHECK(actuators.right_front_steer_motor != nullptr);
+    OKC_CHECK(actuators.right_back_steer_motor != nullptr);
 
     sensor_interface->left_front_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_front_drive_motor->GetEncoder());
     sensor_interface->left_back_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_back_drive_motor->GetEncoder());
     sensor_interface->right_front_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_front_drive_motor->GetEncoder());
     sensor_interface->right_back_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_back_drive_motor->GetEncoder());
+    
+    sensor_interface->left_front_steer_encoder = std::make_unique<frc::AnalogInput>(LEFT_FRONT_STEER_ENCODER);
+    sensor_interface->left_back_steer_encoder = std::make_unique<frc::AnalogInput>(LEFT_BACK_STEER_ENCODER);
+    sensor_interface->right_front_steer_encoder = std::make_unique<frc::AnalogInput>(RIGHT_FRONT_STEER_ENCODER);
+    sensor_interface->right_back_steer_encoder = std::make_unique<frc::AnalogInput>(RIGHT_BACK_STEER_ENCODER);
 
     sensor_interface->left_front_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_front_steer_motor->GetEncoder());
     sensor_interface->left_back_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_back_steer_motor->GetEncoder());
     sensor_interface->right_front_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_front_steer_motor->GetEncoder());
     sensor_interface->right_back_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_back_steer_motor->GetEncoder());
+
+    OKC_CHECK(sensor_interface->left_front_drive_encoder != nullptr);
+    OKC_CHECK(sensor_interface->left_back_drive_encoder != nullptr);
+    OKC_CHECK(sensor_interface->right_front_drive_encoder != nullptr);
+    OKC_CHECK(sensor_interface->right_back_drive_encoder != nullptr);
+
+    OKC_CHECK(sensor_interface->left_front_steer_encoder != nullptr);
+    OKC_CHECK(sensor_interface->left_back_steer_encoder != nullptr);
+    OKC_CHECK(sensor_interface->right_front_steer_encoder != nullptr);
+    OKC_CHECK(sensor_interface->right_back_steer_encoder != nullptr);
 
     return true;
 }
