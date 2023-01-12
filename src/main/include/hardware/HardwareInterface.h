@@ -8,7 +8,6 @@
 #include "hardware/SensorInterface.h"
 
 // Subsystem I/O
-#include "io/DrivetrainIO.h"
 #include "io/SwerveDriveIO.h"
 
 typedef struct hardware_t {
@@ -24,18 +23,6 @@ typedef struct hardware_t {
 } HardwareInterface;
 
 // Subsystem hardware setup functions
-
-/**
- * @brief Link the Drivetrain to the hardware interfaces.
- *
- * @param interface
- * @return true
- * @return false
- */
-bool SetupDrivetrainInterface(
-    std::unique_ptr<HardwareInterface> &hardware,
-    std::shared_ptr<DrivetrainHardwareInterface> *interface);
-
 /**
  * @brief Link the Swerve drive to the hardware interfaces.
  *

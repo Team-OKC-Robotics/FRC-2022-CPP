@@ -13,13 +13,11 @@
 #include "hardware/HardwareInterface.h"
 
 // I/O Subsystems
-#include "io/DrivetrainIO.h"
-#include "subsystems/Drivetrain.h"
 #include "io/SwerveDriveIO.h"
 #include "subsystems/SwerveDrive.h"
 
 // Subsystems
-#include "subsystems/Drivetrain.h"
+#include "subsystems/SwerveDrive.h"
 
 // Gamepad
 #include "ui/GamepadMap.h"
@@ -27,14 +25,6 @@
 #include <frc2/command/button/JoystickButton.h>
 
 /// Commands
-// Drivetrain
-#include "commands/drivetrain/DriveCommand.h"
-#include "commands/drivetrain/DriveSetSpeedCommand.h"
-#include "commands/drivetrain/QuickTeleopDriveCommand.h"
-#include "commands/drivetrain/SetSpeedDrive.h"
-#include "commands/drivetrain/SlowTeleopDrive.h"
-#include "commands/drivetrain/TeleopDriveCommand.h"
-#include "commands/drivetrain/TurnCommand.h"
 // swerve
 #include "commands/swerve/TeleOpSwerveCommand.h"
 #include "commands/swerve/AutoSwerveCommand.h"
@@ -74,15 +64,12 @@ private:
     std::unique_ptr<HardwareInterface> hardware_;
 
     // Hardware I/O interfaces
-    std::shared_ptr<DrivetrainIO> drivetrain_io_;
     std::shared_ptr<SwerveDriveIO> swerve_drive_io_;
 
     // Robot software interfaces.
-    std::shared_ptr<DrivetrainSoftwareInterface> drivetrain_sw_;
     std::shared_ptr<SwerveDriveSoftwareInterface> swerve_drive_sw_;
 
     // Subsystems
-    std::shared_ptr<Drivetrain> drivetrain_;
     std::shared_ptr<SwerveDrive> swerve_drive_;
 
     /**
@@ -110,11 +97,6 @@ private:
      * Commands
      */
     std::shared_ptr<AutoSwerveCommand> m_autonomousCommand;
-
-    // Drivetrain
-    std::shared_ptr<QuickTeleopDriveCommand> quick_teleop_drive_command_;
-    std::shared_ptr<SlowTeleopDrive> slow_teleop_drive_;
-    std::shared_ptr<TeleopDriveCommand> teleop_drive_command_;
 
     // swerve drive
     std::shared_ptr<TeleOpSwerveCommand> swerve_teleop_command_;
