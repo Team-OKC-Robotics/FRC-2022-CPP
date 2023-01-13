@@ -19,10 +19,12 @@ y_disp = 0.216
 
 [swerve.drive_pid]
 kP = 0.0
-kI = 0.001
-kD = 0.0001
+kI = 0.01
+# kI = 0.0
+kD = 0.0
 
 [swerve.steer_pid]
-kP = 0.01
-kI = 0.001
-kD = 0.0001
+# kP = 0.00005
+kP = 0.0
+kI = 0.0
+kD = 0.0
