@@ -80,20 +80,12 @@ private:
      * - Joystick Buttons
      */
     std::shared_ptr<frc::Joystick> gamepad1_;
-    std::shared_ptr<frc::Joystick> gamepad2_;
 
     std::shared_ptr<frc2::JoystickButton> driver_a_button_;
     std::shared_ptr<frc2::JoystickButton> driver_b_button_;
     std::shared_ptr<frc2::JoystickButton> driver_back_button_;
     std::shared_ptr<frc2::JoystickButton> driver_left_bumper_;
     std::shared_ptr<frc2::JoystickButton> driver_right_bumper_;
-
-    std::shared_ptr<frc2::JoystickButton> manip_a_button_;
-    std::shared_ptr<frc2::JoystickButton> manip_b_button_;
-    std::shared_ptr<frc2::JoystickButton> manip_back_button_;
-    std::shared_ptr<frc2::JoystickButton> manip_start_button_;
-    std::shared_ptr<frc2::JoystickButton> manip_left_stick_button_;
-    std::shared_ptr<frc2::JoystickButton> manip_right_stick_button_;
 
     /**
      * Commands
