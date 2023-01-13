@@ -22,7 +22,8 @@ void TeleOpSwerveCommand::Execute() {
     double strafe_power = this->gamepad_->GetRawAxis(2);
     double turn_power = this->gamepad_->GetRawAxis(3);
 
-    VOKC_CALL(swerve_->TeleOpDrive(drive_power, strafe_power, turn_power));
+    // VOKC_CALL(swerve_->TeleOpDrive(drive_power, strafe_power, turn_power));
+    VOKC_CALL(swerve_->DumbTeleOpDrive(drive_power, strafe_power, turn_power));
 }
 
 void TeleOpSwerveCommand::End(bool interrupted) {
