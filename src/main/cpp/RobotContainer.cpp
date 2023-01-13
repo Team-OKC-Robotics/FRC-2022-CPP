@@ -43,23 +43,6 @@ void RobotContainer::ConfigureButtonBindings() {
     VOKC_CHECK(driver_a_button_ != nullptr);
     VOKC_CHECK(driver_b_button_ != nullptr);
     VOKC_CHECK(driver_back_button_ != nullptr);
-
-    // Configure your button bindings here
-    // driver_back_button_->OnTrue(teleop_drive_command_.get());
-    // driver_a_button_->OnTrue(slow_teleop_drive_.get())
-    //     .OnFalse(teleop_drive_command_.get());
-    // driver_b_button_->OnTrue(quick_teleop_drive_command_.get())
-    //     .OnFalse(teleop_drive_command_.get());
-
-    VOKC_CHECK(manip_a_button_ != nullptr);
-    VOKC_CHECK(manip_b_button_ != nullptr);
-    VOKC_CHECK(driver_left_bumper_ != nullptr);
-    VOKC_CHECK(driver_right_bumper_ != nullptr);
-
-    VOKC_CHECK(manip_back_button_ != nullptr);
-    VOKC_CHECK(manip_start_button_ != nullptr);
-    VOKC_CHECK(manip_left_stick_button_ != nullptr);
-    VOKC_CHECK(manip_right_stick_button_ != nullptr);
 }
 
 std::shared_ptr<frc2::Command> RobotContainer::GetAutonomousCommand() {
@@ -145,10 +128,10 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
     sensor_interface->right_front_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_front_drive_motor->GetEncoder());
     sensor_interface->right_back_drive_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.right_back_drive_motor->GetEncoder());
     
-    sensor_interface->left_front_steer_encoder = std::make_unique<frc::AnalogInput>(LEFT_FRONT_STEER_ENCODER);
-    sensor_interface->left_back_steer_encoder = std::make_unique<frc::AnalogInput>(LEFT_BACK_STEER_ENCODER);
-    sensor_interface->right_front_steer_encoder = std::make_unique<frc::AnalogInput>(RIGHT_FRONT_STEER_ENCODER);
-    sensor_interface->right_back_steer_encoder = std::make_unique<frc::AnalogInput>(RIGHT_BACK_STEER_ENCODER);
+    sensor_interface->left_front_steer_encoder = std::make_unique<frc::AnalogEncoder>(LEFT_FRONT_STEER_ENCODER);
+    sensor_interface->left_back_steer_encoder = std::make_unique<frc::AnalogEncoder>(LEFT_BACK_STEER_ENCODER);
+    sensor_interface->right_front_steer_encoder = std::make_unique<frc::AnalogEncoder>(RIGHT_FRONT_STEER_ENCODER);
+    sensor_interface->right_back_steer_encoder = std::make_unique<frc::AnalogEncoder>(RIGHT_BACK_STEER_ENCODER);
 
     sensor_interface->left_front_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_front_steer_motor->GetEncoder());
     sensor_interface->left_back_steer_vel_encoder = std::make_unique<rev::SparkMaxRelativeEncoder>(actuators.left_back_steer_motor->GetEncoder());
@@ -171,10 +154,8 @@ bool RobotContainer::InitSensors(const ActuatorInterface &actuators,
 bool RobotContainer::InitGamepads() {
     // Get joystick IDs from parameters.toml
     int gamepad1_id = RobotParams::GetParam("gamepad1_id", 0);
-    int gamepad2_id = RobotParams::GetParam("gamepad2_id", 2);
 
     gamepad1_ = std::make_shared<frc::Joystick>(gamepad1_id);
-    gamepad2_ = std::make_shared<frc::Joystick>(gamepad2_id);
 
     // Initialize the joystick buttons
     driver_a_button_ =
@@ -183,11 +164,6 @@ bool RobotContainer::InitGamepads() {
         std::make_shared<frc2::JoystickButton>(gamepad1_.get(), B_BUTTON);
     driver_back_button_ =
         std::make_shared<frc2::JoystickButton>(gamepad1_.get(), BACK_BUTTON);
-
-    manip_a_button_ =
-        std::make_shared<frc2::JoystickButton>(gamepad2_.get(), A_BUTTON);
-    manip_b_button_ =
-        std::make_shared<frc2::JoystickButton>(gamepad2_.get(), B_BUTTON);
 
     return true;
 }

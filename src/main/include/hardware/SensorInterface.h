@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "AHRS.h"
-#include <frc/AnalogInput.h>
+#include "frc/AnalogEncoder.h"
 #include <rev/RelativeEncoder.h>
 
 // == sensor ports ==
@@ -24,10 +24,10 @@ typedef struct sensors_t {
     std::unique_ptr<rev::SparkMaxRelativeEncoder> right_back_drive_encoder;
 
     // swerve drive steer encoders
-    std::unique_ptr<frc::AnalogInput> left_front_steer_encoder;
-    std::unique_ptr<frc::AnalogInput> left_back_steer_encoder;
-    std::unique_ptr<frc::AnalogInput> right_front_steer_encoder;
-    std::unique_ptr<frc::AnalogInput> right_back_steer_encoder;
+    std::unique_ptr<frc::AnalogEncoder> left_front_steer_encoder;
+    std::unique_ptr<frc::AnalogEncoder> left_back_steer_encoder;
+    std::unique_ptr<frc::AnalogEncoder> right_front_steer_encoder;
+    std::unique_ptr<frc::AnalogEncoder> right_back_steer_encoder;
 
     // other steer encoders
     std::unique_ptr<rev::SparkMaxRelativeEncoder> left_front_steer_vel_encoder;
