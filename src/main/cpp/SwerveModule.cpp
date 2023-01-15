@@ -18,6 +18,8 @@ bool SwerveModule::Init(Location loc) {
     drive_pid = std::make_shared<frc::PIDController>(drive_kP, drive_kI, drive_kD);
     steer_pid = std::make_shared<frc::PIDController>(steer_kP, steer_kI, steer_kD);
 
+    steer_pid->EnableContinuousInput(0, 360);
+
     OKC_CHECK(this->drive_pid != nullptr);
     OKC_CHECK(this->steer_pid != nullptr);
 
@@ -40,18 +42,23 @@ bool SwerveModule::Init(Location loc) {
             // positive x is to the front of the robot, positive y is to the left of the robot
             // this should match the code in the docs pretty well, I think
             trans = frc::Translation2d(units::meter_t(x_disp), units::meter_t(y_disp));
+            offset = RobotParams::GetParam("swerve.offset.left_front_offset", 0);
             break;
         case Location::LEFT_BACK:
             trans = frc::Translation2d(units::meter_t(-x_disp), units::meter_t(y_disp));
+            offset = RobotParams::GetParam("swerve.offset.left_back_offset", 0);
             break;
         case Location::RIGHT_FRONT:
             trans = frc::Translation2d(frc::Translation2d(units::meter_t(x_disp), units::meter_t(-y_disp)));
+            offset = RobotParams::GetParam("swerve.offset.right_front_offset", 0);
             break;
         case Location::RIGHT_BACK:
             trans = frc::Translation2d(frc::Translation2d(units::meter_t(-x_disp), units::meter_t(-y_disp)));
+            offset = RobotParams::GetParam("swerve.offset.left_front_offset", 0);
             break;
         default:
             // we shouldn't have reached here, so throw an error
+            offset = 0;
             return false;
     }
 
@@ -104,6 +111,12 @@ bool SwerveModule::SetDesiredState(frc::SwerveModuleState state) {
     return true;
 }
 
+bool SwerveModule::SetAngle(double angle) {
+    this->steer_pid->SetSetpoint(angle);
+
+    return true;
+}
+
 bool SwerveModule::GetDriveOutput(double *output) {
     OKC_CHECK(this->drive_pid != nullptr);
 
@@ -111,7 +124,7 @@ bool SwerveModule::GetDriveOutput(double *output) {
     this->drive_pid->SetSetpoint(this->state.speed.value());
 
     // calculate output
-    *output = this->drive_pid->Calculate(this->drive_enc_vel);
+    *output = this->drive_pid->Calculate(this->drive_enc_vel + *output);
 
     return true;
 }
@@ -120,12 +133,12 @@ bool SwerveModule::GetSteerOutput(double *output) {
     OKC_CHECK(this->steer_pid != nullptr);
 
     // optimize angle
-    this->state = frc::SwerveModuleState::Optimize(this->state, frc::Rotation2d(units::degree_t(this->pos.angle.Degrees())));
+    // this->state = frc::SwerveModuleState::Optimize(this->state, frc::Rotation2d(units::degree_t(this->pos.angle.Degrees())));
 
     // set setpoint
-    this->steer_pid->SetSetpoint(this->state.angle.Degrees().value());
+    // this->steer_pid->SetSetpoint(this->state.angle.Degrees().value());
 
-    *output = this->steer_pid->Calculate(this->steer_enc_vel);
+    *output = this->steer_pid->Calculate(this->steer_enc);
 
     return true;
 }
@@ -149,26 +162,37 @@ bool SwerveModule::SetSteerPID(double kP, double kI, double kD) {
 }
 
 
-bool SwerveModule::Update(double drive_enc, double steer_enc, double drive_vel, double steer_vel) {
+bool SwerveModule::Update(double drive_, double steer_, double drive_vel, double steer_vel) {
     // update the SwerveModulePosition with the given sensor readings
     
     // 6.75:1 L2 gear ratio
-    // wheel is 4 inch diamete wheel
-    drive_enc = drive_enc / 6.75 * 3.14159265358979 * 4;
+    // wheel is 4 inch diameter wheel
+    this->drive_enc = drive_ / 6.75 * 3.14159265358979 * 4;
 
-    drive_enc_vel = drive_enc / 6.75 * 3.14159265358979 * 4;
 
     // steering gear ratio of 12.8:1
     //TODO fix steer encoder readings (like, converting from raw voltage value or whatever to this)
     //okay so it actually returns rotations now I think?
     // steer_enc = steer_enc / 12.8;
-    steer_enc = steer_enc / 360.0;
+    // this->steer_enc = (double) abs(steer_ / 12.8 * 360.0);
+    this->steer_enc = (steer_ * 360) - offset;
+
+    if (this->steer_enc > 360) {
+        this->steer_enc -=360;
+    } else if (this->steer_enc < 0) {
+        this->steer_enc += 360;
+    }
+
+    // if (this->location == RIGHT_FRONT) {
+    //     std::cout << this->steer_enc << std::endl;
+    //     std::cout << this->steer_pid->GetSetpoint() << std::endl;
+    // }
 
     this->pos = frc::SwerveModulePosition(units::meter_t(drive_enc), frc::Rotation2d(units::degree_t(steer_enc)));
 
     // velocity readings
-    this->drive_enc_vel = drive_vel;
     this->steer_enc_vel = steer_vel;
+    this->drive_enc_vel = drive_vel / 6.75 * 3.14159265358979 * 4;
 
     return true;
 }
