@@ -47,6 +47,8 @@ public:
     bool GetLocationOnRobot(frc::Translation2d *loc);
     
     bool SetDesiredState(frc::SwerveModuleState state);
+    bool SetAngle(double angle);
+    
     bool GetDriveOutput(double *output); // PID
     bool GetSteerOutput(double *output); // PID, optimize angle
 
@@ -67,6 +69,11 @@ private:
 
     Location location;
 
+    double drive_enc;
+    double steer_enc;
+
     double drive_enc_vel;
     double steer_enc_vel;
+
+    double offset;
 };
