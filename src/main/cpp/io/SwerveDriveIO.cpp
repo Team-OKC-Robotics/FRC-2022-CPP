@@ -62,6 +62,7 @@ bool SwerveDriveIO::ProcessIO() {
     hw_interface_->right_front_drive_motor->Set(this->sw_interface_->right_front_drive_motor_output);
     hw_interface_->right_back_drive_motor->Set(this->sw_interface_->right_back_drive_motor_output);
 
+
     // set the steer outputs.
     // hw_interface_->left_front_steer_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_steer, this->sw_interface_->drive_config.max_output_steer, &this->sw_interface_->left_front_steer_motor_output));
     // hw_interface_->left_back_steer_motor->Set(TeamOKC::Clamp(-this->sw_interface_->drive_config.max_output_steer, this->sw_interface_->drive_config.max_output_steer, &this->sw_interface_->left_back_steer_motor_output));
@@ -89,6 +90,11 @@ bool SwerveDriveIO::ProcessIO() {
     sw_interface_->left_back_steer_motor_enc = hw_interface_->left_back_steer_encoder->GetAbsolutePosition();
     sw_interface_->right_front_steer_motor_enc = hw_interface_->right_front_steer_encoder->GetAbsolutePosition();
     sw_interface_->right_back_steer_motor_enc = hw_interface_->right_back_steer_encoder->GetAbsolutePosition();
+
+    // sw_interface_->left_front_steer_motor_enc = hw_interface_->left_front_steer_vel_encoder->GetPosition();
+    // sw_interface_->left_back_steer_motor_enc = hw_interface_->left_back_steer_vel_encoder->GetPosition();
+    // sw_interface_->right_front_steer_motor_enc = hw_interface_->right_front_steer_vel_encoder->GetPosition();
+    // sw_interface_->right_back_steer_motor_enc = hw_interface_->right_back_steer_vel_encoder->GetPosition();
 
     // velocity
     // drive
@@ -161,6 +167,10 @@ bool SwerveDriveIO::ResetSteerEncoders() {
     OKC_CHECK(hw_interface_ != nullptr);
 
     //TODO
+    hw_interface_->left_front_steer_vel_encoder->SetPosition(0);
+    hw_interface_->left_back_steer_vel_encoder->SetPosition(0);
+    hw_interface_->right_back_steer_vel_encoder->SetPosition(0);
+    hw_interface_->right_front_steer_vel_encoder->SetPosition(0);
 
     return true;
 }
