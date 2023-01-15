@@ -182,7 +182,7 @@ bool SwerveDrive::SetMaxOutputSteer(const double &max_output) {
 
 bool SwerveDrive::TeleOpDrive(const double &drive, const double &strafe, const double &turn) {
     // get outputs from the kinematics object based on joystick inputs
-    auto outputs = swerve_kinematics->ToSwerveModuleStates(frc::ChassisSpeeds(units::meters_per_second_t(drive), units::meters_per_second_t(strafe), units::radians_per_second_t(turn)));
+    auto outputs = swerve_kinematics->ToSwerveModuleStates(frc::ChassisSpeeds(units::meters_per_second_t(drive * 4), units::meters_per_second_t(strafe * 4), units::radians_per_second_t(turn * 1.5)));
     
     // set desired state in all the modules (set setpoints for PIDs)
     OKC_CALL(left_front_module->SetDesiredState(outputs[0]));
@@ -232,23 +232,41 @@ bool SwerveDrive::DumbTeleOpDrive(const double &drive, const double &strafe, con
     //  7. set_output->(result_of_step_3)
     
     double drive_strafe_angle = atan(strafe / drive); // TODO figure out how this is gonna work with  negative/positive/turning/stuff
-    double turn_angle = turn / 45;
+    double turn_angle = turn / 45; //???
 
     double drive_strafe_magnitude = sqrt(pow(drive, 2) + pow(strafe, 2)); // TODO don't forget to copy the signs because just squaring gets rid of negatives
     double turn_magnitude = turn;
 
     double turn_power = turn_angle + turn; // ???
+
     //TODO
+
+    if (turn < -0.1) {
+        this->left_front_module->SetAngle(-turn * 135);
+        this->left_back_module->SetAngle(-turn * 45);
+        this->right_front_module->SetAngle(-turn * 45);
+        this->right_back_module->SetAngle(-turn * 135);
+    } else if (turn > 0.1) {
+        this->left_front_module->SetAngle(turn * 45);
+        this->left_back_module->SetAngle(turn * 135);
+        this->right_front_module->SetAngle(turn * 135);
+        this->right_back_module->SetAngle(turn * 45);
+    } else {
+        this->left_front_module->SetAngle(0);
+        this->left_back_module->SetAngle(0);
+        this->right_front_module->SetAngle(0);
+        this->right_back_module->SetAngle(0);
+    }
 
     this->interface_->left_front_drive_motor_output = drive;
     this->interface_->left_back_drive_motor_output = drive;
     this->interface_->right_front_drive_motor_output = drive;
     this->interface_->right_back_drive_motor_output = drive;
 
-    this->interface_->left_front_steer_motor_output = 0;
-    this->interface_->left_back_steer_motor_output = 0;
-    this->interface_->right_front_steer_motor_output = 0;
-    this->interface_->right_back_steer_motor_output = 0;
+    this->left_front_module->GetSteerOutput(&this->interface_->left_front_steer_motor_output);
+    this->left_back_module->GetSteerOutput(&this->interface_->left_back_steer_motor_output);
+    this->right_front_module->GetSteerOutput(&this->interface_->right_front_steer_motor_output);
+    this->right_back_module->GetSteerOutput(&this->interface_->right_back_steer_motor_output);
 
     return true;
 }
@@ -501,10 +519,10 @@ bool SwerveDrive::UpdateShuffleboard() {
     GetDriveEncoderAverage(&encoder_tmp);
     SwerveDriveUI::nt_avg_dist->SetDouble(encoder_tmp);
 
-    SwerveDriveUI::nt_left_front_front_steer->SetDouble(this->interface_->left_front_steer_motor_enc);
-    SwerveDriveUI::nt_left_back_front_steer->SetDouble(this->interface_->left_back_steer_motor_enc);
-    SwerveDriveUI::nt_right_front_front_steer->SetDouble(this->interface_->right_front_steer_motor_enc);
-    SwerveDriveUI::nt_right_back_front_steer->SetDouble(this->interface_->right_back_steer_motor_enc);
+    SwerveDriveUI::nt_left_front_front_steer->SetDouble(this->interface_->left_front_steer_motor_enc * 360);
+    SwerveDriveUI::nt_left_back_front_steer->SetDouble(this->interface_->left_back_steer_motor_enc * 360);
+    SwerveDriveUI::nt_right_front_front_steer->SetDouble(this->interface_->right_front_steer_motor_enc * 360);
+    SwerveDriveUI::nt_right_back_front_steer->SetDouble(this->interface_->right_back_steer_motor_enc * 360);
 
     // Heading UI
     double heading_tmp = 0.0;
