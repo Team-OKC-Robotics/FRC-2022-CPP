@@ -242,17 +242,21 @@ bool SwerveDrive::DumbTeleOpDrive(const double &drive, const double &strafe, con
     double right_front_turn = 0;
     double right_back_turn = 0;
 
+    // if turn is negative (i.e. left)
     if (turn < -0.1) {
+        // set the turning appropriately
         left_front_turn = -turn * 135;
         left_back_turn = -turn * 45;
         right_front_turn = -turn * 45;
         right_back_turn = -turn * 135;
     } else if (turn > 0.1) {
+        // if turning is positive (i.e. right), do likewise
         left_front_turn = turn * 45;
         left_back_turn = turn * 135;
         right_front_turn = turn * 135;
         right_back_turn = turn * 45;
     } else {
+        // otherwise, we don't want to turn
         left_front_turn = 0;
         left_back_turn = 0;
         right_front_turn = 0;
