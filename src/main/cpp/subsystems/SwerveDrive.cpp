@@ -260,16 +260,16 @@ bool SwerveDrive::DumbTeleOpDrive(const double &drive, const double &strafe, con
     }
 
 
-    // left_front_turn += drive_strafe_angle;
-    // left_back_turn += drive_strafe_angle;
-    // right_front_turn += drive_strafe_angle;
-    // right_back_turn += drive_strafe_angle;
+    left_front_turn += drive_strafe_angle;
+    left_back_turn += drive_strafe_angle;
+    right_front_turn += drive_strafe_angle;
+    right_back_turn += drive_strafe_angle;
 
     // turn angle
-    // OKC_CALL(this->left_front_module->SetAngle(left_front_turn));
-    // OKC_CALL(this->left_back_module->SetAngle(left_back_turn));
-    // OKC_CALL(this->right_front_module->SetAngle(right_front_turn));
-    // OKC_CALL(this->right_back_module->SetAngle(right_back_turn));
+    OKC_CALL(this->left_front_module->SetAngle(left_front_turn));
+    OKC_CALL(this->left_back_module->SetAngle(left_back_turn));
+    OKC_CALL(this->right_front_module->SetAngle(right_front_turn));
+    OKC_CALL(this->right_back_module->SetAngle(right_back_turn));
 
     OKC_CALL(this->left_front_module->SetAngle(0));
     OKC_CALL(this->left_back_module->SetAngle(0));
@@ -277,34 +277,24 @@ bool SwerveDrive::DumbTeleOpDrive(const double &drive, const double &strafe, con
     OKC_CALL(this->right_back_module->SetAngle(0));
 
 
-    // OKC_CALL(this->left_front_module->GetSteerOutput(&this->interface_->left_front_steer_motor_output));
-    // OKC_CALL(this->left_back_module->GetSteerOutput(&this->interface_->left_back_steer_motor_output));
-    // OKC_CALL(this->right_front_module->GetSteerOutput(&this->interface_->right_front_steer_motor_output));
-    // OKC_CALL(this->right_back_module->GetSteerOutput(&this->interface_->right_back_steer_motor_output));
+    OKC_CALL(this->left_front_module->GetSteerOutput(&this->interface_->left_front_steer_motor_output));
+    OKC_CALL(this->left_back_module->GetSteerOutput(&this->interface_->left_back_steer_motor_output));
+    OKC_CALL(this->right_front_module->GetSteerOutput(&this->interface_->right_front_steer_motor_output));
+    OKC_CALL(this->right_back_module->GetSteerOutput(&this->interface_->right_back_steer_motor_output));
 
-    this->interface_->left_front_steer_motor_output = 0;
-    this->interface_->left_back_steer_motor_output = 0;
-    this->interface_->right_front_steer_motor_output = 0;
-    this->interface_->right_back_steer_motor_output = 0;
-
-    // if (abs(drive_strafe_magnitude) < 0.1) {
-    //     this->interface_->left_front_drive_motor_output = 0;
-    //     this->interface_->left_back_drive_motor_output = 0;
-    //     this->interface_->right_front_drive_motor_output = 0;
-    //     this->interface_->right_back_drive_motor_output = 0;
-    //     return true;
-    // }
+    if (abs(drive_strafe_magnitude) < 0.1) {
+        this->interface_->left_front_drive_motor_output = 0;
+        this->interface_->left_back_drive_motor_output = 0;
+        this->interface_->right_front_drive_motor_output = 0;
+        this->interface_->right_back_drive_motor_output = 0;
+        return true;
+    }
 
     // drive power
-    // this->interface_->left_front_drive_motor_output = magnitude;
-    // this->interface_->left_back_drive_motor_output = magnitude;
-    // this->interface_->right_front_drive_motor_output = magnitude;
-    // this->interface_->right_back_drive_motor_output = magnitude;
-
-    this->interface_->left_front_drive_motor_output = 0.01;
-    this->interface_->left_back_drive_motor_output = 0.01;
-    this->interface_->right_front_drive_motor_output = 0.01;
-    this->interface_->right_back_drive_motor_output = 0.01;
+    this->interface_->left_front_drive_motor_output = magnitude;
+    this->interface_->left_back_drive_motor_output = magnitude;
+    this->interface_->right_front_drive_motor_output = magnitude;
+    this->interface_->right_back_drive_motor_output = magnitude;
     
 
     return true;
