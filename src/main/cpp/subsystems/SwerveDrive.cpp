@@ -232,41 +232,80 @@ bool SwerveDrive::DumbTeleOpDrive(const double &drive, const double &strafe, con
     //  7. set_output->(result_of_step_3)
     
     double drive_strafe_angle = atan(strafe / drive); // TODO figure out how this is gonna work with  negative/positive/turning/stuff
-    double turn_angle = turn / 45; //???
-
     double drive_strafe_magnitude = sqrt(pow(drive, 2) + pow(strafe, 2)); // TODO don't forget to copy the signs because just squaring gets rid of negatives
+    drive_strafe_magnitude = copysign(drive_strafe_magnitude, drive);
     double turn_magnitude = turn;
+    double magnitude = (drive_strafe_magnitude + turn_magnitude) / 2;
 
-    double turn_power = turn_angle + turn; // ???
-
-    //TODO
+    double left_front_turn = 0;
+    double left_back_turn = 0;
+    double right_front_turn = 0;
+    double right_back_turn = 0;
 
     if (turn < -0.1) {
-        this->left_front_module->SetAngle(-turn * 135);
-        this->left_back_module->SetAngle(-turn * 45);
-        this->right_front_module->SetAngle(-turn * 45);
-        this->right_back_module->SetAngle(-turn * 135);
+        left_front_turn = -turn * 135;
+        left_back_turn = -turn * 45;
+        right_front_turn = -turn * 45;
+        right_back_turn = -turn * 135;
     } else if (turn > 0.1) {
-        this->left_front_module->SetAngle(turn * 45);
-        this->left_back_module->SetAngle(turn * 135);
-        this->right_front_module->SetAngle(turn * 135);
-        this->right_back_module->SetAngle(turn * 45);
+        left_front_turn = turn * 45;
+        left_back_turn = turn * 135;
+        right_front_turn = turn * 135;
+        right_back_turn = turn * 45;
     } else {
-        this->left_front_module->SetAngle(0);
-        this->left_back_module->SetAngle(0);
-        this->right_front_module->SetAngle(0);
-        this->right_back_module->SetAngle(0);
+        left_front_turn = 0;
+        left_back_turn = 0;
+        right_front_turn = 0;
+        right_back_turn = 0;
     }
 
-    this->interface_->left_front_drive_motor_output = drive;
-    this->interface_->left_back_drive_motor_output = drive;
-    this->interface_->right_front_drive_motor_output = drive;
-    this->interface_->right_back_drive_motor_output = drive;
 
-    this->left_front_module->GetSteerOutput(&this->interface_->left_front_steer_motor_output);
-    this->left_back_module->GetSteerOutput(&this->interface_->left_back_steer_motor_output);
-    this->right_front_module->GetSteerOutput(&this->interface_->right_front_steer_motor_output);
-    this->right_back_module->GetSteerOutput(&this->interface_->right_back_steer_motor_output);
+    // left_front_turn += drive_strafe_angle;
+    // left_back_turn += drive_strafe_angle;
+    // right_front_turn += drive_strafe_angle;
+    // right_back_turn += drive_strafe_angle;
+
+    // turn angle
+    // OKC_CALL(this->left_front_module->SetAngle(left_front_turn));
+    // OKC_CALL(this->left_back_module->SetAngle(left_back_turn));
+    // OKC_CALL(this->right_front_module->SetAngle(right_front_turn));
+    // OKC_CALL(this->right_back_module->SetAngle(right_back_turn));
+
+    OKC_CALL(this->left_front_module->SetAngle(0));
+    OKC_CALL(this->left_back_module->SetAngle(0));
+    OKC_CALL(this->right_front_module->SetAngle(0));
+    OKC_CALL(this->right_back_module->SetAngle(0));
+
+
+    // OKC_CALL(this->left_front_module->GetSteerOutput(&this->interface_->left_front_steer_motor_output));
+    // OKC_CALL(this->left_back_module->GetSteerOutput(&this->interface_->left_back_steer_motor_output));
+    // OKC_CALL(this->right_front_module->GetSteerOutput(&this->interface_->right_front_steer_motor_output));
+    // OKC_CALL(this->right_back_module->GetSteerOutput(&this->interface_->right_back_steer_motor_output));
+
+    this->interface_->left_front_steer_motor_output = 0;
+    this->interface_->left_back_steer_motor_output = 0;
+    this->interface_->right_front_steer_motor_output = 0;
+    this->interface_->right_back_steer_motor_output = 0;
+
+    // if (abs(drive_strafe_magnitude) < 0.1) {
+    //     this->interface_->left_front_drive_motor_output = 0;
+    //     this->interface_->left_back_drive_motor_output = 0;
+    //     this->interface_->right_front_drive_motor_output = 0;
+    //     this->interface_->right_back_drive_motor_output = 0;
+    //     return true;
+    // }
+
+    // drive power
+    // this->interface_->left_front_drive_motor_output = magnitude;
+    // this->interface_->left_back_drive_motor_output = magnitude;
+    // this->interface_->right_front_drive_motor_output = magnitude;
+    // this->interface_->right_back_drive_motor_output = magnitude;
+
+    this->interface_->left_front_drive_motor_output = 0.01;
+    this->interface_->left_back_drive_motor_output = 0.01;
+    this->interface_->right_front_drive_motor_output = 0.01;
+    this->interface_->right_back_drive_motor_output = 0.01;
+    
 
     return true;
 }
@@ -306,13 +345,13 @@ bool SwerveDrive::TurnToHeading(frc::Pose2d pos) {
 
     // 1. set steering to 45 (well, for half of them) degrees (cut the corners of the robot, basically)
     // left front needs to be 135 degrees (because x axis goes from robot back through robot front positive)
-    left_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(135))));
+    OKC_CALL(left_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(135)))));
     // left back needs to be 45 degrees
-    left_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(45))));
+    OKC_CALL(left_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(45)))));
     // right front is 45
-    right_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(45))));
+    OKC_CALL(right_front_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(45)))));
     // right back is 135
-    right_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(135))));
+    OKC_CALL(right_back_module->SetDesiredState(frc::SwerveModuleState(units::meters_per_second_t(steer_power), frc::Rotation2d(units::degree_t(135)))));
 
     return true;
 }
@@ -489,22 +528,27 @@ bool SwerveDrive::ResetGyro() {
 
 bool SwerveDrive::InitShuffleboard() {
     // Get parameters
-    double dist_p = RobotParams::GetParam("swerve.distance_pid.kP", 0.0);
-    double dist_i = RobotParams::GetParam("swerve.distance_pid.kI", 0.0);
-    double dist_d = RobotParams::GetParam("swerve.distance_pid.kD", 0.0);
+    double dist_p = RobotParams::GetParam("swerve.drive_pid.kP", 0.0);
+    double dist_i = RobotParams::GetParam("swerve.drive_pid.kI", 0.0);
+    double dist_d = RobotParams::GetParam("swerve.drive_pid.kD", 0.0);
 
     double steer_p = RobotParams::GetParam("swerve.steer_pid.kP", 0.0);
     double steer_i = RobotParams::GetParam("swerve.steer_pid.kI", 0.0);
     double steer_d = RobotParams::GetParam("swerve.steer_pid.kD", 0.0);
 
     // Update dashboard.
-    SwerveDriveUI::nt_dist_kp->SetDouble(dist_p);
-    SwerveDriveUI::nt_dist_ki->SetDouble(dist_i);
-    SwerveDriveUI::nt_dist_kd->SetDouble(dist_d);
+    OKC_CALL(SwerveDriveUI::nt_dist_kp->SetDouble(dist_p));
+    OKC_CALL(SwerveDriveUI::nt_dist_ki->SetDouble(dist_i));
+    OKC_CALL(SwerveDriveUI::nt_dist_kd->SetDouble(dist_d));
 
-    SwerveDriveUI::nt_steer_kp->SetDouble(steer_p);
-    SwerveDriveUI::nt_steer_ki->SetDouble(steer_i);
-    SwerveDriveUI::nt_steer_kd->SetDouble(steer_d);
+    OKC_CALL(SwerveDriveUI::nt_steer_kp->SetDouble(steer_p));
+    OKC_CALL(SwerveDriveUI::nt_steer_ki->SetDouble(steer_i));
+    OKC_CALL(SwerveDriveUI::nt_steer_kd->SetDouble(steer_d));
+
+    OKC_CALL(SwerveDriveUI::nt_left_front_front_steer->SetDouble(0.0));
+    OKC_CALL(SwerveDriveUI::nt_left_back_front_steer->SetDouble(0.0));
+    OKC_CALL(SwerveDriveUI::nt_right_front_front_steer->SetDouble(0.0));
+    OKC_CALL(SwerveDriveUI::nt_right_back_front_steer->SetDouble(0.0));
 
     return true;
 }
@@ -512,22 +556,22 @@ bool SwerveDrive::InitShuffleboard() {
 bool SwerveDrive::UpdateShuffleboard() {
     // Update encoder UI
     double encoder_tmp = 0.0;
-    this->GetLeftDriveEncoderAverage(&encoder_tmp);
-    SwerveDriveUI::nt_left_avg->SetDouble(encoder_tmp);
-    GetRightDriveEncoderAverage(&encoder_tmp);
-    SwerveDriveUI::nt_right_avg->SetDouble(encoder_tmp);
-    GetDriveEncoderAverage(&encoder_tmp);
-    SwerveDriveUI::nt_avg_dist->SetDouble(encoder_tmp);
+    OKC_CALL(this->GetLeftDriveEncoderAverage(&encoder_tmp));
+    OKC_CALL(SwerveDriveUI::nt_left_avg->SetDouble(encoder_tmp));
+    OKC_CALL(this->GetRightDriveEncoderAverage(&encoder_tmp));
+    OKC_CALL(SwerveDriveUI::nt_right_avg->SetDouble(encoder_tmp));
+    OKC_CALL(this->GetDriveEncoderAverage(&encoder_tmp));
+    OKC_CALL(SwerveDriveUI::nt_avg_dist->SetDouble(encoder_tmp));
 
-    SwerveDriveUI::nt_left_front_front_steer->SetDouble(this->interface_->left_front_steer_motor_enc * 360);
-    SwerveDriveUI::nt_left_back_front_steer->SetDouble(this->interface_->left_back_steer_motor_enc * 360);
-    SwerveDriveUI::nt_right_front_front_steer->SetDouble(this->interface_->right_front_steer_motor_enc * 360);
-    SwerveDriveUI::nt_right_back_front_steer->SetDouble(this->interface_->right_back_steer_motor_enc * 360);
+    OKC_CALL(SwerveDriveUI::nt_left_front_front_steer->SetDouble(this->interface_->left_front_steer_motor_enc * 360));
+    OKC_CALL(SwerveDriveUI::nt_left_back_front_steer->SetDouble(this->interface_->left_back_steer_motor_enc * 360));
+    OKC_CALL(SwerveDriveUI::nt_right_front_front_steer->SetDouble(this->interface_->right_front_steer_motor_enc * 360));
+    OKC_CALL(SwerveDriveUI::nt_right_back_front_steer->SetDouble(this->interface_->right_back_steer_motor_enc * 360));
 
     // Heading UI
     double heading_tmp = 0.0;
-    GetHeading(&heading_tmp);
-    SwerveDriveUI::nt_heading->SetDouble(heading_tmp);
+    OKC_CALL(this->GetHeading(&heading_tmp));
+    OKC_CALL(SwerveDriveUI::nt_heading->SetDouble(heading_tmp));
 
     // If competition mode isn't set to true, then allow the PID gains to be
     // tuned.
@@ -554,29 +598,29 @@ bool SwerveDrive::UpdateShuffleboard() {
             steer_d = SwerveDriveUI::nt_steer_kd->GetDouble(steer_d);
 
             // Update PIDs with values
-            left_front_module->SetDrivePID(dist_p, dist_i, dist_d);
-            left_back_module->SetDrivePID(dist_p, dist_i, dist_d);
-            right_front_module->SetDrivePID(dist_p, dist_i, dist_d);
-            right_back_module->SetDrivePID(dist_p, dist_i, dist_d);
+            OKC_CALL(left_front_module->SetDrivePID(dist_p, dist_i, dist_d));
+            OKC_CALL(left_back_module->SetDrivePID(dist_p, dist_i, dist_d));
+            OKC_CALL(right_front_module->SetDrivePID(dist_p, dist_i, dist_d));
+            OKC_CALL(right_back_module->SetDrivePID(dist_p, dist_i, dist_d));
 
-            left_front_module->SetSteerPID(steer_p, steer_i, steer_d);
-            left_back_module->SetSteerPID(steer_p, steer_i, steer_d);
-            right_front_module->SetSteerPID(steer_p, steer_i, steer_d);
-            right_back_module->SetSteerPID(steer_p, steer_i, steer_d);
+            OKC_CALL(left_front_module->SetSteerPID(steer_p, steer_i, steer_d));
+            OKC_CALL(left_back_module->SetSteerPID(steer_p, steer_i, steer_d));
+            OKC_CALL(right_front_module->SetSteerPID(steer_p, steer_i, steer_d));
+            OKC_CALL(right_back_module->SetSteerPID(steer_p, steer_i, steer_d));
         }
 
         // Allow saving parameters in non-competition modes
         if (SwerveDriveUI::nt_save->GetBoolean(true)) {
             // Save the parameters.
             OKC_CALL(RobotParams::SaveParameters(RobotParams::param_file));
-            SwerveDriveUI::nt_save->SetBoolean(false);
+            OKC_CALL(SwerveDriveUI::nt_save->SetBoolean(false));
         }
     }
 
     // Resetting the Gyro needs to always be available.
     if (SwerveDriveUI::nt_reset_gyro->GetBoolean(false)) {
         interface_->reset_gyro = true;
-        SwerveDriveUI::nt_reset_gyro->SetBoolean(false);
+        OKC_CALL(SwerveDriveUI::nt_reset_gyro->SetBoolean(false));
     }
 
     return true;
