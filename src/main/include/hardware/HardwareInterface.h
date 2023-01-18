@@ -8,16 +8,11 @@
 #include "hardware/SensorInterface.h"
 
 // Subsystem I/O
-#include "io/DrivetrainIO.h"
-#include "io/IntakeIO.h"
-#include "io/ShooterIO.h"
+#include "io/SwerveDriveIO.h"
 
 typedef struct hardware_t {
     // Actuators
     std::unique_ptr<ActuatorInterface> actuators;
-
-    // Drivetrain specific hardware abstractions.
-    std::unique_ptr<frc::DifferentialDrive> diff_drive;
 
     // Sensors
     std::unique_ptr<SensorInterface> sensors;
@@ -25,35 +20,13 @@ typedef struct hardware_t {
 } HardwareInterface;
 
 // Subsystem hardware setup functions
-
 /**
- * @brief Link the Drivetrain to the hardware interfaces.
+ * @brief Link the Swerve drive to the hardware interfaces.
  *
  * @param interface
  * @return true
  * @return false
  */
-bool SetupDrivetrainInterface(
+bool SetupSwerveDriveInterface(
     std::unique_ptr<HardwareInterface> &hardware,
-    std::shared_ptr<DrivetrainHardwareInterface> *interface);
-
-/**
- * @brief Link the Intake to the hardware interfaces.
- *
- * @param interface
- * @return true
- * @return false
- */
-bool SetupIntakeInterface(std::unique_ptr<HardwareInterface> &hardware,
-                          std::shared_ptr<IntakeHardwareInterface> *interface);
-
-/**
- * @brief Link the Shooter to the hardware interfaces.
- *
- * @param interface
- * @return true
- * @return false
- */
-bool SetupShooterInterface(
-    std::unique_ptr<HardwareInterface> &hardware,
-    std::shared_ptr<ShooterHardwareInterface> *interface);
+    std::shared_ptr<SwerveDriveHardwareInterface> &interface);
